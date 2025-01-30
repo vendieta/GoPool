@@ -1,9 +1,15 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { ScrollView,Image, StyleSheet,View } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import  UserCard  from '../../components/TEST/UserCard';
+import { Feather } from '@expo/vector-icons';
+
+// debo descomentar el codigo que esta en el archivo fontfaceobserver.standalone.js
+{/*ESTA ES LA PANTALLLA DE INICIO SERIA COMO EL INDEX*/}
+
 
 export default function HomeScreen() {
   return (
@@ -14,8 +20,10 @@ export default function HomeScreen() {
           source={require('@/assets/images/partial-react-logo.png')}
           style={styles.reactLogo}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
+      }> 
+    
+
+      {/* <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome!</ThemedText>
         <HelloWave />
       </ThemedView>
@@ -31,7 +39,7 @@ export default function HomeScreen() {
               web: 'F12'
             })}
           </ThemedText>{' '}
-          to open developer tools.
+          to open developer tool.
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
@@ -49,16 +57,26 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
-      </ThemedView>
+      </ThemedView> */}
+    
+      <UserCard></UserCard>
+      <UserCard></UserCard>
+      <UserCard></UserCard>
+      <UserCard></UserCard>
+      <UserCard></UserCard>
+      <UserCard></UserCard>
+      <UserCard></UserCard>
+      <UserCard></UserCard>
+      <UserCard></UserCard>
+      <UserCard></UserCard>
+      <UserCard></UserCard>
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex:1,
   },
   stepContainer: {
     gap: 8,
