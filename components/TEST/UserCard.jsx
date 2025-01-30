@@ -65,7 +65,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     //justifyContent: 'space-between',
     backgroundColor: '#f0f0f0',
-    padding: 16,
+    height:150,
+    // padding: 16,
     borderRadius: 16,
     alignItems: 'center',
     shadowColor: '#000',
@@ -74,20 +75,21 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     width: width*0.95,
     marginHorizontal: width*0.025,
-    fontSize:5,
+
   },
   userInfoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginleft:10 ,
   },
   userTextContainer: {
     alignItems: 'center',
-    marginRight: 5,
+    marginHorizontal: 5,
   },
   userName: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: width*0.05,
   },
   userAvatar: {
     width: 40,
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   tripInfoContainer: {
-    flexDirection: 'column',
+    // flexDirection: 'column',
     justifyContent: 'space-between',
     margin: 'auto',
   },
@@ -116,7 +118,7 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   infoValue: {
-    marginLeft: 8,
+    marginLeft: 2,
     color: '#777',
   },
   rightSection: {
@@ -131,6 +133,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#ddd',
     borderRadius: 16,
   },
+  responsive: {
+
+  }
 });
 
 export default UserCard;

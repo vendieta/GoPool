@@ -76,6 +76,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    gap: 25,
+    gap: 20,
   },
 });
