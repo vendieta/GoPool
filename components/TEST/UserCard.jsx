@@ -3,40 +3,58 @@ import { Ionicons } from '@expo/vector-icons';
 
 {/*esta parte extrae las dimensiones del dispositivo del usuario*/}
 const { width, height } = Dimensions.get('window')
+const dLabel = width > 500 ? 0.015 : 0.048;
+const dValue = width > 500 ? 0.02 : 0.041;
+
+const data = {
+  user: 'QQQQ',
+  price: '0.5',
+  date: '00/00/00',
+  time: '00:00',
+  free: 9,
+  initialZone: 'ESPOL',
+  endZone: 'El Guasmo'
+};
+const {user,price,date,time,free,initialZone,endZone} = data
 // alert(width)
 // alert(height)
 
 
 const UserCard = () => {
   return (
-
     <View style={styles.card}>
       {/* User Info and Image */}
       <View style={styles.userInfoContainer}>
         <View style={styles.userTextContainer}>
-          <Text style={styles.userName}>USER 1</Text>
+          <Text style={styles.userName}>{user}</Text>
           <View style={styles.userAvatar} />
-          <Text style={styles.priceText}>PRICE: 0.5$</Text>
+          <Text style={styles.priceText}>{price}$</Text>
         </View>
       </View>
 
       {/* central info */}
       <View style={styles.tripInfoContainer}>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>TIME OF START:</Text>
-            <Text style={styles.infoValue}>00/00/00 00:00</Text>
+          <View style={styles.line}>
+            <View style={styles.infoColumn}>
+              <Text style={styles.infoLabel}>Hora de</Text>
+              <Text style={styles.infoLabel}>Salida:</Text>
+              <Text style={styles.infoValue}>{date} - {time}</Text>
+            </View>
+            <View style={styles.infoColumn}>
+              <Text style={styles.infoLabel}>Cupos</Text>
+              <Text style={styles.infoLabel}>Libres:</Text>
+              <Text style={styles.infoValue}>{free}</Text>
+            </View>
           </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>AVAILABLE SEATS:</Text>
-            <Text style={styles.infoValue}>#</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>START:</Text>
-            <Text style={styles.infoValue}>POINT 1</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>FINISH:</Text>
-            <Text style={styles.infoValue}>POINT 2</Text>
+          <View style={styles.line}>
+            <View style={styles.infoColumn}>
+              <Text style={styles.infoLabel}>START:</Text>
+              <Text style={styles.infoValue}>{initialZone}</Text>
+            </View>
+            <View style={styles.infoColumn}>
+              <Text style={styles.infoLabel}>FINISH:</Text>
+              <Text style={styles.infoValue}>{endZone}</Text>
+            </View>
           </View>
         </View>
 
@@ -60,6 +78,7 @@ const UserCard = () => {
   );
 };
 
+
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
@@ -68,28 +87,24 @@ const styles = StyleSheet.create({
     height:150,
     // padding: 16,
     borderRadius: 16,
-    alignItems: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     width: width*0.95,
     marginHorizontal: width*0.025,
-
   },
   userInfoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginleft:10 ,
+    marginLeft: 15,
   },
   userTextContainer: {
     alignItems: 'center',
-    marginHorizontal: 5,
   },
   userName: {
     fontWeight: 'bold',
-    fontSize: width*0.05,
+    fontSize: width*dLabel,
   },
   userAvatar: {
     width: 40,
@@ -105,21 +120,23 @@ const styles = StyleSheet.create({
   },
   tripInfoContainer: {
     // flexDirection: 'column',
-    justifyContent: 'space-between',
     margin: 'auto',
   },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  infoColumn: {
+    flexDirection: 'column',
+    // justifyContent: 'space-between',
     marginBottom: 4,
   },
   infoLabel: {
+    fontSize: width*dLabel,
     fontWeight: 'bold',
     color: '#555',
   },
   infoValue: {
+    fontSize:width*dValue,
     marginLeft: 2,
     color: '#777',
+    textAlign:'center',
   },
   rightSection: {
     alignItems: 'center',
@@ -132,6 +149,11 @@ const styles = StyleSheet.create({
     padding: 8,
     backgroundColor: '#ddd',
     borderRadius: 16,
+  },
+  line: {
+    flexDirection: 'row',
+    justifyContent:'space-between',
+    gap:width*0.08,
   },
   responsive: {
 
