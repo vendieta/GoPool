@@ -19,7 +19,7 @@ export function Collapsible({ children, title }: PropsWithChildren & { title: st
         activeOpacity={0.8}>
         <IconSymbol
           name="chevron.right"
-          size={18}
+          size={30}
           weight="medium"
           color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
           style={{ transform: [{ rotate: isOpen ? '90deg' : '0deg' }] }}
@@ -37,6 +37,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
+    borderTopWidth: 0.7, // Grosor del borde
+    borderColor: '#696969', // Color del borde
+    borderStyle: 'solid', 
+    paddingVertical: 10,
   },
   content: {
     margin: 10, 

@@ -6,6 +6,8 @@ import { ExternalLink } from '@/components/ExternalLink';
 import { Link } from "expo-router";
 import DataPerfil from "@/components/TEST/DataPerfil";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Feather from '@expo/vector-icons/Feather';
 
 
 const { width , height } = Dimensions.get('window');
@@ -30,7 +32,7 @@ export default function Perfil() {
         <View>
           {/* Panel de configuraciones de la cuenta */}
           <Collapsible title="Configuraciones y temas">
-            <ThemedText>
+            <View style={styles.containerLink}>
               {/* este pedazo de codigo me servira mas adelante
               {elementos.map((elemento) => (
                 <TouchableOpacity
@@ -40,60 +42,69 @@ export default function Perfil() {
                   <Text style={styles.texto}>{elemento.nombre}</Text>
                 </TouchableOpacity>
               ))} */}
-              
               <DataPerfil element={ {
-                iconComponent: <FontAwesome5 name="user" size={24}/>, 
+                iconComponent: <Feather name="settings" size={24} color="black" />, 
                 title: 'Configuraciones',
-                link: '/(secondaryTabs)/aboutUs'}}/>
-
-
-                  <ThemedText type="link">  Configuración  </ThemedText>
-              <ExternalLink href="https://docs.expo.dev/router/introduction">
-                  <ThemedText type="link">  Estado de cuenta  </ThemedText>
-              </ExternalLink>
-              <ExternalLink href="https://docs.expo.dev/router/introduction">
-                  <ThemedText type="link">  Temas  </ThemedText>
-              </ExternalLink>
-            </ThemedText>
+                link: '/(secondaryTabs)/config'}}/>
+                <DataPerfil element={ {
+                iconComponent: <Feather name="user-check" size={24} color="black" />, 
+                title: 'Estado de cuenta',
+                link: '/(secondaryTabs)/accountStatement'}}/>
+                <DataPerfil element={ {
+                iconComponent: <FontAwesome5 name="user" size={24}/>, 
+                title: 'Temas',
+                link: '/(secondaryTabs)/themes'}}/>
+            </View>
           </Collapsible>
+
+          {/* Panel de soporte el cual los va a dirigir al whatssapp de la empresa */}
+          <Collapsible title="Ayuda y soporte técnico">
+            <View style={styles.containerLink}>
+              <DataPerfil element={ {
+                iconComponent: <Feather name="help-circle" size={24} color="black" />, 
+                title: 'Servicios de ayuda',
+                link: '/(secondaryTabs)/help'}}/>
+                <DataPerfil element={ {
+                iconComponent: <MaterialIcons name="report-gmailerrorred" size={24} color="black" />, 
+                title: 'Reportar problema',
+                link: '/(secondaryTabs)/problem'}}/>
+                  {/* <DataPerfil element={ {
+                  iconComponent: <FontAwesome5 name="user" size={24}/>, 
+                  title: 'Aupicia tu marca',
+                  link: '/(secondaryTabs)/buy'}}/> */}
+            </View>
+          </Collapsible>
+          
+          
           {/* Panel de informacion sobre la apk */}
           <Collapsible title="Info">
-            <ThemedText>
+            <View style={styles.containerLink}>
+              <DataPerfil element={ {
+                iconComponent: <Feather name="info" size={24} color="black" />, 
+                title: 'Quienes somos',
+                link: '/(secondaryTabs)/aboutUs'}}/>
+                <DataPerfil element={ {
+                iconComponent: <FontAwesome5 name="copyright" size={24} color="black" />, 
+                title: 'Creditos',
+                link: '/(secondaryTabs)/credits'}}/>
+                    {/* <DataPerfil element={ {
+                    iconComponent: <FontAwesome5 name="user" size={24}/>, 
+                    title: 'Temas',
+                    link: '/(secondaryTabs)/themes'}}/> */}
+            </View>
               {/* Esta aplicación ha sido diseñada para 
               facilitar el transporte de los usuarios, ofreciendo medidas 
               que priorizan su seguridad. Con una interfaz intuitiva y funcionalidades 
               avanzadas, buscamos hacer más eficientes y seguros los desplazamientos diarios. */}
+              {/* Este pedazo de codigo puede servir para despues 
+              <ThemedText>
+                The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
+                sets up the tab navigator.
+              </ThemedText>
               <ExternalLink href="https://docs.expo.dev/router/introduction">
-                  <ThemedText type="link">  Quienes somos  </ThemedText>
-              </ExternalLink>
-              <ExternalLink href="https://docs.expo.dev/router/introduction">
-                  <ThemedText type="link">  Creditos  </ThemedText>
-              </ExternalLink>
-            </ThemedText>
-            {/* Este pedazo de codigo puede servir para despues 
-            <ThemedText>
-              The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-              sets up the tab navigator.
-            </ThemedText>
-            <ExternalLink href="https://docs.expo.dev/router/introduction">
-              <ThemedText type="link">Learn more</ThemedText>
-            </ExternalLink> */}
+                <ThemedText type="link">Learn more</ThemedText>
+              </ExternalLink> */}
           </Collapsible>
-          {/* Panel de soporte el cual los va a dirigir al whatssapp de la empresa */}
-          <Collapsible title="Ayuda y soporte técnico">
-            <ThemedText>
-                <ExternalLink href="https://docs.expo.dev/router/introduction">
-                  <ThemedText type="link">  Servicio de ayuda  </ThemedText>
-                </ExternalLink>
-                <ExternalLink href="https://docs.expo.dev/router/introduction">
-                  <ThemedText type="link">  Reportar un problema  </ThemedText>
-                </ExternalLink>
-                <ExternalLink href="https://docs.expo.dev/router/introduction">
-                  <ThemedText type="link">  Auspicia tu marca  </ThemedText>
-                </ExternalLink>
-            </ThemedText>
-          </Collapsible>
-          
             {/*        
           <Collapsible title="Custom fonts">
             <ThemedText>
@@ -173,5 +184,10 @@ const styles = StyleSheet.create({
       fontSize: width*0.05,
       color:'#f0f0f0',
       margin: 'auto',
+    },
+    containerLink:{
+      flexDirection: 'column',
+      margin: 'auto',
+      gap: 15,
     },
 });
