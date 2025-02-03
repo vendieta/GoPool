@@ -28,6 +28,7 @@ export default function RootLayout() {
   }
 
   return (
+    // Este codigo nos permite hacer adaptativo la apk para el tema que tenga el usuario
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
