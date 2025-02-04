@@ -1,13 +1,9 @@
 import { StyleSheet, View , Text , Image , Platform , Dimensions , TouchableOpacity} from "react-native"; 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { Collapsible } from '@/components/Collapsible';
-import { ThemedText } from '@/components/ThemedText';
-import { ExternalLink } from '@/components/ExternalLink';
-import { Link } from "expo-router";
 import DataPerfil from "@/components/TEST/DataPerfil";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import Feather from '@expo/vector-icons/Feather';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';import Feather from '@expo/vector-icons/Feather';
 import LinkCard from '@/components/TEST/LinkCard';
 
 

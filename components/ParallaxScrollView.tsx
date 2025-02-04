@@ -1,5 +1,5 @@
 import type { PropsWithChildren, ReactElement } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet , Dimensions} from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedRef,
@@ -10,6 +10,7 @@ import Animated, {
 import { ThemedView } from '@/components/ThemedView';
 import { useBottomTabOverflow } from '@/components/ui/TabBarBackground';
 import { useColorScheme } from '@/hooks/useColorScheme';
+
 
 const HEADER_HEIGHT = 250;
 
@@ -67,7 +68,6 @@ export default function ParallaxScrollView({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems:'center',
   },
   header: {
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   content: {
-    flex: 1,
     gap: 20,
+    flex: 1,
   },
 });
