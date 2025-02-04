@@ -8,12 +8,10 @@ import DataPerfil from "@/components/TEST/DataPerfil";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Feather from '@expo/vector-icons/Feather';
+import LinkCard from '@/components/TEST/LinkCard';
 
 
 const { width , height } = Dimensions.get('window');
-
-
-
 
 export default function Perfil() {
   return(
@@ -24,7 +22,7 @@ export default function Perfil() {
             source={require('@/assets/images/partial-react-logo.png')}
             style={styles.reactLogo}
         />
-        }>   
+        }>
         <View style={styles.userInfo}>
           <View style={styles.userAvatar} />
           <Text style={styles.userText}>User!</Text>
@@ -60,14 +58,14 @@ export default function Perfil() {
           {/* Panel de soporte el cual los va a dirigir al whatssapp de la empresa */}
           <Collapsible title="Ayuda y soporte técnico">
             <View style={styles.containerLink}>
-              <DataPerfil element={ {
+              <LinkCard element={ {
                 iconComponent: <Feather name="help-circle" size={24} color="black" />, 
                 title: 'Servicios de ayuda',
-                link: '/(secondaryTabs)/help'}}/>
-                <DataPerfil element={ {
-                iconComponent: <MaterialIcons name="report-gmailerrorred" size={24} color="black" />, 
-                title: 'Reportar problema',
-                link: '/(secondaryTabs)/problem'}}/>
+                link: 'https://www.youtube.com/watch?v=GVucDuNYViU'}}/>
+              <LinkCard element={ {
+              iconComponent: <MaterialIcons name="report-gmailerrorred" size={24} color="black" />, 
+              title: 'Reportar problema',
+              link: '/(secondaryTabs)/problem'}}/>
                   {/* <DataPerfil element={ {
                   iconComponent: <FontAwesome5 name="user" size={24}/>, 
                   title: 'Aupicia tu marca',

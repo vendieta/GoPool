@@ -91,8 +91,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
-    width: '95%',
-    marginHorizontal: '2.5%',
+    width: width*0.95,
+    marginHorizontal: width*0.025,
   },
   userInfoContainer: {
     flexDirection: 'row',

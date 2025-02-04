@@ -5,7 +5,7 @@ const problem = () => {
     
     return(
         <View>
-            <Text>hola mama bicho</Text>
+            <Text>Cont con nuestro departamento de </Text>
         </View>
     );
 };
