@@ -1,91 +1,98 @@
-import { ScrollView,Image, StyleSheet,View } from 'react-native';
+import { ScrollView , Image , StyleSheet , View , Alert , Text , FlatList} from 'react-native';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import  UserCard  from '../../components/TEST/UserCard';
 import { Feather } from '@expo/vector-icons';
-
+import { supabase } from '@/supabaseClient';
+import { useEffect , useState } from 'react';
+import ScrollRefresh from '@/components/ScrollRefresh';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 // debo descomentar el codigo que esta en el archivo fontfaceobserver.standalone.js
 {/*ESTA ES LA PANTALLLA DE INICIO SERIA COMO EL INDEX*/}
 
 
 export default function HomeScreen() {
+  const [data, setData] = useState<any[]>([]); // Estado para almacenar los datos
+  const [error, setError] = useState<string>(''); // Estado para manejar errores
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await supabase
+        .from('cardData') // Especifica tu tabla aquí
+        .select('*'); // O especifica las columnas que quieres recuperar
+  
+      if (error) {
+        setError(error.message); // Si hay un error, lo guardamos en el estado
+        return;
+      }
+  
+      setData(data); // Si todo va bien, guardamos los datos
+      // console.log(data)
+    };
+  
+    fetchData();
+  }, []); // Este efecto se ejecutará solo una vez, al montar el componente
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }> 
-    
+    <GestureHandlerRootView>
 
-      {/* <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tool.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText> 
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView> */}
-    
-      <UserCard></UserCard>
-      <UserCard></UserCard>
-      <UserCard></UserCard>
-      <UserCard></UserCard>
-      <UserCard></UserCard>
-      <UserCard></UserCard>
-      <UserCard></UserCard>
-      <UserCard></UserCard>
-      <UserCard></UserCard>
-      <UserCard></UserCard>
-      <UserCard></UserCard>
-    </ParallaxScrollView>
-  );
-}
+    <ScrollRefresh
+>
+      
 
+    {/* <FlatList style={styles.containerCard}
+    data={data}
+    keyExtractor={(data)=> data.id}
+    renderItem={({item}) => <UserCard element={{
+      user:item.user,
+      price:item.precio,
+      date:item.fechaStart,
+      time: item.horaStart,
+      free: item.cupos,
+      initialZone: item.pointStart,
+      endZone: item.pointFinish,
+      }}></UserCard>}
+    nestedScrollEnabled
+    </FlatList>
+    > */}
+
+      {/* {data.length > 0 ? (
+        data.map((item, index) => (
+          <UserCard key={index}element={{
+            user:item.user,
+            price:item.precio,
+            date:item.fechaStart,
+            time:item.horaStart,
+            free:item.cupos,
+            initialZone:item.pointStart,
+            endZone:item.pointFinish,
+            }}
+            ></UserCard>
+            
+            // <li key={index}>{JSON.stringify(item[0])}</li> // Muestra los datos en un <li>
+            ))
+            ) : (
+              <Text>Cargando...</Text> // Muestra un mensaje de carga si no hay datos aún
+              )} */}
+              
+              {/* <UserCard></UserCard>
+                <UserCard></UserCard>
+                <UserCard></UserCard>
+                <UserCard></UserCard>
+                <UserCard></UserCard>
+                <UserCard></UserCard>
+                <UserCard></UserCard>
+                <UserCard></UserCard>
+                <UserCard></UserCard>
+      <UserCard></UserCard> */}
+      
+    </ScrollRefresh>
+  </GestureHandlerRootView>
+)}
 const styles = StyleSheet.create({
-  container: {
-    flex:1,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+
 });
+
+
+

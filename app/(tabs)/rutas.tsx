@@ -12,7 +12,7 @@ const {width , height} = Dimensions.get('window')
 
 export default function TabTwoScreen() {
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <View style={styles.containerImage}>
         <Image source={require('@/assets/images/partial-react-logo.png')} style={styles.headerImage} />
       </View>
@@ -31,31 +31,7 @@ export default function TabTwoScreen() {
 
         </View>
       </View>
-    </View>
-    // <ParallaxScrollView
-    //   headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-    //   headerImage={
-    //     <IconSymbol
-    //       size={310}
-    //       color="#808080"
-    //       name="chevron.left.forwardslash.chevron.right"
-    //       style={styles.headerImage}
-    //     />
-    //   }>
-    //   <View style={styles.containerLink}>
-    //     <Text style={styles.titleContainer}>Explore</Text>
-    //     <View>
-    //       <Opcion element={{
-    //         link:'/',
-    //         title: 'Ruta pasajero',
-    //       }}
-    //       element1={{
-    //         link:'/',
-    //         title:'Ruta conductor',
-    //       }}/>
-    //     </View>
-    //   </View>
-    //   </ParallaxScrollView>
+    </ThemedView>
   );
 }
 
@@ -83,7 +59,6 @@ export const styles = StyleSheet.create({
   },
   container:{
     flex:1,
-    backgroundColor: '#151718',
   },
   containerImage:{
     height: 250,

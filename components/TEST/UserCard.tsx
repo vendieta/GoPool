@@ -1,34 +1,36 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Float } from 'react-native/Libraries/Types/CodegenTypes';
 
 {/*esta parte extrae las dimensiones del dispositivo del usuario*/}
 const { width, height } = Dimensions.get('window')
 const dLabel = width > 500 ? 0.015 : 0.048;
 const dValue = width > 500 ? 0.02 : 0.041;
 
-const data = {
-  user: 'QQQQ',
-  price: '0.5',
-  date: '00/00/00',
-  time: '00:00',
-  free: 9,
-  initialZone: 'ESPOL',
-  endZone: 'El Guasmo'
+interface DataProps {
+    element: {
+      user: string,
+      price: Float,
+      date: string,
+      time: string,
+      free: number,
+      initialZone: string,
+      endZone: string,
+    };
 };
-const {user,price,date,time,free,initialZone,endZone} = data
-// alert(width)
-// alert(height)
 
 
-const UserCard = () => {
+
+
+const UserCard: React.FC<DataProps> = ({element}) => {
   return (
     <View style={styles.card}>
       {/* User Info and Image */}
       <View style={styles.userInfoContainer}>
         <View style={styles.userTextContainer}>
-          <Text style={styles.userName}>{user}</Text>
+          <Text style={styles.userName}>{element.user}</Text>
           <View style={styles.userAvatar} />
-          <Text style={styles.priceText}>{price}$</Text>
+          <Text style={styles.priceText}>{element.price}$</Text>
         </View>
       </View>
 
@@ -36,24 +38,24 @@ const UserCard = () => {
       <View style={styles.tripInfoContainer}>
           <View style={styles.line}>
             <View style={styles.infoColumn}>
-              <Text style={styles.infoLabel}>Hora de</Text>
+              {/* <Text style={styles.infoLabel}>Hora de</Text> */}
               <Text style={styles.infoLabel}>Salida:</Text>
-              <Text style={styles.infoValue}>{date} - {time}</Text>
+              <Text style={styles.infoValue}>{element.time}/{element.date}</Text>
             </View>
             <View style={styles.infoColumn}>
               <Text style={styles.infoLabel}>Cupos</Text>
-              <Text style={styles.infoLabel}>Libres:</Text>
-              <Text style={styles.infoValue}>{free}</Text>
+              {/* <Text style={styles.infoLabel}>Libres:</Text> */}
+              <Text style={styles.infoValue}>{element.free}</Text>
             </View>
           </View>
-          <View style={styles.line}>
+          <View style={styles.line1}>
             <View style={styles.infoColumn}>
               <Text style={styles.infoLabel}>START:</Text>
-              <Text style={styles.infoValue}>{initialZone}</Text>
+              <Text style={styles.infoValue}>{element.initialZone}</Text>
             </View>
             <View style={styles.infoColumn}>
               <Text style={styles.infoLabel}>FINISH:</Text>
-              <Text style={styles.infoValue}>{endZone}</Text>
+              <Text style={styles.infoValue}>{element.endZone}</Text>
             </View>
           </View>
         </View>
@@ -93,6 +95,8 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     width: width*0.95,
     marginHorizontal: width*0.025,
+    marginTop: 1,
+    marginBottom: 10,
   },
   userInfoContainer: {
     flexDirection: 'row',
@@ -116,6 +120,7 @@ const styles = StyleSheet.create({
   priceText: {
     color: 'green',
     fontWeight: 'bold',
+    fontSize: 20,
     marginTop: 8,
   },
   tripInfoContainer: {
@@ -128,13 +133,12 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   infoLabel: {
-    fontSize: width*dLabel,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#555',
   },
   infoValue: {
-    fontSize:width*dValue,
-    marginLeft: 2,
+    fontSize: 15,
     color: '#777',
     textAlign:'center',
   },
@@ -153,10 +157,10 @@ const styles = StyleSheet.create({
   line: {
     flexDirection: 'row',
     justifyContent:'space-between',
-    gap:width*0.08,
+    gap:15,
   },
-  responsive: {
-
+  line1: {
+    flexDirection: 'column',
   }
 });
 
