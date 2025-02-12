@@ -81,62 +81,8 @@ export default function Perfil() {
                 iconComponent: <FontAwesome5 name="copyright" size={24} color="black" />, 
                 title: 'Creditos',
                 link: '/(secondaryTabs)/credits'}}/>
-                    {/* <DataPerfil element={ {
-                    iconComponent: <FontAwesome5 name="user" size={24}/>, 
-                    title: 'Temas',
-                    link: '/(secondaryTabs)/themes'}}/> */}
             </View>
-              {/* Esta aplicación ha sido diseñada para 
-              facilitar el transporte de los usuarios, ofreciendo medidas 
-              que priorizan su seguridad. Con una interfaz intuitiva y funcionalidades 
-              avanzadas, buscamos hacer más eficientes y seguros los desplazamientos diarios. */}
-              {/* Este pedazo de codigo puede servir para despues 
-              <ThemedText>
-                The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-                sets up the tab navigator.
-              </ThemedText>
-              <ExternalLink href="https://docs.expo.dev/router/introduction">
-                <ThemedText type="link">Learn more</ThemedText>
-              </ExternalLink> */}
           </Collapsible>
-            {/*        
-          <Collapsible title="Custom fonts">
-            <ThemedText>
-              Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-              <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-                custom fonts such as this one.
-              </ThemedText>
-            </ThemedText>
-            <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-              <ThemedText type="link">Learn more</ThemedText>
-            </ExternalLink>
-          </Collapsible>
-          <Collapsible title="Light and dark mode components">
-            <ThemedText>
-              This template has light and dark mode support. The{' '}
-              <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-              what the user's current color scheme is, and so you can adjust UI colors accordingly.
-            </ThemedText>
-            <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-              <ThemedText type="link">Learn more</ThemedText>
-            </ExternalLink>
-          </Collapsible>
-          <Collapsible title="Animations">
-            <ThemedText>
-              This template includes an example of an animated component. The{' '}
-              <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-              the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-              library to create a waving hand animation.
-            </ThemedText>
-            {Platform.select({
-              ios: (
-                <ThemedText>
-                  The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-                  component provides a parallax effect for the header image.
-                </ThemedText>
-              ),
-            })}
-          </Collapsible> */}
       </View>
     </ParallaxScrollView>
     );
@@ -181,7 +127,7 @@ const styles = StyleSheet.create({
     },
     containerLink:{
       flexDirection: 'column',
-      margin: 'auto',
       gap: 15,
+      marginHorizontal: 'auto',
     },
 });

@@ -6,8 +6,8 @@ dotenv.config()
 export default ({ config } : ConfigContext ) : ExpoConfig => {
   return{
     ...config,
-    slug: 'gopool',
-    name: 'GOPOOL',
+    slug: 'GOPOOL',
+    name: 'FRONTEND',
     extra: {
       ...config.extra,
       supabaseUrl: process.env.SUPABASE_URL,

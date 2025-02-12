@@ -65,25 +65,25 @@ const ScrollRefresh = () => {
   
   return (
 
-      <ThemedView style={{flexGrow:1,}}>
+      <ThemedView style={{flex:1,}}>
         <View style={styles.container}>
-        <FlatList
-          style={styles.containerCard}
-          // contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
-          data={data}
-          keyExtractor={(item)=> item.id}
-          renderItem={renderItem}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={['#FF0000', '#00FF00', '#0000FF']} // Colores del spinner (Android)
-              tintColor="#FF0000" // Color del spinner (iOS)
-              title="Refrescando..." // Título (iOS)
-              titleColor="#0000FF" // Color del título (iOS)
-              />
-            }
-          >
+          <FlatList
+            style={styles.containerCard}
+            // contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
+            data={data}
+            keyExtractor={(item)=> item.id}
+            renderItem={renderItem}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={['#FF0000', '#00FF00', '#0000FF']} // Colores del spinner (Android)
+                tintColor="#FF0000" // Color del spinner (iOS)
+                title="Refrescando..." // Título (iOS)
+                titleColor="#0000FF" // Color del título (iOS)
+                />
+              }
+            >
         </FlatList>
         </View>
       </ThemedView>
@@ -91,25 +91,8 @@ const ScrollRefresh = () => {
 };
 
 const styles = StyleSheet.create({
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-  },
-  reactLogo: {
-    width: '100%',
-    height: '100%',
-  },
-  item: {
-    padding: 20,
-    fontSize: 18,
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
-  },
   container:{
-    flexGrow:0.3,
+    flex: 1,
   },
   containerCard:{
     flexGrow: 1, // Asegura que el contenido ocupe todo el espacio disponible
@@ -118,83 +101,3 @@ const styles = StyleSheet.create({
 });
 
 export default ScrollRefresh;
-// import { ReactElement , PropsWithChildren} from "react";
-// import Animated, {
-//   interpolate,
-//   useAnimatedRef,
-//   useAnimatedStyle,
-//   useScrollViewOffset,
-// } from 'react-native-reanimated';
-// import { useBottomTabOverflow } from '@/components/ui/TabBarBackground';
-// import { useColorScheme } from '@/hooks/useColorScheme'
-// import { View , StyleSheet } from "react-native";
-
-
-// const HEADER_HEIGHT = 250;
-
-// type Props = PropsWithChildren<{
-//   headerImage: ReactElement;
-//   headerBackgroundColor: { dark: string; light: string };
-// }>;
-
-
-// export default function ScrollImage ({
-//   children,
-//   headerImage,
-//   headerBackgroundColor,
-//   }: Props) {
-//   const colorScheme = useColorScheme() ?? 'light';
-//   const scrollRef = useAnimatedRef<Animated.ScrollView>();
-//   const scrollOffset = useScrollViewOffset(scrollRef);
-//   const bottom = useBottomTabOverflow();
-//   const headerAnimatedStyle = useAnimatedStyle(() => {
-//     return {
-//       transform: [
-//         {
-//           translateY: interpolate(
-//             scrollOffset.value,
-//             [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
-//             [-HEADER_HEIGHT / 2, 0, HEADER_HEIGHT * 0.75]
-//           ),
-//         },
-//         {
-//           scale: interpolate(scrollOffset.value, [-HEADER_HEIGHT, 0, HEADER_HEIGHT], [2, 1, 1]),
-//         },
-//       ],
-//     };
-//   });
-  
-  
-//   return(
-//     <View style={styles.container}>
-//           <Animated.ScrollView
-//             ref={scrollRef}
-//             // 
-//             >
-//             <Animated.View
-//               style={[
-//                 styles.header,
-//                 { backgroundColor: headerBackgroundColor[colorScheme] },
-//                 headerAnimatedStyle,
-//               ]}>
-//               {headerImage}
-//             </Animated.View>
-//             <View style={styles.content}>{children}</View>
-//           </Animated.ScrollView>
-//         </View>
-
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   content:{
-
-//   },
-//   container:{
-//     flex:1,
-
-//   },
-//   header:{
-
-//   }
-// })

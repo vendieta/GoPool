@@ -1,6 +1,5 @@
 import { supabase } from './supabaseClient';
 import { useEffect } from 'react';
-import { View, Text } from 'react-native';
 
 export default function App() {
   useEffect(() => {

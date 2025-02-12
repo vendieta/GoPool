@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     container: {
-        width: width,
+        width: width*0.95,
         borderRadius: 15,
         backgroundColor: '#696969',
         flexDirection: 'row',
