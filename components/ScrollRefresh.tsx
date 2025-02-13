@@ -1,11 +1,6 @@
-import React, { useState , useEffect, useCallback } from 'react';
-import { Animated , Image, StyleSheet, Text, View , RefreshControl , FlatList} from 'react-native';
-import type { PropsWithChildren, ReactElement } from 'react';
+import React, { useState , useEffect } from 'react';
+import { StyleSheet, View , RefreshControl , FlatList } from 'react-native';
 import UserCard from './TEST/UserCard';
-import { Float } from 'react-native/Libraries/Types/CodegenTypes';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { ThemedView } from './ThemedView';
 import { supabase } from '@/supabaseClient';
 // const AnimatedFlatList = Animated.createAnimatedComponent(FlatList) 
@@ -51,15 +46,16 @@ const ScrollRefresh = () => {
   const renderItem = ({ item }) => {
     // * Este codigo permite mostrar en consola la key de cada tarjeta
     console.log('id       :',item)
+    console.log('startzone       :',item.startZone)
     return(
     <UserCard element={{
-      user:item.user,
+      user:item.userName,
       price:item.price,
       date:item.date,
       time: item.time,
       free: item.free,
-    initialZone: item.initZone,
-    endZone: item.endZone,
+      startZone: item.startZone,
+      endZone: item.endZone,
   }}></UserCard>
 )}
   

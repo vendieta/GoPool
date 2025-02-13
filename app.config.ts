@@ -7,7 +7,7 @@ export default ({ config } : ConfigContext ) : ExpoConfig => {
   return{
     ...config,
     slug: 'GOPOOL',
-    name: 'FRONTEND',
+    name: 'GOPOOL',
     extra: {
       ...config.extra,
       supabaseUrl: process.env.SUPABASE_URL,

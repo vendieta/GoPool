@@ -10,7 +10,7 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "gen:types": "npx supabase gen types typescript --project-id hpgixpjawpbiqfmsvxfo > ./app/db_types.ts"
+    "gen:types": "npx supabase gen types typescript --project-id hpgixpjawpbiqfmsvxfo > ./db_types.ts"
   },
   "jest": {
     "preset": "jest-expo"

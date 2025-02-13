@@ -14,7 +14,7 @@ interface DataProps {
       date: string,
       time: string,
       free: number,
-      initialZone: string,
+      startZone: string,
       endZone: string,
     };
 };
@@ -51,7 +51,7 @@ const UserCard: React.FC<DataProps> = ({element}) => {
           <View style={styles.line1}>
             <View style={styles.infoColumn}>
               <Text style={styles.infoLabel}>START:</Text>
-              <Text style={styles.infoValue}>{element.initialZone}</Text>
+              <Text style={styles.infoValue}>{element.startZone}</Text>
             </View>
             <View style={styles.infoColumn}>
               <Text style={styles.infoLabel}>FINISH:</Text>
