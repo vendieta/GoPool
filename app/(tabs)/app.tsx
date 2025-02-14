@@ -1,6 +1,5 @@
 import ScrollRefresh from '@/components/ScrollRefresh';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Navigation from '@/app/nav'
 // debo descomentar el codigo que esta en el archivo fontfaceobserver.standalone.js
 {/*ESTA ES LA PANTALLLA DE INICIO SERIA COMO EL INDEX*/}
 
