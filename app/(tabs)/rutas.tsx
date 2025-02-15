@@ -10,7 +10,7 @@ import Opcion from '@/components/TEST/Opcion';
 
 const {width , height} = Dimensions.get('window')
 
-export default function TabTwoScreen() {
+export default function Rutas() {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.containerImage}>
