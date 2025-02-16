@@ -5,6 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import { useRouter } from 'expo-router';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -12,8 +13,10 @@ import { Stack } from 'expo-router';
 // // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 // const Stack = createStackNavigator();
+const user = false;
 
 export default function RootLayout() {
+  const router = useRouter();
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -29,14 +32,24 @@ export default function RootLayout() {
     return null;
   }
 
+  useEffect(() => {
+    if (user){
+      router.replace('./app/(tabs)')
+    } else {
+      router.replace('./sesionOff')
+    };
+  },[]);
+
   return (
     // // <NavigationContainer>
     //   {/* // Este codigo nos permite hacer adaptativo la apk para el tema que tenga el usuario */}
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name='(secondaryTabs)' options={{headerShown: false}}/>
           <Stack.Screen name="+not-found" />
+          <Stack.Screen name='(secondaryTabs)' options={{headerShown: false}}/>
+          <Stack.Screen name='(sesionScreen)' options={{headerShown: false}}/>
+          
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>
