@@ -1,9 +1,13 @@
 import { View , Text , StyleSheet} from 'react-native';
 import ButtomStyle from '@/components/BottomStyle'
+import ImgCard from '@/components/ImgCard';
 
 export default function createCount(){
   return(
-    <View style={styles.container}>
+    <ImgCard
+      color='red'
+      img={require('@/assets/images/partial-react-logo.png')}
+    >
       <View style={styles.containerText}>
         <Text style={styles.text}>Usted puede crear su cuenta con su correo de espol o pasar por una verificacion</Text>
       </View>
@@ -17,21 +21,11 @@ export default function createCount(){
             link: '/' //pagina donde se regitran los usuarios externos a espol
         }}/>
       </View>
-    </View>
+    </ImgCard>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: '80%',
-    margin: 'auto',
-    backgroundColor: 'orange',
-    borderRadius: 35,
-    padding: 50,
-    alignItems: 'center',
-    flexDirection: 'column',
-    gap: 25
-  },
   containerText:{
 
   },
@@ -40,6 +34,7 @@ const styles = StyleSheet.create({
     gap: 25,
   },
   text: {
-    fontSize: 25
+    fontSize: 25,
+    textAlign: 'center'
   }
 })
