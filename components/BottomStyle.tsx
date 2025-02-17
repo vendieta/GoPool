@@ -1,4 +1,4 @@
-import { View , StyleSheet } from "react-native";
+import { View , StyleSheet , Text} from "react-native";
 import { Link, Route } from "expo-router";
 import { ThemedText } from "./ThemedText";
 
@@ -14,7 +14,7 @@ export default function BottomStyle({element}:DataProps){
   return(
     <Link href={element.link} style={styles.container}>
       <View style={styles.botton}>
-        <ThemedText style={styles.text}>{element.title}</ThemedText>
+        <Text style={styles.text}>{element.title}</Text>
       </View>
     </Link>
   );
@@ -22,12 +22,14 @@ export default function BottomStyle({element}:DataProps){
 
 const styles= StyleSheet.create({
   container: {
-
   },
   botton:{
+    alignItems: 'center',
     padding: 15,
     borderRadius: 15,
-    backgroundColor: 'blue',    
+    backgroundColor: 'blue',
+    width: '100%'
+    
   },
   text:{
     fontSize:25,
