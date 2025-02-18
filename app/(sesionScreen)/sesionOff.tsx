@@ -28,17 +28,18 @@ export default function createCount(){
 }
 
 const styles = StyleSheet.create({
-  text: {
-    fontSize: 20,
+  text:{
+    fontSize: 30,
+    color: 'white',
     textAlign: 'center'
   },
   containerBottom: {
     flexDirection: 'column',
     gap: 25,
-
   },
   containerText: {
-
+    flexDirection: 'column',
+    gap: 1,
   }
     
 });

@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     padding: 50,
     alignItems: 'center',
     flexDirection: 'column',
-    gap: 25
+    gap: 30
   },
 
   }
