@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
   containerBottom: {
     flexDirection: 'column',
     gap: 25,
+
   },
   containerText: {
     flexDirection: 'column',

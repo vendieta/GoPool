@@ -13,10 +13,11 @@ export default function ImgCard({ children , img , color  } : Props) {
   const colorScheme = useColorScheme() ?? 'light';
   console.log('el color de fondo: ', color)
   return(
+    
     <View style={[styles.container,{backgroundColor: color}]}>
       {children}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

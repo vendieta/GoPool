@@ -36,7 +36,7 @@ export default function RootLayout() {
     if (user){
       router.replace('./app/(tabs)')
     } else {
-      router.replace('./sesionOff')
+      router.replace('/createRouteUser')
     };
   },[]);
 
