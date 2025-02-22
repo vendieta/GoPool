@@ -1,48 +1,37 @@
-import React, { useEffect } from 'react';
-import mapboxgl from 'mapbox-gl';
+import React, { useEffect, useState } from 'react';
+import * as L from 'leaflet';
+import 'leaflet/dist/leaflet.css';  // Asegúrate de que los estilos de Leaflet estén importados
 
-// Asegúrate de tener la clave de Mapbox (reemplázala con tu propia clave)
-mapboxgl.accessToken = 'pk.eyJ1IjoicnViYWxlb24iLCJhIjoiY203YmF6dndpMDBmYTJpcTQ1eXNpbHF3OSJ9.xEl-Znia51osA8kaRkQj6g';
+const MapComponent = () => {
+  const [mapLoaded, setMapLoaded] = useState(false);
 
-const CreateRoute = () => {
   useEffect(() => {
-    // Crear el mapa después de que el componente se monte
-    const map = new mapboxgl.Map({
-      container: 'map', // ID del div que contendrá el mapa
-      style: 'mapbox://styles/mapbox/streets-v11', // Estilo del mapa
-      center: [-0.09, 51.505], // Coordenadas iniciales (longitud, latitud)
-      zoom: 13, // Nivel de zoom
-    });
+    // Asegurarse de que solo se ejecute en el navegador
+    if (typeof window !== 'undefined' && !mapLoaded) {
+      // Inicializar el mapa solo cuando el componente se monte en el navegador
+      const map = L.map('map').setView([51.505, -0.09], 13);  // Coordenadas de inicio
 
-    // Añadir un marcador
-    new mapboxgl.Marker()
-      .setLngLat([-0.09, 51.505])
-      .addTo(map);
+      // Agregar capa de OpenStreetMap
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
 
-    // Limpiar el mapa cuando el componente se desmonte
-    return () => map.remove();
-  }, []);
+      // Agregar un marcador en el centro del mapa
+      L.marker([51.505, -0.09]).addTo(map).bindPopup('Un marcador').openPopup();
+
+      // Cambiar estado para indicar que el mapa se ha cargado
+      setMapLoaded(true);
+
+      // Limpiar cuando el componente se desmonte
+      return () => {
+        map.remove();
+      };
+    }
+  }, [mapLoaded]);
 
   return (
-    <div style={styles.container}>
-      <div id="map" style={styles.map}></div>
-    </div>
+    <div id="map" style={{ height: '100vh', width: '100%' }}></div>
   );
 };
 
-// Estilos en línea
-const styles = {
-  container: {
-    flex: 1,
-    height: '100vh', // Hacer que el contenedor ocupe toda la altura de la ventana
-    width: '100%', // Asegurarse de que ocupe todo el ancho de la ventana
-  },
-  map: {
-    width: '100%', // El mapa ocupará todo el ancho disponible
-    height: '100%', // El mapa ocupará toda la altura del contenedor
-  },
-};
-
-
-
-export default CreateRoute;
+export default MapComponent;
