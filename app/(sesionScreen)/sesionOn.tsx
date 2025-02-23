@@ -14,8 +14,8 @@ export default function createCountU(){
       <Text style={styles.text}>INICIE SESION</Text>
     </View>
     <View style={styles.containerInput}>
-      <Input element="Correo"/>
-      <Input element="Password"/>
+      {/* <Input element="Correo"/>
+      <Input element="Password"/> */}
     </View>
     <BottomStyle element={{
       title: 'Crear cuenta',

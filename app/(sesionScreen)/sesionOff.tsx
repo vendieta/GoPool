@@ -2,6 +2,8 @@ import { View , Text , StyleSheet} from 'react-native';
 import BottomStyle from '@/components/BottomStyle'
 import ImgCard from '@/components/ImgCard';
 
+
+
 export default function createCount(){
   return(
     <ImgCard 
@@ -29,9 +31,9 @@ export default function createCount(){
 
 const styles = StyleSheet.create({
   text:{
-    fontSize: 30,
+    fontSize: 25,
     color: 'white',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   containerBottom: {
     flexDirection: 'column',
@@ -39,7 +41,7 @@ const styles = StyleSheet.create({
   },
   containerText: {
     flexDirection: 'column',
-    gap: 1,
+    gap: 10,
   }
     
 });

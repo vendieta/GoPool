@@ -35,7 +35,7 @@ export default function Input( {element}: Props) {
       Animated.timing(labelPadding, {
         toValue: 10,
         duration: 300,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }).start();
     }
   }, [text]);
