@@ -22,16 +22,17 @@ export default function layout() {
     return null;
   }
     
-    return(
-        <Stack>
-            <Stack.Screen name="index" options={{ 
-            headerShown: false,
-            headerLeft: () => null, // Pasar una función que retorne 
-            gestureEnabled: false, // Deshabilitar gesto de retroceso en 
-            }}/>
-            <Stack.Screen name="sesionOff" options={{title:'Estado de cuenta', headerShown: false}}/>
-            <Stack.Screen name="sesionOn" options={{title:'buy', headerShown: false}}/>
-            <Stack.Screen name="pageInicial" options={{title:'Configuraciones', headerShown: false}}/>
-        </Stack>
-    )
+  return(
+    <Stack>
+      <Stack.Screen name="index" options={{ 
+      headerShown: false,
+      headerLeft: () => null, // Pasar una función que retorne 
+      gestureEnabled: false, // Deshabilitar gesto de retroceso en 
+      }}/>
+      <Stack.Screen name="createCount" options={{title:'Estado de cuenta', headerShown: false}}/>
+      <Stack.Screen name="sesionOn" options={{title:'buy', headerShown: false}}/>
+      <Stack.Screen name="createCountU" options={{title:'Configuraciones', headerShown: false}}/>
+      <Stack.Screen name="createCountE" options={{title:'Configuraciones', headerShown: false}}/>
+    </Stack>
+  )
 }
