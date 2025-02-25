@@ -14,11 +14,11 @@ export default function createCount(){
       <View style={styles.containerBottom}>
         <ButtomStyle element={{
             title: 'Usuario de espol',
-            link: '/' // pagina donde se registran los usuarios de espol
+            link: '/(sesionScreen)/createCountU' // pagina donde se registran los usuarios de espol
         }}/>
         <ButtomStyle element={{
             title: 'Usuario externo',
-            link: '/' //pagina donde se regitran los usuarios externos a espol
+            link: '/(sesionScreen)/createCountE' //pagina donde se regitran los usuarios externos a espol
         }}/>
       </View>
     </ImgCard>

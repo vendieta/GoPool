@@ -2,7 +2,11 @@ import { View , Text , StyleSheet} from 'react-native';
 import BottomStyle from '@/components/BottomStyle'
 import ImgCard from '@/components/ImgCard';
 
-export default function createCount(){
+//  no hay necesidad que este archivo se llame index pero lo puse para evitar problemas a futuro
+//  
+
+
+export default function LoginScreen(){
   return(
     <ImgCard 
       color='orange'
@@ -28,17 +32,18 @@ export default function createCount(){
 }
 
 const styles = StyleSheet.create({
-  text: {
-    fontSize: 20,
-    textAlign: 'center'
+  text:{
+    fontSize: 25,
+    color: 'white',
+    textAlign: 'center',
   },
   containerBottom: {
     flexDirection: 'column',
     gap: 25,
-
   },
   containerText: {
-
+    flexDirection: 'column',
+    gap: 10,
   }
     
 });

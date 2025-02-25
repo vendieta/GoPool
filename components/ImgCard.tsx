@@ -24,10 +24,10 @@ const styles = StyleSheet.create({
     width: '80%',
     margin: 'auto',
     borderRadius: 35,
-    padding: 50,
+    padding: 25,
     alignItems: 'center',
     flexDirection: 'column',
-    gap: 25
+    gap: 20
   },
 
   }
