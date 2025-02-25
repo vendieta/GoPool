@@ -2,9 +2,11 @@ import { View , Text , StyleSheet} from 'react-native';
 import BottomStyle from '@/components/BottomStyle'
 import ImgCard from '@/components/ImgCard';
 
+//  no hay necesidad que este archivo se llame index pero lo puse para evitar problemas a futuro
+//  
 
 
-export default function createCount(){
+export default function LoginScreen(){
   return(
     <ImgCard 
       color='orange'

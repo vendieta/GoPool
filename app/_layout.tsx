@@ -12,8 +12,8 @@ import { Stack } from 'expo-router';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const router = useRouter();
-  router.replace('/createRouteUser');
+  // const router = useRouter();
+  // router.replace('/createRouteUser');r
   
   // const router = useRouter();
   // const [user, setUser] = useState(false);  // Inicializa el estado como null en lugar de false
@@ -47,6 +47,7 @@ export default function RootLayout() {
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
           <Stack.Screen name='(secondaryTabs)' options={{headerShown: false}}/>
           <Stack.Screen name='(sesionScreen)' options={{headerShown: false}}/>

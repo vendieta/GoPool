@@ -1,9 +1,30 @@
-import { Stack } from "expo-router"
+import { Stack } from "expo-router";
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { useFonts } from 'expo-font';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function layout() {
+  const colorScheme = useColorScheme();
+  const [loaded] = useFonts({
+    SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
+  });
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  if (!loaded) {
+    return null;
+  }
+    
     return(
         <Stack>
-            <Stack.Screen name="createCount" options={{ 
+            <Stack.Screen name="index" options={{ 
             headerShown: false,
             headerLeft: () => null, // Pasar una función que retorne 
             gestureEnabled: false, // Deshabilitar gesto de retroceso en 
