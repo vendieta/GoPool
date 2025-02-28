@@ -4,6 +4,7 @@ import { View, Text , StyleSheet} from "react-native";
 export default function Info(){
 
   const { info } = useLocalSearchParams();
+  console.log('string:   ', info)
 
   return(
     <View style={styles.container}>

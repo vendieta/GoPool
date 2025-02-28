@@ -27,7 +27,7 @@ interface DataProps {
 
 const UserCard: React.FC<DataProps> = ({element}) => {
   return (
-    <Link href={`../(serviceScreen)/${element.user}`} style={styles.link} >
+    <Link href={`../(serviceScreen)/${element}`} style={styles.link} >
       <View style={styles.card}>
         {/* User Info and Image */}
         <View style={styles.userInfoContainer}>
