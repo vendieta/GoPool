@@ -13,7 +13,7 @@ import { useRouter } from 'expo-router';
 export default function HomeScreen() {
 
   return (
-    <GestureHandlerRootView >
+    // <GestureHandlerRootView >
       <ScrollRefresh/>
-    </GestureHandlerRootView>
+    // </GestureHandlerRootView>
 )}

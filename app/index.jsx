@@ -1,13 +1,14 @@
 import { Redirect } from "expo-router";
 
 
-const isAuthenticated = false;
+const isAuthenticated = true;
 
 export default function Index(){
   if (isAuthenticated) {
     return <Redirect href={'./(tabs)'}/>
   } else {
-    return <Redirect href={'./(sesionScreen)'}/>
+    return <Redirect href={'./(serviceScreen)/createRouteUser'}/>
+    // return <Redirect href={'./(sesionScreen)'}/>
   };
 };
 
