@@ -46,25 +46,20 @@ export function useUserInfo() {
 //   const [ data , setData] = useState<any[]>([]); // Estado para almacenar los datos
 //     const [error, setError] = useState<string>(''); // Estado para manejar errores
 //     const [refreshing, setRefreshing] = useState(false); // Estado para controlar el refresco
-  
 //     const fetchData = async () => {
 //       const { data, error } = await supabase
 //       .from('cardData') // Especifica tu tabla aquí
 //       .select('*'); // O especifica las columnas que quieres recuperar
-      
 //       if (error) {
 //         setError(error.message); // Si hay un error, lo guardamos en el estado
 //         return;
 //       }
-      
 //       setData(data); // Si todo va bien, guardamos los datos
 //       console.log(data[2])
 //     };
-  
 //     useEffect(() => {
 //       fetchData();
 //     }, []); // Este efecto se ejecutará solo una vez, al montar el componente
 //   return(
-
 //   );
 // }

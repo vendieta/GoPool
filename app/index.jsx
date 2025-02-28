@@ -1,10 +1,11 @@
 import { Redirect } from "expo-router";
-
+import useUserInfo from '../hooks/userContext'
 
 const isAuthenticated = false;
 
 export default function Index(){
-  if (isAuthenticated) {
+  const { session } = useUserInfo()
+  if ( session ) {
     return <Redirect href={'./(tabs)'}/>
   } else {
     return <Redirect href={'./(sesionScreen)'}/>
