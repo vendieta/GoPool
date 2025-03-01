@@ -7,6 +7,7 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { Slot } from "expo-router";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();

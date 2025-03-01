@@ -1,17 +1,28 @@
-import { Redirect } from "expo-router";
-import useUserInfo from '../hooks/userContext'
+import { Redirect, useRouter } from "expo-router";
+import { View } from "react-native";
+import  { AuthProvider , useUserInfo } from '../hooks/userContext'
+import { useEffect } from "react";
+import LoginScreen from './(sesionScreen)/index'
+import HomeScreen from './(tabs)/index'
+import TabLayout from './(tabs)/_layout'
+
 
 const isAuthenticated = false;
 
 export default function Index(){
-  const { session } = useUserInfo()
-  if ( session ) {
-    return <Redirect href={'./(tabs)'}/>
-  } else {
-    return <Redirect href={'./(sesionScreen)'}/>
-  };
-};
+  const router = useRouter();
+  const { session } = useUserInfo();
+    console.log('estas esto es la sesion que no me permite pasar:',session)
+    if ( session ) {
+      return <HomeScreen/>
+    } else {
+      return  <LoginScreen/>
+    };
+}
 
+
+
+// }
 // import React from "react";
 // import { View , Text } from "react-native";
 // import { ThemedView } from '@/components/ThemedView';

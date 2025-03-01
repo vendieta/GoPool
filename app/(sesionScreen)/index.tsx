@@ -1,12 +1,14 @@
 import { View , Text , StyleSheet} from 'react-native';
 import BottomStyle from '@/components/BottomStyle'
 import ImgCard from '@/components/ImgCard';
-
+import { useUserInfo } from '@/hooks/userContext';
 //  no hay necesidad que este archivo se llame index pero lo puse para evitar problemas a futuro
 //  
 
 
 export default function LoginScreen(){
+  const { session } = useUserInfo();
+  console.log('estas esto es la sesion>                                                                                                                                             ',session)
   return(
     <ImgCard 
       color='orange'

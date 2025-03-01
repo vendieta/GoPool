@@ -1,15 +1,21 @@
-import { StyleSheet, View , Text , Image , Platform , Dimensions , TouchableOpacity} from "react-native"; 
+import { StyleSheet, View , Text , Image , Platform , Dimensions , TouchableOpacity , Button} from "react-native"; 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { Collapsible } from '@/components/Collapsible';
 import DataPerfil from "@/components/TEST/DataPerfil";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';import Feather from '@expo/vector-icons/Feather';
 import LinkCard from '@/components/TEST/LinkCard';
-
+import { supabase } from "@/supabaseClient";
+import { useRouter } from "expo-router";
 
 const { width , height } = Dimensions.get('window');
 
 export default function Perfil() {
+  const router = useRouter(); // Hook para la navegación en Expo Router
+  const outSession = () => {
+    supabase.auth.signOut();
+    router.replace('../../')
+  }
   return(
     <ParallaxScrollView
         headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -76,13 +82,14 @@ export default function Perfil() {
               <DataPerfil element={ {
                 iconComponent: <Feather name="info" size={24} color="black" />, 
                 title: 'Quienes somos',
-                link: '/(secondaryTabs)/aboutUs'}}/>
+                link: '/(optionScreen)/aboutUs'}}/>
                 <DataPerfil element={ {
                 iconComponent: <FontAwesome5 name="copyright" size={24} color="black" />, 
                 title: 'Creditos',
-                link: '/(secondaryTabs)/credits'}}/>
+                link: '/(optionScreen)/credits'}}/>
             </View>
           </Collapsible>
+          <Button title="Cerar sesion" onPress={ outSession }/>
       </View>
     </ParallaxScrollView>
     );

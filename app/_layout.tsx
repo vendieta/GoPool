@@ -7,11 +7,13 @@ import 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Stack } from 'expo-router';
+import { AuthProvider } from '@/hooks/userContext';
 
 // // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  
   // const router = useRouter();
   // router.replace('/createRouteUser');r
   
@@ -44,6 +46,7 @@ export default function RootLayout() {
 
   return (
     //   {/* // Este codigo nos permite hacer adaptativo la apk para el tema que tenga el usuario */}
+    <AuthProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -55,5 +58,6 @@ export default function RootLayout() {
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>
+    </AuthProvider>
   );
 }

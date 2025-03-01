@@ -1,4 +1,4 @@
-import { View , Text , StyleSheet} from 'react-native';
+import { View , Text , StyleSheet } from 'react-native';
 import ButtomStyle from '@/components/BottomStyle'
 import ImgCard from '@/components/ImgCard';
 
