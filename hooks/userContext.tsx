@@ -28,12 +28,12 @@ export function AuthProvider ({children} : {children : ReactNode}) {
     // Obtener la sesión actual al montar el componente
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUserInfo({ ...userInfo, session });
-      console.log("Sesión actual:", session);
+      // console.log("Sesión actual:", session);
     });
 
     // Escuchar cambios en el estado de autenticación
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("Cambio en el estado de autenticación:", _event, session);
+      // console.log("Cambio en el estado de autenticación:", _event, session);
       setUserInfo({ session, profile: null });
     });
 
@@ -59,7 +59,7 @@ export function AuthProvider ({children} : {children : ReactNode}) {
   )
 };
 export function useUserInfo() {
-  console.log('error de la exportacion : ' , UserContext)
+  // console.log('error de la exportacion : ' , UserContext)
   return useContext(UserContext);
 }
 

@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React , { useEffect} from 'react';
 import { Platform } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
@@ -8,9 +8,28 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { Slot } from "expo-router";
+import * as SplashScreen from 'expo-splash-screen';
+import { useFonts } from 'expo-font';
+
+
+SplashScreen.preventAutoHideAsync();
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const [loaded] = useFonts({
+      SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
+    });
+  
+    useEffect(() => {
+      if (loaded) {
+        SplashScreen.hideAsync();
+      }
+    }, [loaded]);
+  
+    if (!loaded) {
+      return null;
+    }
+  
 
   return (
     <Tabs
