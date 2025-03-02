@@ -6,7 +6,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';import Feather from '@expo/vector-icons/Feather';
 import LinkCard from '@/components/TEST/LinkCard';
 import { supabase } from "@/supabaseClient";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 
 const { width , height } = Dimensions.get('window');
 
@@ -14,7 +14,7 @@ export default function Perfil() {
   const router = useRouter(); // Hook para la navegación en Expo Router
   const outSession = () => {
     supabase.auth.signOut();
-    router.replace('../../')
+    router.replace('/')
   }
   return(
     <ParallaxScrollView

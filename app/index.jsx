@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import LoginScreen from './(sesionScreen)/index'
 import HomeScreen from './(tabs)/index'
 import TabLayout from './(tabs)/_layout'
-
+import Change from './replace'
 
 const isAuthenticated = false;
 
@@ -14,7 +14,7 @@ export default function Index(){
   const { session } = useUserInfo();
     console.log('estas esto es la sesion que no me permite pasar:',session)
     if ( session ) {
-      return <HomeScreen/>
+      return <Change/>
     } else {
       return  <LoginScreen/>
     };
