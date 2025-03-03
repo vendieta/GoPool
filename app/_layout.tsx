@@ -48,8 +48,9 @@ export default function RootLayout() {
     //   {/* // Este codigo nos permite hacer adaptativo la apk para el tema que tenga el usuario */}
     <AuthProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack screenOptions={{animation: 'fade', presentation:'modal'}} >
+          {/*  presentation : MODAL es una animacion para el sistema ios */}
+          <Stack.Screen name="(tabs)" options={{ headerShown: false , presentation: 'modal'}} />
           <Stack.Screen name="+not-found" />
           <Stack.Screen name='(secondaryTabs)' options={{headerShown: false}}/>
           <Stack.Screen name='(sesionScreen)' options={{headerShown: false}}/>

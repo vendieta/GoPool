@@ -25,7 +25,7 @@ export default function layout() {
     
   return(
     <AuthProvider>
-      <Stack>
+      <Stack screenOptions={{animation: 'none', presentation:'modal'}}>
         <Stack.Screen name="index" options={{ 
         headerShown: false,
         headerLeft: () => null, // Pasar una función que retorne 
