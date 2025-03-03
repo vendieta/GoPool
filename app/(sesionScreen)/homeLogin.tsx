@@ -21,11 +21,11 @@ export default function LoginScreen(){
         <View style={styles.containerBottom}>
           <BottomStyle element={{
             title: 'INICIA SESION',
-            link: '/(sesionScreen)/sesionOn'
+            link: '/sesionOn'
           }}/>
           <BottomStyle element={{
             title: 'CREAR CUENTA',
-            link: '/(sesionScreen)/createCount'
+            link: '/(sesionScreen/createCount'
           }}/>
         </View>
     </ImgCard>

@@ -1,17 +1,20 @@
 import { useState, useEffect } from "react";
+import { Redirect, useRouter } from "expo-router";
 import { Alert, Button, View, Text , StyleSheet} from "react-native";
 import ImgCard from "@/components/ImgCard";
 import Input from "@/components/Input";
 import { supabase } from "@/supabaseClient";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Importar AsyncStorage
-import { useUserInfo } from "@/hooks/userContext";
+import { Session, type SignInWithPasswordCredentials, type SignUpWithPasswordCredentials } from "@supabase/supabase-js";
+
 
 export default function createCountU() {
+  const router = useRouter(); // Hook para la navegación en Expo Router
   const mode = "login";
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState<Session|null>(null);
 
   useEffect(() => {
     // Al iniciar, verificamos si hay una sesión persistente
@@ -24,26 +27,31 @@ export default function createCountU() {
     checkSession();
   }, []);
 
-  const handleLogin = async (Credentials) => {
+  const handleLogin = async (credentials:SignInWithPasswordCredentials) => {
     setLoading(true);
-    const { email, password } = Credentials;
+    if (!("email" in credentials)) return;
+    const { email , password } = credentials;
     const { error, data } = await supabase.auth.signInWithPassword({ email, password });
-
     if (error) {
       Alert.alert(error.message);
     } else {
       setSession(data.session); // Guardamos la sesión en el estado
       await AsyncStorage.setItem("session", JSON.stringify(data.session)); // Guardamos la sesión en AsyncStorage
       console.log("Usuario autenticado:", data.session);
+      setTimeout(() => {
+        // Aquí se realiza la navegación después del delay
+        router.replace('/')
+      }, 600); // 0.6 segundo de espera
     }
-
     setLoading(false);
+    
   };
 
 
-  const handleSignup = async (Credentials) => {
+  const handleSignup = async (credentials:SignUpWithPasswordCredentials) => {
+    if (!("email" in credentials)) return;
     setLoading(true);
-    const { email, password } = Credentials;
+    const { email, password } = credentials;
     const { error, data } = await supabase.auth.signUp({ email, password });
 
     if (error) {
@@ -55,6 +63,8 @@ export default function createCountU() {
     setLoading(false);
   };
 
+
+  
   return (
     <ImgCard color="#212121" img={require("@/assets/images/partial-react-logo.png")}>
       <View style={{ padding: 16 }}>
@@ -71,6 +81,11 @@ export default function createCountU() {
     </ImgCard>
   );
 }
+
+
+
+
+
 
 
 // import { View , Text , StyleSheet, Alert , Button} from "react-native";

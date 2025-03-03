@@ -14,8 +14,11 @@ export default function Perfil() {
   const router = useRouter(); // Hook para la navegación en Expo Router
   const outSession = () => {
     supabase.auth.signOut();
-    router.replace('/')
-  }
+    setTimeout(() => {
+      // Aquí se realiza la navegación después del delay
+      router.replace('/')
+    }, 600); // 0.6 segundo de espera
+  };
   return(
     <ParallaxScrollView
         headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -45,15 +48,15 @@ export default function Perfil() {
               <DataPerfil element={ {
                 iconComponent: <Feather name="settings" size={24} color="black" />, 
                 title: 'Configuraciones',
-                link: '/(secondaryTabs)/config'}}/>
+                link: '/(optionScreen)/config'}}/>
                 <DataPerfil element={ {
                 iconComponent: <Feather name="user-check" size={24} color="black" />, 
                 title: 'Estado de cuenta',
-                link: '/(secondaryTabs)/accountStatement'}}/>
+                link: '/(optionScreen)/accountStatement'}}/>
                 <DataPerfil element={ {
                 iconComponent: <FontAwesome5 name="user" size={24}/>, 
                 title: 'Temas',
-                link: '/(secondaryTabs)/themes'}}/>
+                link: '/(optionScreen)/themes'}}/>
             </View>
           </Collapsible>
 
