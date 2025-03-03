@@ -26,8 +26,10 @@ interface DataProps {
 
 
 const UserCard: React.FC<DataProps> = ({element}) => {
+  // convierte el array de element a un string formato json
+  const jsonData = encodeURIComponent(JSON.stringify(element))
   return (
-    <Link href={`../${element}`} style={styles.link} >
+    <Link href={`../${jsonData}`} style={styles.link} >
       <View style={styles.card}>
         {/* User Info and Image */}
         <View style={styles.userInfoContainer}>
