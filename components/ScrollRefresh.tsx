@@ -56,8 +56,8 @@ const ScrollRefresh = () => {
    // Renderiza cada elemento de la lista
   const renderItem = ({ item }: { item: Item }) => {
     // * Este codigo permite mostrar en consola la key de cada tarjeta
-    console.log('id       :',item)
-    console.log('startzone       :',item.startZone)
+    // console.log('id       :',item)
+    // console.log('startzone       :',item.startZone)
     return(
       <UserCard element={{
         user:item.userName,

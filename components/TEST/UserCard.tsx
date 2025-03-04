@@ -1,6 +1,4 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Float } from 'react-native/Libraries/Types/CodegenTypes';
 import { Link } from 'expo-router';
 import { RelativePathString , ExternalPathString } from 'expo-router';
 
@@ -13,7 +11,7 @@ const dValue = width > 500 ? 0.02 : 0.041;
 interface DataProps {
     element: {
       user: string,
-      price: Float,
+      price: number,
       date: string,
       time: string,
       free: number,
