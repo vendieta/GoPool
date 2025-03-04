@@ -54,6 +54,7 @@ export default function RootLayout() {
           <Stack.Screen name="+not-found" />
           <Stack.Screen name='(secondaryTabs)' options={{headerShown: false}}/>
           <Stack.Screen name='(sesionScreen)' options={{headerShown: false}}/>
+          <Stack.Screen name='(serviceScreen)' options={{headerShown: false}}/>
           <Stack.Screen name='(createService)' options={{headerShown: false}}/>
         </Stack>
         <StatusBar style="auto" />

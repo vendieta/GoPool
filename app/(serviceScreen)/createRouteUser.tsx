@@ -1,3 +1,84 @@
+// //  opcion video de youtube
+// import React , { useState, useEffect } from "react";
+// import { StyleSheet , View , Text } from "react-native";
+// import MapView , { Marker , Polyline }from "react-native-maps";
+// import * as Location from 'expo-location';
+
+
+// interface LocationType {
+//     latitude: number;
+//     longitude: number;
+//   }
+
+// export default function Map() {
+//   const [userLocation, setUserLocation] = useState<LocationType | null>(null); // Ubicación actual del usuario
+//   useEffect(() => {
+//     // Obtener la ubicación actual del usuario
+//     (async () => {
+//       let { status } = await Location.requestForegroundPermissionsAsync();
+//       if (status !== 'granted') {
+//         console.log('Permission to access location was denied');
+//         return;
+//       }
+//       let location = await Location.getCurrentPositionAsync({});
+//       setUserLocation(location.coords);
+//     })();
+//   }, []);
+//   const defaultCoordinates = {
+//     latitude: -2.147464,
+//     longitude: -79.968125,
+//   };
+
+//   const [destination, setDestination] = React.useState({
+//     latitude: -2.130176,
+//     longitude: -79.902367,
+//   });
+//   // Si no se obtuvo la ubicación, usa las coordenadas predeterminadas
+//   const region = userLocation || defaultCoordinates;
+
+//   return(
+//     <View style = {styles.container}>
+//       <MapView 
+//         style = {styles.map}
+//         initialRegion={{
+//           latitude: region.latitude,
+//           longitude: region.latitude,
+//           latitudeDelta: 0.09,
+//           longitudeDelta: 0.04,
+//         }}>
+//           <Marker
+//           draggable
+//           coordinate={region}
+//           // esta porcion de codigo hace que el usuario pueda direccionar el punto de incio 
+//           onDragEnd={(direction) => setUserLocation(direction.nativeEvent.coordinate) }
+//           />
+//           <Marker
+//           draggable
+//           coordinate={destination}
+//           // esta porcion de codigo hace que el usuario pueda direccionar el punto de incio 
+//           onDragEnd={(direction) => setDestination(direction.nativeEvent.coordinate) }
+//           />
+//           <Polyline
+//             coordinates={[ region , destination ]}
+//             strokeWidth={5}/>
+//         </MapView>
+//     </View>
+//   )
+// }
+
+// const styles = StyleSheet.create({
+//   container:{
+//     flex:1,
+//   },
+//   map: {
+//     ...StyleSheet.absoluteFillObject,
+//   }
+// })
+
+
+// opcion uno de chatgpt
+
+
 // import React, { useState, useEffect } from 'react';
 // import { View, StyleSheet, Text } from 'react-native';
 // import MapView, { Marker, Polyline, Region, LatLng } from 'react-native-maps';
@@ -8,7 +89,7 @@
 //   longitude: number;
 // }
 
-// const App: React.FC = () => {
+// const map: React.FC = () => {
 //   const [userLocation, setUserLocation] = useState<LocationType | null>(null); // Ubicación actual del usuario
 //   const [selectedLocation, setSelectedLocation] = useState<LocationType | null>(null); // Ubicación seleccionada
 //   const [route, setRoute] = useState<LocationType[]>([]); // Ruta que conecta los puntos
@@ -83,9 +164,11 @@
 //   },
 // });
 
-// export default App;
+// export default map;
 
 
+
+// opcion dos que aun nose 
 // import React from 'react';
 // import { View, StyleSheet } from 'react-native';
 // import MapView, { Marker } from 'react-native-maps';
