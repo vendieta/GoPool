@@ -21,11 +21,11 @@ export default function TabTwoScreen() {
         <View style={styles.containerOpcion}>
           <Opcion 
           element={{
-            link:'/',
+            link:'/(serviceScreen)/createRouteUser',
             title: 'Ruta pasajero',
             }}
             element1={{
-            link:'/',
+            link:'/(serviceScreen)/createRouteDriver',
             title:'Ruta conductor',
           }}/>
 

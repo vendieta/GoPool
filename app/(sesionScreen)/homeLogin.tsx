@@ -25,7 +25,7 @@ export default function LoginScreen(){
           }}/>
           <BottomStyle element={{
             title: 'CREAR CUENTA',
-            link: '/(sesionScreen/createCount'
+            link: '/createCount'
           }}/>
         </View>
     </ImgCard>
