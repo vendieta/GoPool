@@ -2,6 +2,7 @@ import { View , Text  , StyleSheet, Alert , Image, Button , Dimensions } from "r
 import MapView , { Marker , Region } from "react-native-maps";
 import React , { useState , useRef , useEffect } from "react";
 import * as Location from 'expo-location';
+import ActionPannel from "@/components/ActionPannel";
 
 const { width , height } = Dimensions.get('window')
 
@@ -32,6 +33,29 @@ export default function Map () {
         console.log('Permission to access location was denied');
         return;
       }
+      // optener la ultima ubicacion optenida primero
+      let lastLocation = await Location.getLastKnownPositionAsync({});
+      if(lastLocation) {
+        console.log('Usando la ultima ubicacion conocida:     ', lastLocation)
+        // Aqui se usa el lastLocation.coords que da las cordenadas de latitude y longitude pero en un orden similar
+        // si llegase a tener problemas con respecto a coordenadas mal puede ser esto se reemplazaria con:
+        //setCenterCoordinate({
+        //  latitude: lastLocation.coords.latitude,
+        //  longitude: lastLocation.coords.longitude,
+        //  });
+
+        setCenterCoordinate(lastLocation.coords)
+
+        mapRef.current?.animateToRegion({
+          latitude: lastLocation.coords.latitude,
+          longitude: lastLocation.coords.longitude,
+          latitudeDelta: 0.09,
+          longitudeDelta: 0.01,
+        },
+        1000
+        );
+      };
+
       let location = await Location.getCurrentPositionAsync({});
       setCenterCoordinate(location.coords);
       // ✅ Mueve el mapa a la ubicación obtenida
@@ -46,14 +70,6 @@ export default function Map () {
       );
     })();
   }, []);
-  // ! coordenadas pordefecto de inicio  
-
-  // const [destination, setDestination] = React.useState({
-  //   latitude: -2.130176,
-  //   longitude: -79.902367,
-  // });
-
-
 
   // Si no se obtuvo la ubicación, usa las coordenadas predeterminadas
   const region = centerCoordinate || defaultCoordinates;
@@ -120,6 +136,8 @@ export default function Map () {
           onPress={handleConfirmLocation}
           />
       </View>
+      
+      <ActionPannel/>
     </View>
   );
 }

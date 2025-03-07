@@ -1,10 +1,12 @@
+import { ThemedView } from "@/components/ThemedView";
 import { View , Text } from "react-native";
-
+import ActionPannel from "@/components/ActionPannel";
 
 export default function CreateRouterDriver(){
-    return(
-        <View style={{flex:1}}>
-            <Text style={{margin:'auto' , color: 'white'}}>pantalla de conductor</Text>
-        </View>
-    )
+  return(
+    <View style = {{ flex : 1 }}>
+      <Text style = {{color : 'red'}}>jkbasdkfhioajsfkajhsfhafh</Text>
+      <ActionPannel/>
+    </View>
+  );
 }
