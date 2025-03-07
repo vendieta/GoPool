@@ -6,6 +6,8 @@ import LoginScreen from '@/app/(sesionScreen)/homeLogin';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 
+// ! mejorar esta pantalla porque cuando se abre se muestra el login por un tiempo y despues el index
+
 SplashScreen.preventAutoHideAsync();
 
 export default function HomeScreen() {
