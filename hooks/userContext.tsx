@@ -1,67 +1,127 @@
-import { useState , useEffect, createContext, ReactNode, Profiler, useContext } from "react";
-import { supabase } from '@/supabaseClient';
+import { useState, useEffect, createContext, ReactNode, useContext } from "react";
+import { supabase } from "@/supabaseClient";
 import { Session } from "@supabase/supabase-js";
 
-
-
-export interface UserProfile{
+export interface UserProfile {
   userName: string;
-};
-
-export interface UserInfo{
-  session: Session| null;
-  profile: UserProfile | null;
 }
 
+export interface UserInfo {
+  session: Session | null;
+  profile: UserProfile | null;
+  isLoading: boolean;
+}
 
 const UserContext = createContext<UserInfo>({
   session: null,
   profile: null,
+  isLoading: true,
 });
 
-export function AuthProvider ({children} : {children : ReactNode}) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [userInfo, setUserInfo] = useState<UserInfo>({
     session: null,
     profile: null,
+    isLoading: true,
   });
+
   useEffect(() => {
-    // Obtener la sesión actual al montar el componente
+    // Obtener la sesión actual
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUserInfo({ ...userInfo, session });
-      // console.log("Sesión actual:", session);
+      setUserInfo((prev) => ({ ...prev, session }));
     });
 
-    // Escuchar cambios en el estado de autenticación
+    // Escuchar cambios en autenticación
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      // console.log("Cambio en el estado de autenticación:", _event, session);
-      setUserInfo({ session, profile: null });
+      setUserInfo({ session, profile: null, isLoading: false });
     });
 
-    // Limpiar el listener cuando el componente se desmonta
     return () => {
       authListener.subscription.unsubscribe();
     };
-
-    // supabase.auth.getSession().then(({ data: { session } }) => {
-    //   setUserInfo( {...userInfo , session});
-
-
-    //   console.log({data:{session}})
-    //   console.log('error en context   :', supabase.auth.getUser())
-    // });
-    // supabase.auth.onAuthStateChange((_event , session) => {
-    //   setUserInfo({session , profile: null});
-    // });
   }, []);
 
-  return(
-    <UserContext.Provider value={userInfo}>{children}</UserContext.Provider>
-  )
-};
+  return <UserContext.Provider value={userInfo}>{children}</UserContext.Provider>;
+}
+
 export function useUserInfo() {
-  // console.log('error de la exportacion : ' , UserContext)
   return useContext(UserContext);
 }
+
+
+
+
+
+
+// import { useState , useEffect, createContext, ReactNode, Profiler, useContext } from "react";
+// import { supabase } from '@/supabaseClient';
+// import { Session } from "@supabase/supabase-js";
+
+
+
+// export interface UserProfile{
+//   userName: string;
+// };
+
+// export interface UserInfo{
+//   session: Session| null;
+//   profile: UserProfile | null;
+// }
+
+
+// const UserContext = createContext<UserInfo>({
+//   session: null,
+//   profile: null,
+// });
+
+// export function AuthProvider ({children} : {children : ReactNode}) {
+//   const [userInfo, setUserInfo] = useState<UserInfo>({
+//     session: null,
+//     profile: null,
+//   });
+//   useEffect(() => {
+//     // Obtener la sesión actual al montar el componente
+//     supabase.auth.getSession().then(({ data: { session } }) => {
+//       setUserInfo({ ...userInfo, session });
+//       // console.log("Sesión actual:", session);
+//     });
+
+//     // Escuchar cambios en el estado de autenticación
+//     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+//       // console.log("Cambio en el estado de autenticación:", _event, session);
+//       setUserInfo({ session, profile: null });
+//     });
+
+//     // Limpiar el listener cuando el componente se desmonta
+//     return () => {
+//       authListener.subscription.unsubscribe();
+//     };
+
+//     // supabase.auth.getSession().then(({ data: { session } }) => {
+//     //   setUserInfo( {...userInfo , session});
+
+
+//     //   console.log({data:{session}})
+//     //   console.log('error en context   :', supabase.auth.getUser())
+//     // });
+//     // supabase.auth.onAuthStateChange((_event , session) => {
+//     //   setUserInfo({session , profile: null});
+//     // });
+//   }, []);
+
+//   return(
+//     <UserContext.Provider value={userInfo}>{children}</UserContext.Provider>
+//   )
+// };
+// export function useUserInfo() {
+//   // console.log('error de la exportacion : ' , UserContext)
+//   return useContext(UserContext);
+// }
+
+// export function access() {
+  
+// }
+
 
 
 
