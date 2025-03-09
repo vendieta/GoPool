@@ -6,7 +6,7 @@ export default function CreateRouterDriver(){
   return(
     <View style = {{ flex : 1 }}>
       <Text style = {{color : 'red'}}>jkbasdkfhioajsfkajhsfhafh</Text>
-      <ActionPannel/>
+      <ActionPannel pointEnd="acacias" pointStart="espol"/>
     </View>
   );
 }

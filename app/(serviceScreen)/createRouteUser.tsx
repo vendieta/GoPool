@@ -1,4 +1,4 @@
-import { View , Text  , StyleSheet, Alert , Image, Button , Dimensions } from "react-native";
+import { View , Text  , StyleSheet, Alert , Image, Button , Dimensions , useColorScheme, Platform  } from "react-native";
 import MapView , { Marker , Region } from "react-native-maps";
 import React , { useState , useRef , useEffect } from "react";
 import * as Location from 'expo-location';
@@ -25,6 +25,17 @@ export default function Map () {
     latitude: -2.147464,
     longitude: -79.968125,
   };
+                    // ESTE ES EL CODIGO PARA PONER EL MAPA NATIVO EN MODO OSCURO AUN QUE HAY QUE PERFECCIONAR EL CODIGO
+                    // const colorScheme = useColorScheme(); // Detecta si el sistema está en modo oscuro
+
+
+                    // Estilos personalizados para Google Maps (modo oscuro)
+                    // const darkMapStyle = [
+                    //   { elementType: "geometry", stylers: [{ color: "#212121" }] },
+                    //   { elementType: "labels.text.stroke", stylers: [{ color: "#212121" }] },
+                    //   { elementType: "labels.text.fill", stylers: [{ color: "#757575" }] },
+                    //   { featureType: "road", elementType: "geometry", stylers: [{ color: "#424242" }] },
+                    // ];
   useEffect(() => {
     // Obtener la ubicación actual del usuario
     (async () => {
@@ -49,8 +60,8 @@ export default function Map () {
         mapRef.current?.animateToRegion({
           latitude: lastLocation.coords.latitude,
           longitude: lastLocation.coords.longitude,
-          latitudeDelta: 0.09,
-          longitudeDelta: 0.01,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.001,
         },
         1000
         );
@@ -63,8 +74,8 @@ export default function Map () {
         {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
-          latitudeDelta: 0.09,
-          longitudeDelta: 0.01,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.001,
         },
         1000 // Duración de la animación (opcional)
       );
@@ -104,6 +115,10 @@ export default function Map () {
     <View>
       {/* Usamos la componente de MapView para mostrar el mapa */}
       <MapView
+                    // mapType={Platform.OS === "ios" ? (colorScheme === "dark" ? "mutedStandard" : "standard") : "standard"}
+                    // customMapStyle={Platform.OS === "android" && colorScheme === "dark" ? darkMapStyle : []}
+                    // // iOS: Usa "mutedStandard" para modo oscuro en Apple Maps
+                    // // Android: Aplica customMapStyle cuando el tema es oscuro
         pitchEnabled = {false} // bloquea la inclinacion en 3d
         rotateEnabled = {false} // bloquea la rotacion del mapa
         ref = {mapRef}
@@ -111,8 +126,8 @@ export default function Map () {
         initialRegion = {{
           latitude: defaultCoordinates.latitude, // latitud inicial
           longitude: defaultCoordinates.longitude, // longitud inicial
-          latitudeDelta: 0.09, // El delta es para la el zoom inical (ajusta el nivle del zoom )
-          longitudeDelta: 0.01,
+          latitudeDelta: 0.01, // El delta es para la el zoom inical (ajusta el nivle del zoom )
+          longitudeDelta: 0.001,
         }}
         onRegionChangeComplete = {handleRegionChangeComplete} // escucha los cambiops en la region del mapa
       >
@@ -137,7 +152,7 @@ export default function Map () {
           />
       </View>
       
-      <ActionPannel/>
+      <ActionPannel  pointStart={region.longitude.toString()} pointEnd={`${region.latitude}`}/>
     </View>
   );
 }
