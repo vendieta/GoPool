@@ -1,8 +1,68 @@
+// import React, { useEffect, useRef } from "react";
+// import { View, Image, StyleSheet, Text , Dimensions } from "react-native";
+// import MapView, { Marker, MapViewProps } from "react-native-maps";
+// import { useLocation } from "@/hooks/useLocation"; // Importa tu hook
+// import ActionPannel from "@/components/ActionPannel";
+
+
+// const { width , height } = Dimensions.get('window')
+
+
+// export default function Map() {
+//   const { location, error } = useLocation();
+//   const mapRef = useRef<MapView>(null);
+
+//   // Mueve la cámara cuando se obtiene la ubicación
+//   useEffect(() => {
+//     if (location && mapRef.current) {
+//       mapRef.current.animateCamera(
+//         {
+//           center: location,
+//           zoom: 16,
+//         },
+//         { duration: 1000 } // Duración de la animación
+//       );
+//     }
+//   }, [location]);
+
+//   if (error) {
+//     return ;
+//   }
+
+//   return (
+//     <View style={styles.container}>
+//       <MapView
+//         ref={mapRef}
+//         style={styles.map}
+//         initialRegion={{
+//           latitude: location?.latitude ?? -2.147464, // Si no hay ubicación, usa valores por defecto
+//           longitude: location?.longitude ?? -79.968125,
+//           latitudeDelta: 0.01,
+//           longitudeDelta: 0.001,
+//         }}
+//       >
+//         {location && <Marker coordinate={location} />}
+//       </MapView>
+
+//       {/* Icono en el centro del mapa */}
+//       <View style={styles.pointerContainer}>
+//         <Image source={require("../../assets/images/icon_chayanne.jpg")} style={styles.pointer} />
+//       </View>
+
+//       <ActionPannel pointStart={location?.longitude?.toString() || ""} pointEnd={`${location?.latitude || ""}`} />
+//     </View>
+//   );
+// }
+
+
+
+
 import { View , Text  , StyleSheet, Alert , Image, Button , Dimensions , useColorScheme, Platform  } from "react-native";
 import MapView , { Marker , Region } from "react-native-maps";
 import React , { useState , useRef , useEffect } from "react";
 import * as Location from 'expo-location';
 import ActionPannel from "@/components/ActionPannel";
+import { useLocation } from "@/hooks/useLocation";
 
 const { width , height } = Dimensions.get('window')
 
@@ -20,11 +80,15 @@ export default function Map () {
   //   longitude: 3, // logitud inicial en el mapa 
   // });
 
+  const { location , error } = useLocation(); 
   const [ centerCoordinate , setCenterCoordinate ] = useState<Coordinate | null>(null); // Ubicación actual del usuario
   const defaultCoordinates = {
     latitude: -2.147464,
     longitude: -79.968125,
   };
+  const mapRef = useRef<MapView>(null); // Correcto: Se usa useRef en vez de RefObject directamente
+  const [ markers , setMarkers ] = useState<Coordinate[]>([])
+  
                     // ESTE ES EL CODIGO PARA PONER EL MAPA NATIVO EN MODO OSCURO AUN QUE HAY QUE PERFECCIONAR EL CODIGO
                     // const colorScheme = useColorScheme(); // Detecta si el sistema está en modo oscuro
 
@@ -37,56 +101,73 @@ export default function Map () {
                     //   { featureType: "road", elementType: "geometry", stylers: [{ color: "#424242" }] },
                     // ];
   useEffect(() => {
-    // Obtener la ubicación actual del usuario
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.log('Permission to access location was denied');
-        return;
-      }
-      // optener la ultima ubicacion optenida primero
-      let lastLocation = await Location.getLastKnownPositionAsync({});
-      if(lastLocation) {
-        console.log('Usando la ultima ubicacion conocida:     ', lastLocation)
-        // Aqui se usa el lastLocation.coords que da las cordenadas de latitude y longitude pero en un orden similar
-        // si llegase a tener problemas con respecto a coordenadas mal puede ser esto se reemplazaria con:
-        //setCenterCoordinate({
-        //  latitude: lastLocation.coords.latitude,
-        //  longitude: lastLocation.coords.longitude,
-        //  });
+  //   // Obtener la ubicación actual del usuario
+  //   (async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== 'granted') {
+  //       console.log('Permission to access location was denied');
+  //       return;
+  //     }
+  //     // optener la ultima ubicacion optenida primero
+  //     let lastLocation = await Location.getLastKnownPositionAsync({});
+  //     if(lastLocation) {
+  //       console.log('Usando la ultima ubicacion conocida:     ', lastLocation)
+  //       // Aqui se usa el lastLocation.coords que da las cordenadas de latitude y longitude pero en un orden similar
+  //       // si llegase a tener problemas con respecto a coordenadas mal puede ser esto se reemplazaria con:
+  //       //setCenterCoordinate({
+  //       //  latitude: lastLocation.coords.latitude,
+  //       //  longitude: lastLocation.coords.longitude,
+  //       //  });
 
-        setCenterCoordinate(lastLocation.coords)
+  //       setCenterCoordinate(lastLocation.coords)
 
-        mapRef.current?.animateToRegion({
-          latitude: lastLocation.coords.latitude,
-          longitude: lastLocation.coords.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.001,
-        },
-        1000
-        );
-      };
+  //       mapRef.current?.animateToRegion({
+  //         latitude: lastLocation.coords.latitude,
+  //         longitude: lastLocation.coords.longitude,
+  //         latitudeDelta: 0.01,
+  //         longitudeDelta: 0.001,
+  //       },
+  //       1000
+  //       );
+  //     };
 
-      let location = await Location.getCurrentPositionAsync({});
-      setCenterCoordinate(location.coords);
-      // ✅ Mueve el mapa a la ubicación obtenida
-      mapRef.current?.animateToRegion(
+  //     let location = await Location.getCurrentPositionAsync({});
+  //     setCenterCoordinate(location.coords);
+  //     // ✅ Mueve el mapa a la ubicación obtenida
+  //     mapRef.current?.animateToRegion(
+  //       {
+  //         latitude: location.coords.latitude,
+  //         longitude: location.coords.longitude,
+  //         latitudeDelta: 0.01,
+  //         longitudeDelta: 0.001,
+  //       },
+  //       1000 // Duración de la animación (opcional)
+  //     );
+  //   })();
+  // 
+
+    if (location && mapRef.current) {
+      console.log('puto location que cambia:  ' , location)
+      setCenterCoordinate(location)
+      mapRef.current.animateCamera(
         {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.001,
+          center: location,
+          zoom: 16,
         },
-        1000 // Duración de la animación (opcional)
+        { duration: 1000 } // Duracion de la animacion
       );
-    })();
-  }, []);
+    }
+    }, [location]);
 
+  if (error) {
+    return;
+  }
+
+  useEffect(() => {
+  }, []);
   // Si no se obtuvo la ubicación, usa las coordenadas predeterminadas
   const region = centerCoordinate || defaultCoordinates;
-
-  const mapRef = useRef<MapView>(null); // Correcto: Se usa useRef en vez de RefObject directamente
-
+  
   // esta funcion se usa para extraer las coordenadas cuando el usuario termina de mover o hacer zoom en el mapa
   const handleRegionChangeComplete = ( point : Region ) => {
     // Extraemos las coordenadas del centro del mapa
@@ -100,15 +181,40 @@ export default function Map () {
     // mostramos las coordenadas por la consola
     console.log('Coordenada del centro del mapa:  ', center);
   };
+  
+  // const addMarker = () => {
 
 
-  // funcion para manejar la confimacion de la ubicacion seleccionada
-  const handleConfirmLocation = () => {
-    // Mostramos las coodenadas seleccionadas en la consola
-    console.log( 'Ubicacion seleccionada: ' , centerCoordinate)
-    // Mostramos una alerta con las coordenadas
-    Alert.alert(`Ubicacion seleccionada:  ${region.latitude}  ,  ${region.longitude}`)
-  };
+  // }
+
+  const confCoordinate = ( data : string ) => {
+    if (data === 'startPoint'){
+      if (centerCoordinate) {
+        setMarkers([centerCoordinate]); // ✅ Solo actualiza si centerCoordinate tiene un valor
+        console.log('este es lo que se guarda en el markers estaticamente:  ' , centerCoordinate)
+      } else {
+        setMarkers([region])
+      }
+    } else if (data === 'endPoint') {
+        if (centerCoordinate) {
+          setMarkers([centerCoordinate]); // ✅ Solo actualiza si centerCoordinate tiene un valor
+    }
+
+  }}
+
+  // // funcion para manejar la confimacion de la ubicacion seleccionada
+  // const handleConfirmLocation = () => {
+  //   // Mostramos las coodenadas seleccionadas en la consola
+  //   console.log( 'Ubicacion seleccionada: ' , centerCoordinate)
+  //   // Mostramos una alerta con las coordenadas
+  //   Alert.alert(`Ubicacion seleccionada:  ${region.latitude}  ,  ${region.longitude}`)
+  // };
+
+  // aqui se define los markers
+  // const [ markers , serMarkers ] = useState([region, null])
+  // console.log('esto es el markers:    ' , markers )
+  
+  // const  
 
   // Renderizamos la interfaz de la aplicacion
   return(
@@ -132,9 +238,17 @@ export default function Map () {
         onRegionChangeComplete = {handleRegionChangeComplete} // escucha los cambiops en la region del mapa
       >
         {/* Marcador en el centro del mapa */}
-        <Marker coordinate={region}>
-          {/* puntero personalizado */}
-        </Marker>
+
+        {/* {
+          markers.map(( marker , index ) => {
+            marker ? <Marker key = {marker.id} />
+          })
+        } */}
+
+              {/* Renderizar marcadores si existen */}
+          {markers.map((marker, index) =>
+          marker ? <Marker key={index} coordinate={marker} title={`Punto ${index + 1}`} /> : null
+        )}
       </MapView>
 
       {/* puntero */}
@@ -144,18 +258,18 @@ export default function Map () {
               style = {styles.pointer}/>
           </View>
       
-      {/* Boron para confirmar la ubicacion seleccionada */}
+      {/* Boron para confirmar la ubicacion seleccionada
       <View style = { styles.buttonContainer}>
         <Button
           title="Confirmar Ubicacion"
           onPress={handleConfirmLocation}
           />
-      </View>
+      </View> */}
       
-      <ActionPannel  pointStart={region.longitude.toString()} pointEnd={`${region.latitude}`}/>
+      <ActionPannel region={region} confCoordinate={confCoordinate}/>
     </View>
   );
-}
+  }
 
 const styles = StyleSheet.create({
   container:{
