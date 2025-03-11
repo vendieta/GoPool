@@ -163,8 +163,6 @@ export default function Map () {
     return;
   }
 
-  useEffect(() => {
-  }, []);
   // Si no se obtuvo la ubicación, usa las coordenadas predeterminadas
   const region = centerCoordinate || defaultCoordinates;
   

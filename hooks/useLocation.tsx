@@ -38,22 +38,22 @@ export function useLocation() {
           longitude: currentLocation.coords.longitude,
         });
 
-        // Mantener la ubicación actualizada en segundo plano
-        const subscription = await Location.watchPositionAsync(
-          {
-            accuracy: Location.Accuracy.High, // Ahora pedimos más precisión
-            timeInterval: 5000, // Actualiza cada 5 segundos
-            distanceInterval: 10, // Solo actualiza si el usuario se mueve 10m
-          },
-          (newLocation) => {
-            setLocation({
-              latitude: newLocation.coords.latitude,
-              longitude: newLocation.coords.longitude,
-            });
-          }
-        );
+        // // Mantener la ubicación actualizada en segundo plano
+        // const subscription = await Location.watchPositionAsync(
+        //   {
+        //     accuracy: Location.Accuracy.High, // Ahora pedimos más precisión
+        //     timeInterval: 5000, // Actualiza cada 5 segundos
+        //     distanceInterval: 10, // Solo actualiza si el usuario se mueve 10m
+        //   },
+        //   (newLocation) => {
+        //     setLocation({
+        //       latitude: newLocation.coords.latitude,
+        //       longitude: newLocation.coords.longitude,
+        //     });
+        //   }
+        // );
 
-        return () => subscription.remove(); // Limpieza al desmontar
+        // return () => subscription.remove(); // Limpieza al desmontar
       } catch (error) {
         setError("Error fetching location");
       }
