@@ -101,6 +101,7 @@ export default function Map () {
                     //   { featureType: "road", elementType: "geometry", stylers: [{ color: "#424242" }] },
                     // ];
   useEffect(() => {
+
   //   // Obtener la ubicación actual del usuario
   //   (async () => {
   //     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -118,9 +119,7 @@ export default function Map () {
   //       //  latitude: lastLocation.coords.latitude,
   //       //  longitude: lastLocation.coords.longitude,
   //       //  });
-
   //       setCenterCoordinate(lastLocation.coords)
-
   //       mapRef.current?.animateToRegion({
   //         latitude: lastLocation.coords.latitude,
   //         longitude: lastLocation.coords.longitude,
@@ -130,7 +129,6 @@ export default function Map () {
   //       1000
   //       );
   //     };
-
   //     let location = await Location.getCurrentPositionAsync({});
   //     setCenterCoordinate(location.coords);
   //     // ✅ Mueve el mapa a la ubicación obtenida
@@ -146,6 +144,7 @@ export default function Map () {
   //   })();
   // 
 
+  // pide acceso a la ubicación del usuario
     if (location && mapRef.current) {
       console.log('puto location que cambia:  ' , location)
       setCenterCoordinate(location)
@@ -159,9 +158,9 @@ export default function Map () {
     }
     }, [location]);
 
-  if (error) {
-    return;
-  }
+//  if (error) {
+//    return <View><Text style={{color:'white'}}>error</Text></View>;
+//  }
 
   // Si no se obtuvo la ubicación, usa las coordenadas predeterminadas
   const region = centerCoordinate || defaultCoordinates;
@@ -293,7 +292,6 @@ const styles = StyleSheet.create({
     top : (height/2)-70, 
     left : (width/2)-20,
   }
-
 })
 
 
