@@ -1,156 +1,89 @@
-import React from 'react';
-import { View, TextInput, Text, StyleSheet, TextInputProps } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, Text, StyleSheet, Animated } from 'react-native';
 
-interface InputComponenteProps {
-  label: string;
+interface Props {
+  element: string;
   value: string;
   onChangeText: (text: string) => void;
-  placeholder: string;
   secureTextEntry?: boolean;
 }
 
-const Input: React.FC<InputComponenteProps> = ({
-  label,
-  value,
-  onChangeText,
-  placeholder,
-  secureTextEntry = false,
-}) => {
+export default function Input({ element, value, onChangeText, secureTextEntry = false }: Props) {
+  const [labelPosition, setLabelPosition] = useState(new Animated.Value(13));
+  const [labelPadding, setLabelPadding] = useState(new Animated.Value(10));
+
+  useEffect(() => {
+    if (value.length > 0) {
+      Animated.timing(labelPosition, {
+        toValue: -25,
+        duration: 300,
+        useNativeDriver: false, // Cambio a false para soportar top
+      }).start();
+
+      Animated.timing(labelPadding, {
+        toValue: 2,
+        duration: 300,
+        useNativeDriver: false, // Ya estaba en false, lo mantengo
+      }).start();
+    } else {
+      Animated.timing(labelPosition, {
+        toValue: 13,
+        duration: 300,
+        useNativeDriver: false, // Cambio a false para soportar top
+      }).start();
+
+      Animated.timing(labelPadding, {
+        toValue: 10,
+        duration: 300,
+        useNativeDriver: false, // Cambio a false para consistencia
+      }).start();
+    }
+  }, [value]);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
       <TextInput
-        autoCapitalize='none'
         style={styles.input}
         value={value}
         onChangeText={onChangeText}
-        placeholder={placeholder}
-        placeholderTextColor="#aaa"
+        placeholder=""
+        placeholderTextColor="transparent"
         secureTextEntry={secureTextEntry}
+        autoCapitalize="none"
       />
+      <Animated.Text
+        style={[styles.label, { top: labelPosition, paddingLeft: labelPadding }]}
+      >
+        {element}
+      </Animated.Text>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 10,
-    width: '80%',
-    alignSelf: 'center',
+    flexDirection: 'column',
+    gap: 1,
+    position: 'relative',
+    width: '100%',
+    marginBottom: 15,
   },
   label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 5,
+    fontSize: 14,
+    position: 'absolute',
+    pointerEvents: 'none',
+    color: '#666',
   },
   input: {
+    width: '100%',
     height: 50,
-    borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 25,
-    paddingHorizontal: 15,
-    fontSize: 16,
-    backgroundColor: '#f9f9f9',
+    borderColor: '#ccc',
+    borderRadius: 10,
     color: '#333',
+    fontSize: 16,
+    backgroundColor: '#f5f5f5',
+    paddingLeft: 15,
+    paddingRight: 15,
   },
 });
-
-export default Input;
-
-
-
-
-// import React, { useState, useEffect } from 'react';
-// import { View, TextInput, Text, StyleSheet, Animated } from 'react-native';
-
-// interface Props {
-//   element: string;
-// };
-
-// export default function Input( {element}: Props) {
-//   const [text, setText] = useState('');
-//   const [labelPosition, setLabelPosition] = useState(new Animated.Value(13)); // Inicializamos la posición de la etiqueta
-//   const [labelPadding, setLabelPadding] = useState(new Animated.Value(10)); // Inicializamos el padding de la etiqueta
-
-//   useEffect(() => {
-//     if (text.length > 0) {
-//       // Si hay texto, animamos la etiqueta hacia arriba
-//       Animated.timing(labelPosition, {
-//         toValue: -25,
-//         duration: 300,
-//         useNativeDriver: true,
-//       }).start();
-
-//       Animated.timing(labelPadding, {
-//         toValue: 2,
-//         duration: 300,
-//         useNativeDriver: false,
-//       }).start();
-//     } else {
-//       // Si no hay texto, devolvemos la etiqueta a su posición original
-//       Animated.timing(labelPosition, {
-//         toValue: 13,
-//         duration: 300,
-//         useNativeDriver: true,
-//       }).start();
-
-//       Animated.timing(labelPadding, {
-//         toValue: 10,
-//         duration: 300,
-//         useNativeDriver: true,
-//       }).start();
-//     }
-//   }, [text]);
-
-//   return (
-//     <View style={styles.container}>
-//       <TextInput
-//         style={styles.input}
-//         value={text}
-//         onChangeText={setText}
-//         placeholder=""
-//         placeholderTextColor="transparent"
-//       />
-//       <Animated.Text
-//         style={[
-//           styles.label,
-//           { top: labelPosition, paddingLeft: labelPadding }
-//         ]}
-//       >
-//         {element}
-//       </Animated.Text>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flexDirection: 'column',
-//     gap: 1,
-//     position: 'relative',
-//     color: 'white',
-//   },
-//   label: {
-//     fontSize: 15,
-//     position: 'absolute',
-//     pointerEvents: 'none',
-//     color: 'white',
-//   },
-//   input: {
-//     width: 200,
-//     height: 45,
-//     borderWidth: 0,
-//     borderRadius: 6,
-//     color: '#fff',
-//     fontSize: 15,
-//     backgroundColor: 'transparent',
-//     paddingLeft: 7,
-//     paddingRight: 7,
-//     shadowColor: '#000',
-//     shadowOffset: { width: 4, height: 4 },
-//     shadowOpacity: 0.5,
-//     shadowRadius: 15,
-//     elevation: 5,
-//   },
-// });

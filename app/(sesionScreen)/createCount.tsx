@@ -1,6 +1,7 @@
-import { View , Text , StyleSheet } from 'react-native';
+import { View, Text, StyleSheet,Dimensions } from 'react-native';
 import ButtomStyle from '@/components/BottomStyle'
 import ImgCard from '@/components/ImgCard';
+const { width, height } = Dimensions.get('window');
 
 export default function createCount(){
   return(
@@ -14,11 +15,11 @@ export default function createCount(){
       <View style={styles.containerBottom}>
         <ButtomStyle element={{
             title: 'Usuario de espol',
-            link: '/(sesionScreen)/createCountU' // pagina donde se registran los usuarios de espol
+            link: '/createCountU' // pagina donde se registran los usuarios de espol
         }}/>
         <ButtomStyle element={{
             title: 'Usuario externo',
-            link: '/(sesionScreen)/createCountE' //pagina donde se regitran los usuarios externos a espol
+            link: '/createCountE' //pagina donde se regitran los usuarios externos a espol
         }}/>
       </View>
     </ImgCard>
@@ -26,15 +27,27 @@ export default function createCount(){
 };
 
 const styles = StyleSheet.create({
-  containerText:{
+  containerText: {
+    width: '100%',
+    paddingHorizontal: width * 0.05,
+    marginBottom: height * 0.03,
+    alignItems: 'center',
+    
 
   },
   containerBottom: {
     flexDirection: 'column',
     gap: 25,
+    width: '100%', // Aumentado para que los botones sean más anchos
+    alignItems: 'center',
+    paddingHorizontal: width * 0.01, // Corregido de height a width
+
   },
   text: {
-    fontSize: 25,
-    textAlign: 'center'
-  }
-})
+    fontSize: width * 0.045,
+    textAlign: 'center',
+    color: '#333',
+    fontWeight: '500',
+    lineHeight: width * 0.06,
+  },
+});
