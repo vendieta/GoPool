@@ -196,7 +196,6 @@ export default function Map () {
         if (centerCoordinate) {
           setMarkers([centerCoordinate]); // ✅ Solo actualiza si centerCoordinate tiene un valor
     }
-
   }}
 
   // // funcion para manejar la confimacion de la ubicacion seleccionada
@@ -255,7 +254,7 @@ export default function Map () {
               style = {styles.pointer}/>
           </View>
       
-      {/* Boron para confirmar la ubicacion seleccionada
+      {/* Boton para confirmar la ubicacion seleccionada
       <View style = { styles.buttonContainer}>
         <Button
           title="Confirmar Ubicacion"
