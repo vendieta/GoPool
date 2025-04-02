@@ -1,4 +1,3 @@
-import { ThemedView } from "@/components/ThemedView";
 import { View , Text } from "react-native";
 import ActionPannel from "@/components/ActionPannel";
 

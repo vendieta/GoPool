@@ -1,6 +1,5 @@
 import { View, StyleSheet, Text } from "react-native";
 import { Link, Route } from "expo-router";
-import { ThemedText } from "./ThemedText";
 
 interface DataProps {
   element: {

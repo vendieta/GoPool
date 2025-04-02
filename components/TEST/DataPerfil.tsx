@@ -1,23 +1,24 @@
-import { View , Text , StyleSheet , Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import React from 'react';
-import { Link, Route } from 'expo-router';
-
-const { width, height } = Dimensions.get('window');
+import { Link } from 'expo-router';
 
 interface DataProps {
     element: {
         iconComponent: React.ReactNode;
         title: string;
-        link: Route;
+        link: string; // Simplificamos a string y confiamos en que sean rutas válidas
     };
-};
+    textColor?: string;
+}
 
-const DataPerfil: React.FC<DataProps> = ({element}) =>{
-    return(
-        <Link href={element.link}>
-            <View style={styles.container}>
-                {React.cloneElement(element.iconComponent as React.ReactElement, { style: styles.icon })}
-                <Text style={styles.text}>{element.title}</Text>
+const DataPerfil: React.FC<DataProps> = ({ element, textColor = 'white' }) => {
+    return (
+        <Link href={element.link as any}> {/* Usamos 'as any' temporalmente */}
+            <View style={[styles.container, { backgroundColor: '#696969' }]}>
+                {React.cloneElement(element.iconComponent as React.ReactElement, { 
+                    style: [styles.icon, { color: textColor }] 
+                })}
+                <Text style={[styles.text, { color: textColor }]}>{element.title}</Text>
             </View>
         </Link>
     );
@@ -28,24 +29,23 @@ const styles = StyleSheet.create({
         width: 25,
         height: 25,
         marginLeft: 30,
-        color: 'white',
     },
     container: {
-        width: width*0.95,
+        width: Dimensions.get('window').width * 0.95,
         borderRadius: 15,
-        backgroundColor: '#696969',
         flexDirection: 'row',
         paddingVertical: 10,
         shadowColor: '#000',
-        shadowOffset: {width: 0, height: 4},
+        shadowOffset: { width: 0, height: 4 },
         shadowRadius: 4,
         shadowOpacity: 0.2,
         elevation: 6,
+        alignItems: 'center',
     },
     text: {
-        margin: 'auto',
-        fontSize: 20,
-        color: 'white',
+        marginLeft: 15,
+        fontSize: 16,
+        fontWeight: '500',
     },
 });
 

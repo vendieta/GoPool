@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Image, Platform, Dimensions, TouchableOpacity, Button } from "react-native";
+import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { Collapsible } from '@/components/Collapsible';
 import DataPerfil from "@/components/TEST/DataPerfil";
@@ -7,12 +7,14 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Feather from '@expo/vector-icons/Feather';
 import LinkCard from '@/components/TEST/LinkCard';
 import { supabase } from "@/supabaseClient";
-import { Redirect, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
+import { useTheme } from '../../components/Themed/ContextTheme';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Perfil() {
   const router = useRouter();
+  const { theme } = useTheme();
 
   const outSession = () => {
     supabase.auth.signOut();
@@ -21,9 +23,10 @@ export default function Perfil() {
     }, 600);
   };
 
+  const headerBackgroundColor = theme.background;
+
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#fff' }}
       headerImage={
         <Image
           source={require('@/assets/images/user.png')}
@@ -31,105 +34,225 @@ export default function Perfil() {
         />
       }
     >
-      <View style={styles.mainContainer}>
+      <View style={[styles.mainContainer, { backgroundColor: theme.background }]}>
         <View style={styles.topContent}>
-          <Text style={styles.userText}>Welcome</Text>
-
-          <View style={styles.contentContainer}>
+          <Text style={[styles.userText, { color: theme.text }]}>Welcome</Text>
+          
+          {/* Sección: Configuraciones y Temas (existente) */}
+          <View style={[styles.contentContainer, { backgroundColor: theme.background }]}>
             <Collapsible title="Configuraciones y temas">
-              <View style={styles.containerLink}>
-                <TouchableOpacity 
-                  activeOpacity={0.7}
-                  style={styles.buttonStyle}
-                >
-                  <DataPerfil element={{
-                    iconComponent: <Feather name="settings" size={24} color="#666" />,
+              <View style={[styles.containerLink, { backgroundColor: theme.background }]}>
+                {[
+                  {
+                    icon: <Feather name="settings" size={24} color={theme.text} />,
                     title: 'Configuraciones',
-                    link: '/(optionScreen)/config'
-                  }} />
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  activeOpacity={0.7}
-                  style={styles.buttonStyle}
-                >
-                  <DataPerfil element={{
-                    iconComponent: <Feather name="user-check" size={24} color="#666" />,
+                    link: '/(optionScreen)/config',
+                  },
+                  {
+                    icon: <Feather name="user-check" size={24} color={theme.text} />,
                     title: 'Estado de cuenta',
-                    link: '/(optionScreen)/accountStatement'
-                  }} />
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  activeOpacity={0.7}
-                  style={styles.buttonStyle}
-                >
-                  <DataPerfil element={{
-                    iconComponent: <FontAwesome5 name="user" size={24} color="#666" />,
+                    link: '/(optionScreen)/accountStatement',
+                  },
+                  {
+                    icon: <FontAwesome5 name="user" size={24} color={theme.text} />,
                     title: 'Temas',
-                    link: '/(optionScreen)/themes'
-                  }} />
-                </TouchableOpacity>
+                    link: '/(optionScreen)/themes',
+                  },
+                ].map((item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    activeOpacity={0.7}
+                  >
+                    <DataPerfil
+                      element={{
+                        iconComponent: item.icon,
+                        title: item.title,
+                        link: item.link,
+                      }}
+                      textColor={theme.text}
+                    />
+                  </TouchableOpacity>
+                ))}
               </View>
             </Collapsible>
+          </View>
 
-            <Collapsible title="Ayuda y soporte técnico">
-              <View style={styles.containerLink}>
-                <TouchableOpacity 
-                  activeOpacity={0.7}
-                  style={styles.buttonStyle}
-                >
-                  <LinkCard element={{
-                    iconComponent: <Feather name="help-circle" size={24} color="#666" />,
-                    title: 'Servicios de ayuda',
-                    link: 'https://www.youtube.com/watch?v=GVucDuNYViU'
-                  }} />
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  activeOpacity={0.7}
-                  style={styles.buttonStyle}
-                >
-                  <LinkCard element={{
-                    iconComponent: <MaterialIcons name="report-gmailerrorred" size={24} color="#666" />,
-                    title: 'Reportar problema',
-                    link: '/(secondaryTabs)/problem'
-                  }} />
-                </TouchableOpacity>
+          {/* Nueva Sección: Mis Viajes */}
+          <View style={[styles.contentContainer, { backgroundColor: theme.background }]}>
+            <Collapsible title="Mis Viajes">
+              <View style={[styles.containerLink, { backgroundColor: theme.background }]}>
+                {[
+                  {
+                    icon: <MaterialIcons name="history" size={24} color={theme.text} />,
+                    title: 'Historial de Viajes',
+                    link: '/(optionScreen)/travelHistory',
+                  },
+                  {
+                    icon: <MaterialIcons name="schedule" size={24} color={theme.text} />,
+                    title: 'Viajes Programados',
+                    link: '/(optionScreen)/scheduledTrips',
+                  },
+                ].map((item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    activeOpacity={0.7}
+                    
+                  >
+                    <DataPerfil
+                      element={{
+                        iconComponent: item.icon,
+                        title: item.title,
+                        link: item.link,
+                      }}
+                      textColor={theme.text}
+                    />
+                  </TouchableOpacity>
+                ))}
               </View>
             </Collapsible>
-            
-            <Collapsible title="Info">
-              <View style={styles.containerLink}>
-                <TouchableOpacity 
-                  activeOpacity={0.7}
-                  style={styles.buttonStyle}
-                >
-                  <DataPerfil element={{
-                    iconComponent: <Feather name="info" size={24} color="#666" />,
-                    title: 'Quienes somos',
-                    link: '/(optionScreen)/aboutUs'
-                  }} />
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  activeOpacity={0.7}
-                  style={styles.buttonStyle}
-                >
-                  <DataPerfil element={{
-                    iconComponent: <FontAwesome5 name="copyright" size={24} color="#666" />,
-                    title: 'Creditos',
-                    link: '/(optionScreen)/credits'
-                  }} />
-                </TouchableOpacity>
+          </View>
+
+          {/* Nueva Sección: Métodos de Pago */}
+          <View style={[styles.contentContainer, { backgroundColor: theme.background }]}>
+            <Collapsible title="Métodos de Pago">
+              <View style={[styles.containerLink, { backgroundColor: theme.background }]}>
+                {[
+                  {
+                    icon: <MaterialIcons name="credit-card" size={24} color={theme.text} />,
+                    title: 'Agregar Método de Pago',
+                    link: '/(optionScreen)/addPaymentMethod',
+                  },
+                  {
+                    icon: <MaterialIcons name="payment" size={24} color={theme.text} />,
+                    title: 'Ver Métodos de Pago',
+                    link: '/(optionScreen)/viewPaymentMethods',
+                  },
+                ].map((item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    activeOpacity={0.7}
+                  >
+                    <DataPerfil
+                      element={{
+                        iconComponent: item.icon,
+                        title: item.title,
+                        link: item.link,
+                      }}
+                      textColor={theme.text}
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </Collapsible>
+          </View>
+
+          {/* Nueva Sección: Soporte */}
+          <View style={[styles.contentContainer, { backgroundColor: theme.background }]}>
+            <Collapsible title="Soporte">
+              <View style={[styles.containerLink, { backgroundColor: theme.background }]}>
+                {[
+                  {
+                    icon: <MaterialIcons name="support-agent" size={24} olor={theme.text} />,
+                    title: 'Contactar Soporte',
+                    link: '/(optionScreen)/contactSupport',
+                  },
+                  {
+                    icon: <MaterialIcons name="help-outline" size={24} color={theme.text} />,
+                    title: 'Preguntas Frecuentes',
+                    link: '/(optionScreen)/faq',
+                  },
+                ].map((item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    activeOpacity={0.7}
+                  >
+                    <DataPerfil
+                      element={{
+                        iconComponent: item.icon,
+                        title: item.title,
+                        link: item.link,
+                      }}
+                      textColor={theme.text}
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </Collapsible>
+          </View>
+
+          {/* Nueva Sección: Privacidad */}
+          <View style={[styles.contentContainer, { backgroundColor: theme.background }]}>
+            <Collapsible title="Privacidad">
+              <View style={[styles.containerLink, { backgroundColor: theme.background }]}>
+                {[
+                  {
+                    icon: <MaterialIcons name="privacy-tip" size={24} color={theme.text} />,
+                    title: 'Política de Privacidad',
+                    link: '/(optionScreen)/privacyPolicy',
+                  },
+                  {
+                    icon: <MaterialIcons name="security" size={24} color={theme.text} />,
+                    title: 'Configuración de Privacidad',
+                    link: '/(optionScreen)/privacySettings',
+                  },
+                ].map((item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    activeOpacity={0.7}
+                  >
+                    <DataPerfil
+                      element={{
+                        iconComponent: item.icon,
+                        title: item.title,
+                        link: item.link,
+                      }}
+                      textColor={theme.text}
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </Collapsible>
+          </View>
+
+          {/* Nueva Sección: About Us */}
+          <View style={[styles.contentContainer, { backgroundColor: theme.background }]}>
+            <Collapsible title="About Us">
+              <View style={[styles.containerLink, { backgroundColor: theme.background }]}>
+                {[
+                  {
+                    icon: <MaterialIcons name="info" size={24} color={theme.text} />,
+                    title: 'Sobre Nosotros',
+                    link: '/(optionScreen)/aboutUs',
+                  },
+                  {
+                    icon: <MaterialIcons name="description" size={24} color={theme.text} />,
+                    title: 'Términos y Condiciones',
+                    link: '/(optionScreen)/termsAndConditions',
+                  },
+                ].map((item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    activeOpacity={0.7}
+                  >
+                    <DataPerfil
+                      element={{
+                        iconComponent: item.icon,
+                        title: item.title,
+                        link: item.link,
+                      }}
+                      textColor={theme.text}
+                    />
+                  </TouchableOpacity>
+                ))}
               </View>
             </Collapsible>
           </View>
         </View>
 
+        {/* Footer con botón de cerrar sesión */}
         <View style={styles.footerContainer}>
-          <TouchableOpacity 
-            style={styles.logoutButton} 
+          <TouchableOpacity
+            style={[styles.logoutButton, { backgroundColor: theme.primary }]}
             onPress={outSession}
             activeOpacity={0.7}
           >
@@ -152,24 +275,21 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     paddingVertical: height * 0.02,
-    backgroundColor: '#fff',
   },
   topContent: {
     flexDirection: 'column',
     alignItems: 'center',
   },
   userText: {
-    fontSize: width * 0.08,
-    fontWeight: 'bold',
-    color: '#000',
     textAlign: 'center',
     marginTop: height * 0.02,
     marginBottom: height * 0.02,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   contentContainer: {
     paddingHorizontal: width * 0.03,
     width: width,
-    backgroundColor: '#fff',
     borderRadius: 20,
     paddingVertical: height * 0.015,
     shadowColor: '#000',
@@ -177,18 +297,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
-    color:'#fff',
+    marginBottom: height * 0.015, // Espacio entre secciones
   },
   containerLink: {
     flexDirection: 'column',
     gap: 15,
     marginVertical: height * 0.015,
     padding: width * 0.03,
-    backgroundColor: '#fff',
     borderRadius: 20,
   },
   buttonStyle: {
-    backgroundColor: '#f8f8f8',
     borderRadius: 12,
     padding: 12,
     shadowColor: '#000',
@@ -204,7 +322,6 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     marginTop: height * 0.02,
-    backgroundColor: '#ff4d4d',
     borderRadius: 25,
     paddingVertical: height * 0.015,
     paddingHorizontal: width * 0.1,
