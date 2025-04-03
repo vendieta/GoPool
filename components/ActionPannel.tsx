@@ -32,9 +32,10 @@ export default function ActionPannel (data : Props){
     setEndPoint(data.region.longitude.toString())
   }
 
-  const plus = () => {
+  // const plus = (x : Coordinate) => {
+  //   data.confCoordinate('add')
     
-  }
+  // }
   
 
 
@@ -53,23 +54,23 @@ export default function ActionPannel (data : Props){
             aqui tambien hacemos lo mismo de arriba*/}
     
           <Pressable onPress={() => pointStart(data.region)}>
-            <Text style = {styles.button} >Enviar</Text>
+            <Text style = {styles.button} >Confirmar</Text>
           </Pressable>
           {/* Aqui debe estar el boton para enviar los datos a la api */}
         </> : controler === 'menu' ? 
         <>
-          <Text>start</Text>
+          <Text>Tu ubicacion</Text>
           <Pressable onPress={() => setControler('startPoint')}>
             <Text style = { styles.ubi} >{startPoint}</Text>
           </Pressable>
         
-          <Text>end</Text>
+          <Text>Tu destino</Text>
           <Pressable onPress={() => setControler('endPoint')}>
             <Text style = { styles.ubi} >{endPoint}</Text>
           </Pressable>
 
-          <Pressable onPress={() => setControler('endPoint')}>
-            <Text style = { styles.plus } >+</Text>
+          <Pressable onPress={() => setControler('menu')}>
+            <Text style = { styles.plus } >Aceptar</Text>
           </Pressable>
 
         </> : controler === 'endPoint' ?
@@ -85,7 +86,7 @@ export default function ActionPannel (data : Props){
             aqui tambien hacemos lo mismo de arriba*/}
     
           <Pressable onPress={() => pointEnd(data.region)}>
-            <Text style = {styles.button} >Enviar</Text>
+            <Text style = {styles.button} >confirmar</Text>
           </Pressable>
         </> : 
         <>
@@ -102,7 +103,9 @@ const styles = StyleSheet.create(
     container : {
       borderTopLeftRadius: 25,
       borderTopRightRadius: 25,
-      padding: 5,
+      paddingHorizontal: 5,
+      paddingTop: 5,
+      paddingBottom: 25,
       position : 'absolute',
       backgroundColor: 'white',
       width: '100%',
@@ -118,6 +121,7 @@ const styles = StyleSheet.create(
       width: '80%',
       backgroundColor: "rgba(169, 169, 169, 0.8)",
       padding: 2,
+      margin: 2,
       fontSize: 20,
       textAlign: 'center',
       borderRadius: 5
@@ -132,6 +136,8 @@ const styles = StyleSheet.create(
       padding: 10,
       backgroundColor: 'orange',
       borderRadius: 100,
+      marginTop: 15
+      
 
     }
 

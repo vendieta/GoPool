@@ -100,7 +100,12 @@ export default function Map () {
         id: 'endPoint',
         coordinate:region,
         isDestination: true
-      };}
+      };} 
+      // else {
+      //   newLocation = {
+      //     id: ''
+      //   }
+      // }
       setMarkers(prev => [...prev, newLocation]);
   }
   console.log(markers)
