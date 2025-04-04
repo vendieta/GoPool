@@ -6,43 +6,59 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Stack } from 'expo-router';
-import { AuthProvider } from '@/hooks/userContext';
-import { ThemeProvider } from '@/components/Themed/ContextTheme'; // Nuestro ThemeProvider
+import { ThemeProvider } from '@/components/Themed/ContextTheme';
+import { View } from 'react-native';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+// Evita que el splash screen se oculte automáticamente
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
   useEffect(() => {
-    if (loaded) {
+    if (fontsLoaded || fontError) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [fontsLoaded, fontError]);
 
-  if (!loaded) {
-    return null;
+  // Pantalla de carga mientras se cargan las fuentes
+  if (!fontsLoaded) {
+    return (
+      <View style={{ flex: 1, backgroundColor: colorScheme === 'dark' ? DarkTheme.colors.background : DefaultTheme.colors.background }} />
+    );
   }
 
   return (
-    <AuthProvider>
-      <ThemeProvider> {/* Nuestro ThemeProvider para el ThemeContext */}
-        <NavigationThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack screenOptions={{ animation: 'fade', presentation: 'modal' }}>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false, presentation: 'modal' }} />
-            <Stack.Screen name="+not-found" />
-            <Stack.Screen name="(secondaryTabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="(sesionScreen)" options={{ headerShown: false }} />
-            <Stack.Screen name="(serviceScreen)" options={{ headerShown: false }} />
-            <Stack.Screen name="(createService)" options={{ headerShown: false }} />
-          </Stack>
-          <StatusBar style="auto" />
-        </NavigationThemeProvider>
-      </ThemeProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <NavigationThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack 
+          screenOptions={{ 
+            animation: 'fade', 
+            presentation: 'modal',
+            headerShown: false // Ocultar header por defecto
+          }}
+        >
+          {/* Grupos de rutas principales */}
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="(sesionScreen)" />
+          <Stack.Screen name="(serviceScreen)" />
+          
+          {/* Rutas específicas */}
+          <Stack.Screen 
+            name="+not-found" 
+            options={{ 
+              title: 'Página no encontrada',
+              animation: 'fade'
+            }} 
+          />
+          
+          {/* StatusBar configurable */}
+          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+        </Stack>
+      </NavigationThemeProvider>
+    </ThemeProvider>
   );
 }

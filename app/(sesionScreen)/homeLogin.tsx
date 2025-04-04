@@ -1,30 +1,105 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import { Link, Route } from 'expo-router';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
+import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
-
-// Importamos el componente BottomStyle (ajusta la ruta según tu estructura)
-import BottomStyle from '../../components/BottomStyle'; // Ajusta esta ruta si es necesario
+import { apiService, setAuthToken } from '../../api/api';
+import BottomStyle from '../../components/BottomStyle';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
-const toRoute = (path: string): Route => path as Route;
-export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  // Definimos el objeto con el título y la ruta para el botón
-  const loginButtonData: { title: string; link: Route } = {
-    title: 'LOG IN',
-    link: toRoute('/profile'), // Cambia la ruta según tu estructura de navegación	
+interface LoginForm {
+  email: string;
+  password: string;
+}
+
+interface LoginResponse {
+  access: string;
+  refresh: string;
+  message?: string;
+}
+
+export default function LoginScreen() {
+  const router = useRouter();
+  const [formData, setFormData] = useState<LoginForm>({
+    email: '',
+    password: ''
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (name: keyof LoginForm, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleLogin = async () => {
+    console.log('handleLogin', formData);
+    if (!formData.email || !formData.password) {
+      Alert.alert('Error', 'Por favor ingresa email y contraseña');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // 1. Llamada al endpoint de login
+      console.log('Llamando al endpoint de login...');
+      const response = await apiService.post<LoginResponse>('/auth/login', {
+        email: formData.email,
+        password: formData.password
+      });
+
+      // 2. Guardar tokens
+      if (response.access && response.refresh) {
+        // Guardar tokens en AsyncStorage
+        console.log('Guardando tokens...');
+        await AsyncStorage.multiSet([
+          ['accessToken', response.access],
+          ['refreshToken', response.refresh]
+        ]);
+
+        // Configurar token en axios
+        setAuthToken(response.access);
+        console.log("llegue aqui");
+        // 3. Navegar a la pantalla principal
+        router.replace('/profile');
+
+        Alert.alert('Éxito', 'Inicio de sesión correcto');
+      } else {
+        Alert.alert('Error', response.message || 'Credenciales incorrectas');
+      }
+    } catch (error: any) {
+      console.error('Login error:', error);
+
+      let errorMessage = 'Error al conectar con el servidor';
+      if (error.response) {
+        // Manejo específico de errores HTTP
+        switch (error.response.status) {
+          case 400:
+            errorMessage = 'Datos inválidos';
+            break;
+          case 401:
+            errorMessage = 'Credenciales incorrectas';
+            break;
+          case 500:
+            errorMessage = 'Error del servidor';
+            break;
+        }
+      }
+
+      Alert.alert('Error', errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <View style={styles.container}>
-      {/* Title and Subtitle */}
       <Text style={styles.title}>Bienvenido a GoPol comenzemos tu viaje!</Text>
       <Text style={styles.subtitle}>Te ayudaré a contactar con otras personas con las que compartes una ruta</Text>
       <Text style={styles.subtitle}>Sign In to your account</Text>
 
-      {/* Input Fields */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -32,6 +107,8 @@ export default function LoginScreen() {
           placeholderTextColor="#999"
           keyboardType="email-address"
           autoCapitalize="none"
+          value={formData.email}
+          onChangeText={(text) => handleInputChange('email', text)}
         />
         <TextInput
           style={styles.input}
@@ -39,16 +116,22 @@ export default function LoginScreen() {
           placeholderTextColor="#999"
           secureTextEntry
           autoCapitalize="none"
+          value={formData.password}
+          onChangeText={(text) => handleInputChange('password', text)}
         />
         <TouchableOpacity>
-          <Text style={styles.forgotPassword}>Forgot your password?</Text>
+          <Text style={styles.forgotPassword}>Forgot your password?
+          </Text>
         </TouchableOpacity>
       </View>
 
-      {/* Botón con BottomStyle */}
-      <BottomStyle element={loginButtonData} />
+      <TouchableOpacity disabled={loading}>
+        <BottomStyle element={{
+          title: loading ? 'CARGANDO...' : 'LOG IN',
+          onPress: () => {handleLogin()} // Opcional, ya que el TouchableOpacity padre maneja el press
+        }} />
+      </TouchableOpacity>
 
-      {/* Create Account Link */}
       <View style={styles.createAccountContainer}>
         <Text style={styles.createAccountText}>Don't have an account? </Text>
         <Link href="/createCount" asChild>
@@ -59,6 +142,7 @@ export default function LoginScreen() {
   );
 }
 
+// Tus estilos existentes...
 const styles = StyleSheet.create({
   container: {
     flex: 1,

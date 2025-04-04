@@ -3,7 +3,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useFonts } from 'expo-font';
-import { AuthProvider } from "@/hooks/userContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,7 +23,6 @@ export default function layout() {
   }
     
   return(
-    <AuthProvider>
       <Stack screenOptions={{animation: 'none', presentation:'modal'}}>
         <Stack.Screen name="index" options={{ 
         headerShown: false,
@@ -36,6 +34,5 @@ export default function layout() {
         <Stack.Screen name="createCountU" options={{title:'Configuraciones', headerShown: false}}/>
         <Stack.Screen name="createCountE" options={{title:'Configuraciones', headerShown: false}}/>
       </Stack>
-    </AuthProvider>
   )
 }

@@ -5,7 +5,7 @@ const accountStatement = () => {
     
     return(
         <View>
-            <Text>hola mama bicho</Text>
+           
         </View>
     );
 };

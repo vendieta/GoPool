@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, RefreshControl, FlatList } from 'react-native';
 import UserCard from './TEST/UserCard';
-import { supabase } from '@/supabaseClient';
 import { Link } from 'expo-router';
 import { useTheme } from '@/components/Themed/ContextTheme';
 
@@ -23,17 +22,7 @@ const ScrollRefresh = () => {
   const [refreshing, setRefreshing] = useState(false); // Estado para controlar el refresco
 
   const fetchData = async () => {
-    const { data, error } = await supabase
-      .from('cardData') // Especifica tu tabla aquí
-      .select('*'); // O especifica las columnas que quieres recuperar
-
-    if (error) {
-      setError(error.message); // Si hay un error, lo guardamos en el estado
-      return;
-    }
-
-    setData(data); // Si todo va bien, guardamos los datos
-    console.log(data[2]);
+    
   };
 
   useEffect(() => {

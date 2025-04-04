@@ -19,10 +19,10 @@ export default function Opcion({element,element1}:DataProps){
     return(
         <View style={styles.container}>
             <Link href={element.link} style={styles.text}>
-                <Text>{element.title}</Text>
+                <>{element.title}</>
             </Link>
             <Link href={element1.link} style={styles.text1}>
-                <Text>{element1.title}</Text>
+                <>{element1.title}</>
             </Link>
         </View>
     );

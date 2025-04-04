@@ -6,7 +6,6 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Feather from '@expo/vector-icons/Feather';
 import LinkCard from '@/components/TEST/LinkCard';
-import { supabase } from "@/supabaseClient";
 import { useRouter } from "expo-router";
 import { useTheme } from '../../components/Themed/ContextTheme';
 
@@ -17,10 +16,9 @@ export default function Perfil() {
   const { theme } = useTheme();
 
   const outSession = () => {
-    supabase.auth.signOut();
-    setTimeout(() => {
+    //ARIELAT123 AÑADIR LOGICA DE CERRAR SESION
+    // Por ahora solo redirigimos a la pantalla de inicio
       router.replace('/');
-    }, 600);
   };
 
   const headerBackgroundColor = theme.background;

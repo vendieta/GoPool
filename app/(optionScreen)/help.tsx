@@ -5,7 +5,6 @@ const help = () => {
     
     return(
         <View>
-            <Text>hola mama bicho</Text>
         </View>
     );
 };
