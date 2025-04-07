@@ -53,7 +53,7 @@ export default function TabLayout() {
           options={{
             headerShown: true,
             headerTitle: 'GOPOOL',
-            title: 'HOME',
+            title: 'Home',
             tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
           }}
         />

@@ -5,7 +5,6 @@ import DataPerfil from "@/components/TEST/DataPerfil";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Feather from '@expo/vector-icons/Feather';
-import LinkCard from '@/components/TEST/LinkCard';
 import { useRouter } from "expo-router";
 import { useTheme } from '../../components/Themed/ContextTheme';
 
