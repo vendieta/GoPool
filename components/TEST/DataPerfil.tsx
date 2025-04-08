@@ -10,6 +10,7 @@ interface DataProps {
         title: string;
         link: Route;
     };
+    textColor: string;
 };
 
 const DataPerfil: React.FC<DataProps> = ({element}) =>{
