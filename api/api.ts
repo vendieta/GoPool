@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Configuración básica de Axios
 const api = axios.create({
-  baseURL: 'http://192.168.100.2:3977/api', // Reemplaza con la URL de tu API
+  baseURL: 'http://192.168.100.14:3977/api', // Reemplaza con la URL de tu API
   timeout: 10000, // Tiempo de espera antes de cancelar la petición
   headers: {
     'Content-Type': 'application/json',

@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, Animated } from 'react-native';
+import { 
+  View, 
+  TextInput, 
+  Text, 
+  StyleSheet, 
+  Animated, 
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard
+} from 'react-native';
 
 interface Props {
   value: string;
@@ -22,13 +32,11 @@ export default function Input({
   const labelScale = new Animated.Value(value ? 0.8 : 1);
 
   useEffect(() => {
-    // Animación cuando el input tiene valor o está enfocado
     Animated.parallel([
       Animated.timing(labelPosition, {
         toValue: (value || isFocused) ? 1 : 0,
         duration: 200,
         useNativeDriver: false,
-        
       }),
       Animated.timing(labelOpacity, {
         toValue: (value || isFocused) ? 0 : 0.5,
@@ -66,29 +74,38 @@ export default function Input({
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        value={value}
-        onChangeText={onChangeText}
-        placeholder={placeholder || ''}
-        placeholderTextColor="transparent"
-        secureTextEntry={secureTextEntry}
-        autoCapitalize="none"
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-      />
-      <Animated.Text
-        style={[styles.label, labelStyle]}
-      >
-        {label}
-      </Animated.Text>
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.innerContainer}>
+          <TextInput
+            style={styles.input}
+            value={value}
+            onChangeText={onChangeText}
+            placeholder={placeholder || ''}
+            placeholderTextColor="transparent"
+            secureTextEntry={secureTextEntry}
+            autoCapitalize="none"
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+          />
+          <Animated.Text style={[styles.label, labelStyle]}>
+            {label}
+          </Animated.Text>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    width: '100%',
+  },
+  innerContainer: {
     position: 'relative',
     width: '100%',
     marginBottom: 20,

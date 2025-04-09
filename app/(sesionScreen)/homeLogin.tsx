@@ -63,7 +63,7 @@ export default function LoginScreen() {
         setAuthToken(response.access);
         console.log("llegue aqui");
         // 3. Navegar a la pantalla principal
-        router.replace('/profile');
+        router.replace('/profile'); //REEMPLAZAR LA RUTA CORRECTA A LA QUE SE QUIERE VIAJAR
 
         Alert.alert('Éxito', 'Inicio de sesión correcto');
       } else {

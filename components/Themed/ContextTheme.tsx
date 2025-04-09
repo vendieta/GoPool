@@ -8,6 +8,7 @@ export type Theme = {
   primary: string;
   cardBackground: string;
   buttonBackground: string;
+  border: string;
 };
 
 
@@ -18,15 +19,19 @@ export const lightTheme: Theme = {
   primary: "#007bff",
   cardBackground: "#ffffff",
   buttonBackground: "#ff4d4d",
+  border: "#ffffff"
+
 };
 
 export const darkTheme: Theme = {
-    name: "dark",
+  name: "dark",
   background: "#121212",
-  text: "#ffffff",
-  primary: "#bb86fc",
+  text: "#000000",
+  primary: "black",
   cardBackground: "#121212",
   buttonBackground: "#ff4d4d",
+  border: "#ffffff",
+
 
 };
 
