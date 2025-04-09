@@ -11,8 +11,8 @@ import { useFonts } from 'expo-font';
 SplashScreen.preventAutoHideAsync();
 
 export default function HomeScreen() {
-  // const { session, isLoading } = useUserInfo();
-  const { session, isLoading } = {session: 'true', isLoading: true};
+  const { session, isLoading } = useUserInfo();
+  // const { session, isLoading } = {session: 'true', isLoading: true};
   console.log('esto es lo que sale en la sesion del home:     ', session)
   const navigation = useNavigation();
   const [loaded, error] = useFonts({
