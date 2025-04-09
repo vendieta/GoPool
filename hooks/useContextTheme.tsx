@@ -2,14 +2,13 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useColorScheme } from "react-native";
 
 export type Theme = {
-  name: string;  
+  name: string;
   background: string;
   text: string;
   primary: string;
   cardBackground: string;
   buttonBackground: string;
 };
-
 
 export const lightTheme: Theme = {
   name: "light",
@@ -21,18 +20,18 @@ export const lightTheme: Theme = {
 };
 
 export const darkTheme: Theme = {
-    name: "dark",
+  name: "dark",
   background: "#121212",
   text: "#ffffff",
   primary: "#bb86fc",
   cardBackground: "#121212",
   buttonBackground: "#ff4d4d",
-
 };
 
+// Definimos el tipo de contexto para asegurarnos de que siempre tiene un tema y una función para cambiarlo
 type ThemeContextType = {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
+  theme: Theme;  // Estado actual del tema
+  toggleTheme: () => void;  // Función para cambiar entre temas manualmente
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -42,10 +41,18 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [theme, setTheme] = useState<Theme>(systemScheme === "dark" ? darkTheme : lightTheme);
 
   useEffect(() => {
-    setTheme(systemScheme === "dark" ? darkTheme : lightTheme);
+    setTheme(prevTheme => (systemScheme === "dark" ? darkTheme : lightTheme));
   }, [systemScheme]);
 
-  return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;
+  const toggleTheme = () => {
+    setTheme(prevTheme => (prevTheme.name === "light" ? darkTheme : lightTheme));
+  };
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
 };
 
 export const useTheme = (): ThemeContextType => {
@@ -54,5 +61,4 @@ export const useTheme = (): ThemeContextType => {
     throw new Error("useTheme debe ser usado dentro de un ThemeProvider");
   }
   return context;
-  
 };

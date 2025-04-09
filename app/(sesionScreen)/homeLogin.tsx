@@ -1,10 +1,22 @@
-// app/homeLogin.tsx
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, Route } from 'expo-router';
+import { useState } from 'react';
+
+// Importamos el componente BottomStyle (ajusta la ruta según tu estructura)
+import BottomStyle from '../../components/BottomStyle'; // Ajusta esta ruta si es necesario
 
 const { width, height } = Dimensions.get('window');
 
 export default function LoginScreen() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  console.log(email,password)
+  // Definimos el objeto con el título y la ruta para el botón
+  const loginButtonData: { title: string; link: Route } = {
+    title: 'LOG IN',
+    link: '/', // Cambia la ruta según tu estructura de navegación	
+  };
+
   return (
     <View style={styles.container}>
       {/* Title and Subtitle */}
@@ -33,11 +45,8 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Log In Button */}
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>LOG IN</Text>
-
-      </TouchableOpacity>
+      {/* Botón con BottomStyle */}
+      <BottomStyle element={loginButtonData} />
 
       {/* Create Account Link */}
       <View style={styles.createAccountContainer}>
@@ -46,8 +55,6 @@ export default function LoginScreen() {
           <Text style={styles.createAccountLink}>CREATE</Text>
         </Link>
       </View>
-
-      
     </View>
   );
 }
@@ -89,20 +96,6 @@ const styles = StyleSheet.create({
     fontSize: width * 0.035,
     textAlign: 'right',
   },
-  button: {
-    backgroundColor: '#ff4d4d',
-    borderRadius: 25,
-    paddingVertical: height * 0.02,
-    paddingHorizontal: width * 0.1,
-    width: '80%',
-    alignItems: 'center',
-    marginBottom: height * 0.03,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: width * 0.045,
-    fontWeight: 'bold',
-  },
   createAccountContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -117,5 +110,4 @@ const styles = StyleSheet.create({
     color: '#ff4d4d',
     fontWeight: 'bold',
   },
-  
 });

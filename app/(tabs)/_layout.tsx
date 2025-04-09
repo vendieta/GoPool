@@ -11,7 +11,7 @@ import { Slot } from "expo-router";
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { ThemedView } from '@/components/ThemedView';
-
+import { ThemeProvider } from '@/hooks/useContextTheme';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,7 +34,7 @@ export default function TabLayout() {
 
   return (
     // este themedView no hace nada por ahora no lo quito pero para producciion si 
-    <ThemedView style = {{ flex : 1 }}>
+    <ThemeProvider>
       <Tabs
         screenOptions={{
           animation: 'none', 
@@ -76,6 +76,6 @@ export default function TabLayout() {
         
         
       </Tabs>  
-    </ThemedView>
+    </ThemeProvider>
     )
 }

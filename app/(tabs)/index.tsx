@@ -1,5 +1,5 @@
 import ScrollRefresh from '@/components/ScrollRefresh';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigation } from "expo-router";
 import { useUserInfo } from '@/hooks/userContext';
 import LoginScreen from '@/app/(sesionScreen)/homeLogin';
@@ -12,6 +12,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function HomeScreen() {
   const { session, isLoading } = useUserInfo();
+  // const { session, isLoading } = {session: 'true', isLoading: true};
   console.log('esto es lo que sale en la sesion del home:     ', session)
   const navigation = useNavigation();
   const [loaded, error] = useFonts({
