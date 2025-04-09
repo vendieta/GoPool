@@ -65,7 +65,7 @@ const UserCard: React.FC<DataProps> = ({ element }) => {
                         style={styles.link}
                     >
                         <View style={styles.card}>
-                            {/* Sección izquierda (40%) */}
+                            {/* Sección izquierda (20%) */}
                             <LinearGradient
                                 colors={['rgba(255, 107, 107, 0.2)', 'rgba(255, 107, 107, 0.1)']}
                                 style={styles.leftSection}
@@ -81,32 +81,27 @@ const UserCard: React.FC<DataProps> = ({ element }) => {
                                 <Text style={styles.priceText}>${element.price}</Text>
                             </LinearGradient>
 
-                            {/* Sección derecha (60%) */}
-                            <View style={styles.rightSection}>
-                                {/* Fila superior */}
-                                <View style={styles.gridRow}>
-                                    <View style={styles.gridCell}>
-                                        <Text style={styles.infoLabel}>SALIDA</Text>
-                                        <Text style={styles.infoValue}>{element.time}</Text>
-                                        <Text style={styles.infoValue}>{element.date}</Text>
-                                    </View>
-                                    <View style={styles.gridCell}>
-                                        <Text style={styles.infoLabel}>CUPOS</Text>
-                                        <Text style={[styles.infoValue, styles.freeText]}>{element.free}</Text>
-                                    </View>
+                            {/* Sección central (65%) */}
+                            <View style={styles.centerSection}>
+                                <View style={styles.infoRow}>
+                                    <Text style={styles.infoLabel}>SALIDA</Text>
+                                    <Text style={styles.infoValue}>{element.time} / <Text style={styles.infoValue}>{element.date}</Text></Text>
+                                    
                                 </View>
+                                <View style={styles.infoRow}>
+                                    <Text style={styles.infoLabel}>INICIO</Text>
+                                    <Text style={styles.infoValue}>{element.startZone}</Text>
+                                </View>
+                                <View style={styles.infoRow}>
+                                    <Text style={styles.infoLabel}>FIN</Text>
+                                    <Text style={styles.infoValue}>{element.endZone}</Text>
+                                </View>
+                            </View>
 
-                                {/* Fila inferior */}
-                                <View style={styles.gridRow}>
-                                    <View style={styles.gridCell}>
-                                        <Text style={styles.infoLabel}>INICIO</Text>
-                                        <Text style={styles.infoValue}>{element.startZone}</Text>
-                                    </View>
-                                    <View style={styles.gridCell}>
-                                        <Text style={styles.infoLabel}>FIN</Text>
-                                        <Text style={styles.infoValue}>{element.endZone}</Text>
-                                    </View>
-                                </View>
+                            {/* Sección derecha (15%) - Cupos */}
+                            <View style={styles.rightSection}>
+                                <Text style={styles.cuposLabel}>CUPOS</Text>
+                                <Text style={styles.cuposValue}>{element.free}</Text>
                             </View>
                         </View>
                     </TouchableOpacity>
@@ -136,58 +131,54 @@ const styles = StyleSheet.create({
     },
     card: {
         flexDirection: 'row',
-        height: 130, // Aumentado ligeramente la altura
+        height: "auto",
     },
     leftSection: {
-        width: '33%',
+        width: '30%',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 10,
+        padding: 8,
         borderRightWidth: 0,
         borderRightColor: 'rgba(255,255,255,0.2)',
     },
+    centerSection: {
+        width: '45%',
+        paddingVertical: 10,
+        paddingHorizontal: 8,
+        justifyContent: 'space-between',
+    },
     rightSection: {
-        width: '67%',
-        paddingVertical: 0,
-        
-    },
-    gridRow: {
-        flex: 1,
-        flexDirection: 'row',
-        paddingHorizontal: 1,
-    },
-    gridCell: {
-        flex: 1,
-        justifyContent: 'center',
+        width: '25%',
         alignItems: 'center',
-        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-        borderWidth: 1,
-        height: '100%',
-        borderColor: 'rgba(255, 255, 255, 0.1)',
-        borderRadius: 0,
+        paddingTop: 10,
+        
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    },
+    infoRow: {
+        marginBottom: 8,
     },
     userAvatar: {
-        width: 48,
-        height: 48,
-        borderRadius: 24,
+        width: 40,
+        height: 40,
+        borderRadius: 20,
         borderWidth: 2,
         borderColor: 'rgba(255, 107, 107, 0.9)',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(255, 255, 255, 0.2)',
-        marginVertical: 6,
+        marginVertical: 4,
     },
     avatarInitial: {
-        fontSize: 22,
+        fontSize: 18,
         fontWeight: 'bold',
         color: 'rgb(248, 243, 243)',
     },
     userName: {
         fontWeight: '700',
-        fontSize: 15,
-        maxWidth: '90%',
+        fontSize: 13,
+        maxWidth: '100%',
         textAlign: 'center',
-        marginBottom: 6,
+        marginBottom: 4,
         color: '#fff',
         textShadowColor: 'rgba(255, 255, 255, 0.3)',
         textShadowOffset: { width: 1, height: 1 },
@@ -196,8 +187,8 @@ const styles = StyleSheet.create({
     priceText: {
         color: '#00ff00',
         fontWeight: 'bold',
-        fontSize: 18,
-        marginTop: 6,
+        fontSize: 16,
+        marginTop: 4,
         textShadowColor: 'rgba(14, 250, 250, 0.8)',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 3,
@@ -206,17 +197,21 @@ const styles = StyleSheet.create({
         fontSize: 11,
         fontWeight: '600',
         color: 'rgba(255, 255, 255, 0.7)',
-        marginBottom: 3,
-        textAlign: 'center',
+        marginBottom: 2,
     },
     infoValue: {
         fontSize: 13,
         color: '#fff',
-        textAlign: 'center',
         fontWeight: '400',
     },
-    freeText: {
-        fontSize: 16,
+    cuposLabel: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: 'rgba(255, 255, 255, 0.7)',
+        marginBottom: 2,
+    },
+    cuposValue: {
+        fontSize: 22,
         fontWeight: 'bold',
         color: '#00ff00',
         textShadowColor: 'rgba(14, 250, 250, 0.8)',
