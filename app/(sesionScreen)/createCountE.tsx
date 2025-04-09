@@ -1,12 +1,11 @@
 import { View, Text, StyleSheet, Dimensions, ImageBackground } from 'react-native';
-import ImgCard from '@/components/ImgCard';
 import BottomStyle from '@/components/BottomStyle';
 import Input from '@/components/Input';
 import { useState } from 'react';
 
 const { width, height } = Dimensions.get('window');
 
-export default function CreateCountU() {
+export default function CreateCountE() {
   const [formData, setFormData] = useState({
     username: '',
     correo: '',
@@ -28,48 +27,45 @@ export default function CreateCountU() {
       resizeMode="cover"
     >
       <View style={styles.overlay}>
-        
-        
-          <View style={styles.containerText}>
-            <Text style={styles.title}>CREA TU CUENTA</Text>
-            <Text style={styles.subtitle}>Completa tus datos</Text>
-          </View>
+        <View style={styles.header}>
+          <Text style={styles.title}>CREA TU CUENTA</Text>
+          <Text style={styles.subtitle}>USUARIO EXTERNO</Text>
+        </View>
 
-          <View style={styles.containerInput}>
-            <Input
-              label="NOMBRE DE USUARIO"
-              value={formData.username}
-              onChangeText={(text) => handleInputChange('username', text)}
-              placeholder="Ingresa tu nombre de usuario"
-            />
-            <Input
-              label="CORREO ELECTRÓNICO"
-              value={formData.correo}
-              onChangeText={(text) => handleInputChange('correo', text)}
-              placeholder="ejemplo@correo.com"
-            />
-            <Input
-              label="FECHA DE NACIMIENTO"
-              value={formData.fechaNacimiento}
-              onChangeText={(text) => handleInputChange('fechaNacimiento', text)}
-              placeholder="DD/MM/AAAA"
-            />
-            <Input
-              label="CONTRASEÑA"
-              value={formData.password}
-              onChangeText={(text) => handleInputChange('password', text)}
-              secureTextEntry
-              placeholder="Crea una contraseña segura"
-            />
-          </View>
-
-          <BottomStyle
-            element={{
-              title: 'REGISTRARSE',
-              link: '/',
-            }}
+        <View style={styles.containerInput}>
+          <Input
+            label="NOMBRE DE USUARIO"
+            value={formData.username}
+            onChangeText={(text) => handleInputChange('username', text)}
+            placeholder="Ingresa tu nombre de usuario"
           />
-       
+          <Input
+            label="CORREO ELECTRÓNICO"
+            value={formData.correo}
+            onChangeText={(text) => handleInputChange('correo', text)}
+            placeholder="ejemplo@correo.com"
+          />
+          <Input
+            label="FECHA DE NACIMIENTO"
+            value={formData.fechaNacimiento}
+            onChangeText={(text) => handleInputChange('fechaNacimiento', text)}
+            placeholder="DD/MM/AAAA"
+          />
+          <Input
+            label="CONTRASEÑA"
+            value={formData.password}
+            onChangeText={(text) => handleInputChange('password', text)}
+            secureTextEntry
+            placeholder="Crea una contraseña segura"
+          />
+        </View>
+
+        <BottomStyle
+          element={{
+            title: 'REGISTRARSE',
+            link: '/',
+          }}
+        />
       </View>
     </ImageBackground>
   );
@@ -80,23 +76,24 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 20,
-    justifyContent: 'center',
+    backgroundColor: 'rgba(105, 105, 105, 0.85)',
+    padding: 25,
+    justifyContent: 'space-between',
   },
-  containerText: {
-    width: '100%',
-    marginBottom: height * 0.05,
+  header: {
     alignItems: 'center',
+    marginTop: height * 0.05,
+    marginBottom: height * 0.05,
   },
   title: {
     fontSize: width * 0.08,
     fontWeight: '900',
     color: '#FFFFFF',
-    marginBottom: 10,
+    marginTop: 0,
     textShadowColor: 'rgba(0, 0, 0, 0.5)',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 5,
@@ -110,12 +107,12 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     textShadowColor: 'rgba(0, 0, 0, 0.5)',
     textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 5,
     textAlign: 'center',
   },
   containerInput: {
     width: '100%',
     marginBottom: height * 0.05,
     gap: 20,
-    
   },
 });
