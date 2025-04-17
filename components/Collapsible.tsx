@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 8,
     overflow: 'hidden',
+    
   },
   heading: {
     flexDirection: 'row',

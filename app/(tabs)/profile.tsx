@@ -55,18 +55,19 @@ export default function Perfil() {
   return (
     <ParallaxScrollView
       headerImage={
-        <View style={styles.headerContainer}>
+        <View style={[styles.headerContainer, { backgroundColor: theme.primary }]}>
           <Image
             source={require('@/assets/images/user.png')}
             style={styles.headerImage}
           />
         </View>
       }
+      // headerHeight removed as it is not supported by ParallaxScrollView
     >
-      <View style={[styles.mainContainer, { backgroundColor: theme.background }]}>
+      <View style={[styles.contentContainer, { backgroundColor: theme.background }]}>
         <Text style={[styles.userText, { color: theme.text }]}>¡Hola!</Text>
         
-        <View style={styles.sectionsContainer}>
+        <View style={styles.scrollContent}>
           {sections.map((section, index) => (
             <View key={index} style={styles.section}>
               <Collapsible title={section.title}>
@@ -74,11 +75,14 @@ export default function Perfil() {
                   {section.items.map((item, itemIndex) => (
                     <TouchableOpacity 
                       key={itemIndex}
-                      style={[styles.item, { backgroundColor: theme.cardBackground }]}
-                      activeOpacity={0.8}
+                      style={[styles.item, { 
+                        backgroundColor: theme.cardBackground,
+                        borderColor: theme.border
+                      }]}
+                      activeOpacity={0.7}
                       onPress={() => router.push(item.link as any)}
                     >
-                      <item.Component name={item.icon} size={20} color={theme.text} />
+                      <item.Component name={item.icon} size={22} color={theme.accent} />
                       <Text style={[styles.itemText, { color: theme.text }]}>
                         {item.title}
                       </Text>
@@ -90,13 +94,15 @@ export default function Perfil() {
           ))}
         </View>
 
-        <TouchableOpacity
-          style={[styles.logoutButton, { backgroundColor: theme.primary }]}
-          onPress={outSession}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
-        </TouchableOpacity>
+        <View style={styles.footer}>
+          <TouchableOpacity
+            style={[styles.logoutButton, { backgroundColor: theme.buttonBackground }]}
+            onPress={outSession}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.logoutButtonText, { color: '#FFF' }]}>Cerrar sesión</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ParallaxScrollView>
   );
@@ -105,29 +111,33 @@ export default function Perfil() {
 const styles = StyleSheet.create({
   headerContainer: {
     width: '100%',
-    height: height * 0.25,
+    height: "auto"
   },
   headerImage: {
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
   },
-  mainContainer: {
+  contentContainer: {
     flex: 1,
-    padding: 16,
-    paddingTop: 24,
+    marginTop: -20,
+    marginHorizontal: -20,
+    marginBottom: -20,
+    paddingTop: 30,
+    paddingHorizontal: 20,
+  },
+  scrollContent: {
+    flex: 1,
+    paddingBottom: 20,
   },
   userText: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 16,
+    fontSize: 26,
+    fontWeight: '700',
+    marginBottom: 24,
     textAlign: 'center',
   },
-  sectionsContainer: {
-    marginBottom: 16,
-  },
   section: {
-    marginBottom: 12,
+    marginBottom: 16,
   },
   itemsContainer: {
     paddingVertical: 8,
@@ -135,25 +145,28 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    marginBottom: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 12,
   },
   itemText: {
-    fontSize: 15,
-    marginLeft: 12,
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 16,
+  },
+  footer: {
+    paddingBottom: 30,
   },
   logoutButton: {
     width: '100%',
-    padding: 14,
-    borderRadius: 10,
+    paddingVertical: 16,
+    borderRadius: 12,
     alignItems: 'center',
-    marginTop: 8,
   },
   logoutButtonText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

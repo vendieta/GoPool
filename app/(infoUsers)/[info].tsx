@@ -1,9 +1,8 @@
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { useNavigation } from "expo-router";
 import { useEffect } from "react";
 import { useTheme } from "@/components/Themed/ContextTheme";
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface Producto {
   user: string;
@@ -20,77 +19,61 @@ export default function Info() {
   const { theme } = useTheme();
   const navigation = useNavigation();
 
-  // Convertir el parámetro JSON de vuelta a un objeto
-  const data: Producto = typeof info === 'string'
+  const data: Producto = typeof info === "string"
     ? JSON.parse(decodeURIComponent(info))
     : ({} as Producto);
 
-  // Colores basados en el tema
-  const isLightTheme = theme.name === 'light';
-  const backgroundColor = isLightTheme ? '#f5f5f5' : '#121212';
-  const cardBackground = isLightTheme ? '#fff' : '#1e1e1e';
-  const textColor = isLightTheme ? '#333' : '#fff';
-  const secondaryTextColor = isLightTheme ? '#666' : '#aaa';
-  const accentColor = '#4a90e2';
-
-  // Modificar el header
   useEffect(() => {
     if (Object.keys(data).length > 0) {
       navigation.setOptions({
         title: `Detalles de ${data.user}`,
         headerTitleAlign: "center",
-        headerTintColor: isLightTheme ? "#000" : "#fff",
-        headerStyle: {
-          backgroundColor: isLightTheme ? "#fff" : "#1e1e1e",
-        },
+        headerTintColor: theme.text,
+        headerStyle: { backgroundColor: theme.cardBackground },
       });
     }
-  }, [navigation, data, isLightTheme]);
+  }, [navigation, data, theme]);
 
-  const InfoCard = ({ icon, title, value }: { icon: string, title: string, value: string | number }) => (
-    <View style={[styles.infoCard, { backgroundColor: cardBackground }]}>
-      <View style={styles.cardHeader}>
-        <Text style={[styles.cardTitle, { color: textColor }]}>{title}</Text>
-      </View>
-      <Text style={[styles.cardValue, { color: textColor }]}>{value}</Text>
+  const InfoCard = ({ title, value }: { title: string; value: string | number }) => (
+    <View style={[styles.infoCard, { backgroundColor: theme.cardBackground }]}>
+      <Text style={[styles.cardTitle, { color: theme.labelText }]}>{title}</Text>
+      <Text style={[styles.cardValue, { color: theme.text }]}>{value}</Text>
     </View>
   );
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor }]} contentContainerStyle={styles.contentContainer}>
+    <ScrollView style={[styles.container, { backgroundColor: theme.subtleBackground }]}>
       {Object.keys(data).length > 0 ? (
         <View style={styles.content}>
-          <View style={[styles.profileHeader, { backgroundColor: cardBackground }]}>
-            <View style={[styles.avatar, { backgroundColor: accentColor }]}>
+          <View style={[styles.profileHeader, { backgroundColor: theme.cardBackground }]}>
+            <View style={[styles.avatar, { backgroundColor: theme.accent }]}>
               <Text style={styles.avatarText}>{data.user.charAt(0).toUpperCase()}</Text>
             </View>
-            <Text style={[styles.userName, { color: textColor }]}>{data.user}</Text>
-            <Text style={[styles.userStatus, { color: secondaryTextColor }]}>
-              {data.free > 0 ? `${data.free} cupos disponibles` : 'Sin cupos disponibles'}
+            <Text style={[styles.userName, { color: theme.text }]}>{data.user}</Text>
+            <Text style={[styles.userStatus, { color: theme.labelText }]}>
+              {data.free > 0 ? `${data.free} cupos disponibles` : 'Sin cupos'}
             </Text>
           </View>
 
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: textColor }]}>Información del Viaje</Text>
-            <InfoCard icon="location-on" title="Origen" value={data.startZone} />
-            <InfoCard icon="location-off" title="Destino" value={data.endZone} />
-            <InfoCard icon="attach-money" title="Precio" value={`$${data.price}`} />
+            <InfoCard title="Origen" value={data.startZone} />
+            <InfoCard title="Destino" value={data.endZone} />
+            <InfoCard title="Precio" value={`$${data.price}`} />
           </View>
 
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: textColor }]}>Fecha y Hora</Text>
-            <InfoCard icon="calendar-today" title="Fecha" value={data.date} />
-            <InfoCard icon="access-time" title="Hora" value={data.time} />
+            <InfoCard title="Fecha" value={data.date} />
+            <InfoCard title="Hora" value={data.time} />
           </View>
 
-          <View style={[styles.contactButton, { backgroundColor: accentColor }]}>
+          <View style={[styles.contactButton, { backgroundColor: theme.accent }]}>
             <Text style={styles.contactButtonText}>Contactar a {data.user}</Text>
           </View>
         </View>
       ) : (
         <View style={styles.emptyState}>
-          <MaterialIcons name="error-outline" size={48} color={secondaryTextColor} />
-          <Text style={[styles.emptyText, { color: textColor }]}>No hay datos disponibles</Text>
+          <MaterialIcons name="error-outline" size={48} color={theme.labelText} />
+          <Text style={[styles.emptyText, { color: theme.text }]}>No hay datos disponibles</Text>
         </View>
       )}
     </ScrollView>
@@ -101,86 +84,60 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  contentContainer: {
-    padding: 16,
-  },
   content: {
+    padding: 16,
     gap: 20,
   },
   profileHeader: {
     alignItems: 'center',
-    padding: 20,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    padding: 16,
+    borderRadius: 10,
   },
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   avatarText: {
-    fontSize: 36,
-    fontWeight: 'bold',
+    fontSize: 28,
     color: '#fff',
+    fontWeight: 'bold',
   },
   userName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 4,
+    fontSize: 20,
+    fontWeight: '600',
   },
   userStatus: {
-    fontSize: 16,
+    fontSize: 14,
   },
   section: {
     gap: 12,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
   infoCard: {
-    padding: 16,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 8,
+    padding: 12,
+    borderRadius: 8,
   },
   cardTitle: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
-    opacity: 0.8,
+    marginBottom: 4,
   },
   cardValue: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
   },
   contactButton: {
-    padding: 16,
+    padding: 14,
     borderRadius: 10,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
+    marginTop: 12,
   },
   contactButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   emptyState: {
     flex: 1,
@@ -190,7 +147,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   emptyText: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'center',
   },
 });
