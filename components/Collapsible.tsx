@@ -3,13 +3,10 @@ import { StyleSheet, TouchableOpacity, Animated, View, Text } from 'react-native
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useTheme } from '@/components/Themed/ContextTheme';
 
-// Asegúrate de que Theme coincida con tu definición en ContextTheme
-type Theme = 'light' | 'dark'; // Ajusta esto según tu ThemeContext
-
 export function Collapsible({ children, title }: PropsWithChildren & { title: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
-  const { theme } = useTheme(); // theme es de tipo Theme
+  const { theme } = useTheme();
   const [fadeAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {
@@ -25,19 +22,26 @@ export function Collapsible({ children, title }: PropsWithChildren & { title: st
     }
   }, [isOpen, fadeAnim]);
 
-  // Definimos colores basados en el tema
-  const isLightTheme = theme.name === 'light'; // Esto debería funcionar si Theme es 'light' | 'dark'
-  const backgroundColor = isLightTheme ? '#fff' : '#333';
+  // Colores basados en el tema
+  const isLightTheme = theme.name === 'light';
+  const backgroundColor = isLightTheme ? '#fff' : '#2a2a2a';
   const iconColor = isLightTheme ? '#666' : '#aaa';
+  const backgroundCollapsible = isLightTheme ? '#f5f5f5' : '#121212';
   const textColor = isPressed
-    ? (isLightTheme ? '#444' : '#ccc')
-    : (isLightTheme ? '#000' : '#fff');
-  const borderColor = isLightTheme ? '#f5f5f5' : '#555';
+    ? (isLightTheme ? theme.primary : '#ddd')
+    : (isLightTheme ? '#333' : '#fff');
+  const pressedBackground = isLightTheme ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.05)';
 
   return (
-    <View style={[styles.container, { backgroundColor, borderColor }]}>
+    <View style={[styles.container, { backgroundColor: backgroundCollapsible }]}>
       <TouchableOpacity
-        style={styles.heading}
+        style={[
+          styles.heading,
+          { 
+            backgroundColor: isPressed ? pressedBackground : 'transparent',
+            borderRadius: 12,
+          }
+        ]}
         onPress={() => setIsOpen((value) => !value)}
         onPressIn={() => setIsPressed(true)}
         onPressOut={() => setIsPressed(false)}
@@ -45,18 +49,22 @@ export function Collapsible({ children, title }: PropsWithChildren & { title: st
       >
         <IconSymbol
           name="chevron.right"
-          size={30}
+          size={24}
           weight="medium"
           color={iconColor}
-          style={{ transform: [{ rotate: isOpen ? '90deg' : '0deg' }] }}
+          style={[
+            styles.icon,
+            { transform: [{ rotate: isOpen ? '90deg' : '0deg' }] }
+          ]}
         />
         <Text style={[styles.title, { color: textColor }]}>
           {title}
         </Text>
       </TouchableOpacity>
+      
       {isOpen && (
         <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
-          <View style={[styles.innerContent, { backgroundColor }]}>
+          <View style={styles.innerContent}>
             {children}
           </View>
         </Animated.View>
@@ -67,27 +75,31 @@ export function Collapsible({ children, title }: PropsWithChildren & { title: st
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 12,
+    marginBottom: 8,
+    overflow: 'hidden',
   },
   heading: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    borderTopWidth: 0.7,
-    borderStyle: 'solid',
-    paddingVertical: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
   },
-  content: {
-    marginBottom: 10,
-  },
-  innerContent: {
-    padding: 10,
+  icon: {
+    marginRight: 12,
+    transitionDuration: '300ms',
   },
   title: {
-    fontSize: 20,
-    marginVertical: 10,
+    fontSize: 17,
     fontWeight: '600',
+    flex: 1,
+  },
+  content: {
+    paddingTop: 4,
+    paddingBottom: 12,
+  },
+  innerContent: {
+    paddingHorizontal: 16,
   },
 });
 
