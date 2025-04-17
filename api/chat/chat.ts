@@ -1,7 +1,7 @@
-import { ENV } from "../../utils/constants.js";
-
+import { ENV } from "../../utils/constants";
+import { Users} from "../../types/chat/chat";
 export class Chat {
-  async create(token, participantIdOne, participantIdTwo) {
+  async create(token: string, participantIdOne: Users, participantIdTwo: Users) {
     try {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CHAT}`;
       const params = {
@@ -29,7 +29,7 @@ export class Chat {
     }
   }
 
-  async getAll(token) {
+  async getAll(token: string) {
     try {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CHAT}`;
       const params = {
@@ -41,7 +41,7 @@ export class Chat {
       const response = await fetch(url, params);
       const result = await response.json();
 
-      if (response.status !== 200) throw error;
+      if (response.status !== 200) throw Error(result);
 
       return result;
     } catch (error) {
@@ -49,7 +49,7 @@ export class Chat {
     }
   }
 
-  async remove(token, chatId) {
+  async remove(token: string, chatId: string) {
     try {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CHAT}/${chatId}`;
       const params = {
@@ -70,7 +70,7 @@ export class Chat {
     }
   }
 
-  async obtain(token, chatId) {
+  async obtain(token: string , chatId: string) {
     try {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CHAT}/${chatId}`;
       const params = {

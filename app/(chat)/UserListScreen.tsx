@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Auth } from '../api/auth/auth';
-import { User } from '../api/user/user';
-import { Users, RootStackParamList } from '../types/chat/chat';
-import { Chat } from '../api/chat/chat';
+import { Auth } from '../../api/auth/auth';
+import { User } from '../../api/user/user';
+import { Users, RootStackParamList } from '../../types/chat/chat';
+import { Chat } from '../../api/chat/chat';
 
 const userController = new User();
 const authController = new Auth();

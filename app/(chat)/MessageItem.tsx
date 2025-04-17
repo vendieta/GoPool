@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Message } from '../types/chat/chat';
+import { Message } from '../../types/chat/chat';
 import { format } from 'date-fns';
 
 interface MessageItemProps {

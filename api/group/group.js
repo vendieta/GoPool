@@ -1,4 +1,4 @@
-import { ENV } from "../../utils/constants.js";
+import { ENV } from "../../utils/constants";
 
 export class Group {
   async create(accessToken, creatorId, usersId, name, image) {

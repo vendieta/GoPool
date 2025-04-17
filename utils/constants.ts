@@ -1,4 +1,4 @@
-const SERVER_IP = "192.168.18.23:3977";
+const SERVER_IP = "192.168.100.11:3977";
 
 export const ENV = {
   SERVER_IP: SERVER_IP,

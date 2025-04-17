@@ -1,7 +1,7 @@
-import { ENV } from "../../utils/constants.js";
+import { ENV } from "../../utils/constants";
 
 export class ChatMessage {
-  async getLastMessage(token, chatId) {
+  async getLastMessage(token:string , chatId:string) {
     try {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CHAT_MESSAGE_LAST}/${chatId}`;
       const params = {
@@ -21,7 +21,7 @@ export class ChatMessage {
     }
   }
 
-  async getTotal(token, chatId) {
+  async getTotal(token:string , chatId:string) {
     try {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CHAT_MESSAGE_TOTAL}/${chatId}`;
       const params = {
@@ -41,7 +41,7 @@ export class ChatMessage {
     }
   }
 
-  async getAll(token, chatId) {
+  async getAll(token:string, chatId:string) {
     try {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CHAT_MESSAGE}/${chatId}`;
       const params = {
@@ -61,7 +61,10 @@ export class ChatMessage {
     }
   }
 
-  async sendText(token, chatId, message) {
+  async sendText(token:string, chatId:string, message:string) {
+    if (!message) throw new Error("Message is required");
+    if (!chatId) throw new Error("Chat ID is required");
+    if (!token) throw new Error("Token is required");
     try {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CHAT_MESSAGE}`;
       const params = {
@@ -87,7 +90,7 @@ export class ChatMessage {
     }
   }
 
-  async sendImage(token, chatId, file) {
+  async sendImage(token:string, chatId:string, file:File) {
     try {
       const formData = new FormData();
       formData.append("chat_id", chatId);

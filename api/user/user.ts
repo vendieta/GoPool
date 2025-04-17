@@ -1,7 +1,7 @@
 import { ENV } from "../../utils/constants";
-
+import { Users } from "../../types/chat/chat";
 export class User {
-  async getMe(accessToken) {
+  async getMe(accessToken: string) {
     try {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.ME}`;
       const params = {
@@ -21,13 +21,14 @@ export class User {
     }
   }
 
-  async updateUser(accessToken, userData) {
+  async updateUser(accessToken:string, userData: Users) {
     try {
       const data = userData;
 
       const formData = new FormData();
       Object.keys(data).forEach((key) => {
-        formData.append(key, data[key]);
+        const typedKey = key as keyof Users;
+        formData.append(key, data[typedKey] as string);
       });
 
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.ME}`;
@@ -51,7 +52,7 @@ export class User {
     }
   }
 
-  async getAll(accessToken) {
+  async getAll(accessToken:string) {
     try {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.USER}`;
       const params = {
@@ -71,7 +72,7 @@ export class User {
     }
   }
 
-  async getUser(accessToken, userId) {
+  async getUser(accessToken:string, userId:string) {
     try {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.USER}/${userId}`;
       const params = {
@@ -91,7 +92,7 @@ export class User {
     }
   }
 
-  async getUsersExeptParticipantsGroup(accessToken, groupId) {
+  async getUsersExeptParticipantsGroup(accessToken:string, groupId:string) {
     try {
       console.log(groupId);
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.USER_EXCEPT_PARTICIPANTS_GROUP}/${groupId}`;
@@ -110,7 +111,7 @@ export class User {
 
       const result = await response.json();
 
-      if (response.status !== 200) throw error;
+      if (response.status !== 200) throw Error(result);
 
       return result;
     } catch (error) {
