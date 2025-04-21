@@ -26,17 +26,17 @@ export default function HomeScreen() {
     }
     
     // Controlar las opciones de navegación solo cuando session y loaded cambien
-    if (session === null) {
-      navigation.setOptions({
-        tabBarStyle: { display: "none" },
-        headerShown: false
-      });
-    } else {
+    // if (session === null) {
+    //   navigation.setOptions({
+    //     tabBarStyle: { display: "none" },
+    //     headerShown: false
+    //   });
+    // } else {
       navigation.setOptions({
         headerShown: true,
         tabBarStyle: { display: "flex" }, // Muestra tabBar si hay sesión
       });
-    }
+    // }
 
   }, [session, loaded, navigation]);
 
@@ -53,7 +53,8 @@ export default function HomeScreen() {
     return null; // Puedes poner un spinner o algo que indique carga
   }
 
-  return session ? <ScrollRefresh /> : <LoginScreen />;
+  // return session ? <ScrollRefresh /> : <LoginScreen />;
+  return <ScrollRefresh /> ;
 }
 
 

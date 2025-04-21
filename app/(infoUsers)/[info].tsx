@@ -8,6 +8,7 @@ import { ThemedView } from "@/components/ThemedView";
 
 
 
+
 interface Producto {
   user: string,
   price: number,
