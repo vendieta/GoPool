@@ -1,13 +1,14 @@
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Stack } from 'expo-router';
 import { ThemeProvider } from '@/components/Themed/ContextTheme';
 import { View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+
 
 // Evita que el splash screen se oculte automáticamente
 SplashScreen.preventAutoHideAsync();
@@ -30,9 +31,11 @@ export default function RootLayout() {
       <View style={{ flex: 1, backgroundColor: colorScheme === 'dark' ? DarkTheme.colors.background : DefaultTheme.colors.background }} />
     );
   }
-
+  
   return (
     <ThemeProvider>
+      {/* StatusBar configurable */}
+      <StatusBar/>
       <NavigationThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack 
           screenOptions={{ 
@@ -55,8 +58,6 @@ export default function RootLayout() {
             }} 
           />
           
-          {/* StatusBar configurable */}
-          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
         </Stack>
       </NavigationThemeProvider>
     </ThemeProvider>

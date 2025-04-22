@@ -13,6 +13,7 @@ import { useTheme } from '@/components/Themed/ContextTheme';
 SplashScreen.preventAutoHideAsync();
 
 export default function TabLayout() {
+
   const { theme } = useTheme();
   const [loaded] = useFonts({
     SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
