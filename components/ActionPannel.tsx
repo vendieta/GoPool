@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { View , StyleSheet , Text, Pressable } from "react-native";
+import { View , StyleSheet , Text, Pressable, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router"; 
 
 interface Coordinate {
   latitude : number;
@@ -14,6 +15,7 @@ interface Props {
 
 
 export default function ActionPannel (data : Props){
+  const router = useRouter();
   const [ controler , setControler ] = useState('startPoint')
   
   // estas constantes van a alvergar las coordenadas
@@ -31,6 +33,10 @@ export default function ActionPannel (data : Props){
     setControler('menu')
     setEndPoint(data.region.longitude.toString())
   }
+
+  const send = () => {
+    router.push("/send");
+  } 
 
   // const plus = (x : Coordinate) => {
   //   data.confCoordinate('add')
@@ -69,9 +75,9 @@ export default function ActionPannel (data : Props){
             <Text style = { styles.ubi} >{endPoint}</Text>
           </Pressable>
 
-          <Pressable onPress={() => setControler('menu')}>
+          <TouchableOpacity onPress={send}>
             <Text style = { styles.plus } >Aceptar</Text>
-          </Pressable>
+          </TouchableOpacity>
 
         </> : controler === 'endPoint' ?
         <>

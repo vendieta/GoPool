@@ -14,19 +14,15 @@ export default function Layout() {
       <Stack>
         <Stack.Screen
           name="createRouteDriver"
-          options={{
-            title: 'Reportar problemas',
-            headerTintColor,
-            headerStyle: { backgroundColor: headerBackgroundColor },
-          }}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="createRouteUser"
-          options={{
-            title: 'Temas',
-            headerTintColor,
-            headerStyle: { backgroundColor: headerBackgroundColor },
-          }}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="send"
+          options={{headerShown: false}}
         />
       </Stack>
     </View>

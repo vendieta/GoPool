@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   pointerContainer : {
     position : 'absolute',
     // centra el puntero en la pantalla se modifica segun las dimensiones del puntero
-    top : (height/2)-88, 
+    top : (height/2)-49, 
     left : (width/2)-30,
   }
 })
