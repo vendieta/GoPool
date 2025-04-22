@@ -4,11 +4,13 @@ import { View, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
+import LoginScreen from '../(sesionScreen)/homeLogin';
 
 // Configuración inicial del splash screen
 SplashScreen.preventAutoHideAsync();
 
 export default function HomeScreen() {
+  const [ session, setSesion ] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({
@@ -32,10 +34,18 @@ export default function HomeScreen() {
 
   // Configuración de navegación
   useEffect(() => {
-    navigation.setOptions({
-      tabBarStyle: { display: "flex" }, // Siempre mostrar la barra de pestañas
-      headerShown: true // Siempre mostrar el header
-    });
+    // if (session === null) {
+    if (!session) {
+      navigation.setOptions({
+        tabBarStyle: { display: "none" },
+        headerShown: false
+      });
+    } else {
+      navigation.setOptions({
+        headerShown: true,
+        tabBarStyle: { display: "flex" }, // Muestra tabBar si hay sesión
+      });
+    };
   }, [navigation]);
 
   // Pantalla de carga mientras se inicializa
@@ -48,5 +58,5 @@ export default function HomeScreen() {
   }
 
   // Mostrar directamente el ScrollRefresh
-  return <ScrollRefresh />;
+  return session ? <ScrollRefresh /> : <LoginScreen/>;
 }

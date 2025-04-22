@@ -41,8 +41,8 @@ export default function LoginScreen() {
           placeholderTextColor="#999"
           keyboardType="email-address"
           autoCapitalize="none"
-          value={formData.email}
-          onChangeText={(text) => handleInputChange('email', text)}
+          // value={formData.email}
+          // onChangeText={(text) => handleInputChange('email', text)}
         />
         <TextInput
           style={styles.input}
@@ -50,8 +50,8 @@ export default function LoginScreen() {
           placeholderTextColor="#999"
           secureTextEntry
           autoCapitalize="none"
-          value={formData.password}
-          onChangeText={(text) => handleInputChange('password', text)}
+          // value={formData.password}
+          // onChangeText={(text) => handleInputChange('password', text)}
         />
         <TouchableOpacity>
           <Text style={styles.forgotPassword}>Forgot your password?

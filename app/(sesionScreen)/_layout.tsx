@@ -33,6 +33,7 @@ export default function layout() {
         <Stack.Screen name="sesionOn" options={{title:'buy', headerShown: false}}/>
         <Stack.Screen name="createCountU" options={{title:'Configuraciones', headerShown: false}}/>
         <Stack.Screen name="createCountE" options={{title:'Configuraciones', headerShown: false}}/>
+        <Stack.Screen name="homeLogin" options={{title:'Configuraciones', headerShown: false}}/>
       </Stack>
   )
 }
