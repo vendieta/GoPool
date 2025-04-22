@@ -5,7 +5,6 @@ const credits = () => {
     
     return(
         <View>
-            <Text>hola mama bicho</Text>
         </View>
     );
 };

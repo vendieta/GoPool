@@ -1,19 +1,29 @@
 import { Link, Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { StyleSheet, View, Text } from 'react-native';
+import { useTheme } from '@/components/Themed/ContextTheme';
 import React from 'react';
 
 export default function NotFoundScreen() {
+  const { theme } = useTheme(); // Usamos el ThemeContext
+
+  // Colores basados en el tema
+  const backgroundColor = theme.name === 'light' ? '#fff' : '#333';
+  const textColor = theme.name === 'light' ? '#000' : '#fff';
+  const linkColor = theme.name === 'light' ? '#1a73e8' : '#4da8ff'; // Color del enlace (azul claro/oscuro)
+
   return (
     <>
       <Stack.Screen options={{ title: 'Oops!' }} />
-      <ThemedView style={styles.container}>
-        <ThemedText type="title">This screen doesn't exist.</ThemedText>
+      <View style={[styles.container, { backgroundColor }]}>
+        <Text style={[styles.title, { color: textColor }]}>
+          This screen doesn't exist.
+        </Text>
         <Link href="/" style={styles.link}>
-          <ThemedText type="link">Go to home screen!</ThemedText>
+          <Text style={[styles.linkText, { color: linkColor }]}>
+            Go to home screen!
+          </Text>
         </Link>
-      </ThemedView>
+      </View>
     </>
   );
 }
@@ -25,8 +35,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
   link: {
     marginTop: 15,
     paddingVertical: 15,
+  },
+  linkText: {
+    fontSize: 16,
+    fontWeight: '500',
   },
 });

@@ -7,6 +7,17 @@ import BottomStyle from '../../components/BottomStyle'; // Ajusta esta ruta si e
 
 const { width, height } = Dimensions.get('window');
 
+interface LoginForm {
+  email: string;
+  password: string;
+}
+
+interface LoginResponse {
+  access: string;
+  refresh: string;
+  message?: string;
+}
+
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,12 +30,10 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Title and Subtitle */}
       <Text style={styles.title}>Bienvenido a GoPol comenzemos tu viaje!</Text>
       <Text style={styles.subtitle}>Te ayudaré a contactar con otras personas con las que compartes una ruta</Text>
       <Text style={styles.subtitle}>Sign In to your account</Text>
 
-      {/* Input Fields */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -32,6 +41,8 @@ export default function LoginScreen() {
           placeholderTextColor="#999"
           keyboardType="email-address"
           autoCapitalize="none"
+          value={formData.email}
+          onChangeText={(text) => handleInputChange('email', text)}
         />
         <TextInput
           style={styles.input}
@@ -39,16 +50,18 @@ export default function LoginScreen() {
           placeholderTextColor="#999"
           secureTextEntry
           autoCapitalize="none"
+          value={formData.password}
+          onChangeText={(text) => handleInputChange('password', text)}
         />
         <TouchableOpacity>
-          <Text style={styles.forgotPassword}>Forgot your password?</Text>
+          <Text style={styles.forgotPassword}>Forgot your password?
+          </Text>
         </TouchableOpacity>
       </View>
 
       {/* Botón con BottomStyle */}
       <BottomStyle element={loginButtonData} />
 
-      {/* Create Account Link */}
       <View style={styles.createAccountContainer}>
         <Text style={styles.createAccountText}>Don't have an account? </Text>
         <Link href="/createCount" asChild>
@@ -59,6 +72,7 @@ export default function LoginScreen() {
   );
 }
 
+// Tus estilos existentes...
 const styles = StyleSheet.create({
   container: {
     flex: 1,

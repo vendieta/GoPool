@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -7,10 +7,10 @@ import Animated, {
   withRepeat,
   withSequence,
 } from 'react-native-reanimated';
-
-import { ThemedText } from '@/components/ThemedText';
+import { useTheme } from '@/components/Themed/ContextTheme';
 
 export function HelloWave() {
+  const { theme } = useTheme(); // Usamos el ThemeContext
   const rotationAnimation = useSharedValue(0);
 
   useEffect(() => {
@@ -24,9 +24,12 @@ export function HelloWave() {
     transform: [{ rotate: `${rotationAnimation.value}deg` }],
   }));
 
+  // Color del texto basado en el tema
+  const textColor = theme.name === 'light' ? '#000' : '#fff';
+
   return (
     <Animated.View style={animatedStyle}>
-      <ThemedText style={styles.text}>HOLA</ThemedText>
+      <Text style={[styles.text, { color: textColor }]}>HOLA</Text>
     </Animated.View>
   );
 }

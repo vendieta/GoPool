@@ -1,15 +1,11 @@
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import ImgCard from '@/components/ImgCard';
+import { View, Text, StyleSheet, Dimensions, ImageBackground, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import BottomStyle from '@/components/BottomStyle';
 import Input from '@/components/Input';
-
-// Agrego useState para manejar el estado del formulario
 import { useState } from 'react';
 
 const { width, height } = Dimensions.get('window');
 
-export default function createCountU() {
-  // Agrego el estado para manejar los valores de los inputs
+export default function CreateCountU() {
   const [formData, setFormData] = useState({
     username: '',
     correo: '',
@@ -17,7 +13,6 @@ export default function createCountU() {
     password: '',
   });
 
-  // Agrego una función para actualizar el estado cuando el usuario escribe
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -26,68 +21,119 @@ export default function createCountU() {
   };
 
   return (
-    <ImgCard
-      color="#22121"
-      img={require('@/assets/images/partial-react-logo.png')}
+    <ImageBackground
+      source={require('@/assets/images/tortucar.jpeg')}
+      style={styles.backgroundImage}
+      resizeMode="cover"
     >
-      <View style={styles.containerText}>
-        <Text style={styles.text}>Username</Text>
-        <View style={styles.containerInput}>
-          {/* Agrego las props value y onChangeText a cada Input */}
-          <Input
-            element="Username"
-            value={formData.username}
-            onChangeText={(text) => handleInputChange('username', text)}
-          />
-          <Input
-            element="correo"
-            value={formData.correo}
-            onChangeText={(text) => handleInputChange('correo', text)}
-          />
-          <Input
-            element="fecha de nacimiento"
-            value={formData.fechaNacimiento}
-            onChangeText={(text) => handleInputChange('fechaNacimiento', text)}
-          />
-          <Input
-            element="Password"
-            value={formData.password}
-            onChangeText={(text) => handleInputChange('password', text)}
-            secureTextEntry // Agrego secureTextEntry para el campo de contraseña
-          />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <View style={styles.overlay}>
+          <ScrollView 
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+          >
+            {/* Encabezado */}
+            <View style={styles.header}>
+              <Text style={styles.title}>CREA TU CUENTA</Text>
+              <Text style={styles.subtitle}>USUARIO ESPOL</Text>
+            </View>
+
+            {/* Inputs */}
+            <View style={styles.inputsContainer}>
+              <Input
+                label="NOMBRE DE USUARIO"
+                value={formData.username}
+                onChangeText={(text) => handleInputChange('username', text)}
+                placeholder="Ingresa tu nombre de usuario"
+              />
+              <Input
+                label="CORREO ELECTRÓNICO"
+                value={formData.correo}
+                onChangeText={(text) => handleInputChange('correo', text)}
+                placeholder="ejemplo@espol.edu.ec"
+              />
+              <Input
+                label="FECHA DE NACIMIENTO"
+                value={formData.fechaNacimiento}
+                onChangeText={(text) => handleInputChange('fechaNacimiento', text)}
+                placeholder="DD/MM/AAAA"
+              />
+              <Input
+                label="CONTRASEÑA"
+                value={formData.password}
+                onChangeText={(text) => handleInputChange('password', text)}
+                secureTextEntry
+                placeholder="Crea una contraseña segura"
+              />
+            </View>
+          </ScrollView>
+
+          {/* Botón de registro */}
+          <View style={styles.buttonContainer}>
+            <BottomStyle
+              element={{
+                title: 'REGISTRARSE',
+                link: '/',
+              }}
+            />
+          </View>
         </View>
-      </View>
-      <BottomStyle
-        element={{
-          title: 'crear cuenta',
-          link: '/',
-        }}
-      />
-    </ImgCard>
+      </KeyboardAvoidingView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  containerText: {
+  backgroundImage: {
+    flex: 1,
     width: '100%',
-    paddingHorizontal: width * 0.05,
-    marginBottom: height * 0.03,
+    height: '100%',
+  },
+  container: {
+    flex: 1,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(105, 105, 105, 0.85)',
+    padding: 25,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  header: {
     alignItems: 'center',
+    marginBottom: height * 0.05,
   },
-  containerInput: {
-    width: '100%',
-    marginBottom: height * 0.02, // Más espacio debajo de los inputs
-  },
-  text: {
-    fontSize: width * 0.07, // Tamaño más grande para el título
+  title: {
+    fontSize: width * 0.08,
+    fontWeight: '900',
+    color: '#FFFFFF',
+    marginBottom: 10,
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 5,
+    letterSpacing: 1.5,
     textAlign: 'center',
-    color: '#2c3e50', // Un color más oscuro y elegante
-    fontWeight: '700', // Negrita para que destaque
-    marginBottom: height * 0.03, // Más espacio debajo del título
+  },
+  subtitle: {
+    fontSize: width * 0.05,
+    color: '#FFFFFF',
+    fontWeight: '600',
+    letterSpacing: 1,
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 5,
+    textAlign: 'center',
+  },
+  inputsContainer: {
+    width: '100%',
+    marginBottom: 20,
   },
   buttonContainer: {
-    width: '100%',
-    alignItems: 'center',
-    marginTop: height * 0.02, // Espacio arriba del botón
+    marginBottom: 30,
   },
 });

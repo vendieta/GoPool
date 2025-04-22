@@ -1,177 +1,212 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
-import { RelativePathString , ExternalPathString } from 'expo-router';
-
-
-{/*esta parte extrae las dimensiones del dispositivo del usuario*/}
-const { width, height } = Dimensions.get('window')
-const dLabel = width > 500 ? 0.015 : 0.048;
-const dValue = width > 500 ? 0.02 : 0.041;
+import { LinearGradient } from 'expo-linear-gradient';
+import { useEffect, useRef } from 'react';
+import { useTheme } from '../../components/Themed/ContextTheme';
 
 interface DataProps {
-    element: {
-      user: string,
-      price: number,
-      date: string,
-      time: string,
-      free: number,
-      startZone: string,
-      endZone: string,
-    };
-};
+  element: {
+    user: string;
+    price: number;
+    date: string;
+    time: string;
+    free: number;
+    startZone: string;
+    endZone: string;
+  };
+}
 
+const UserCard: React.FC<DataProps> = ({ element }) => {
+  const jsonData = encodeURIComponent(JSON.stringify(element));
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const { theme } = useTheme();
 
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 5,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [fadeAnim, scaleAnim]);
 
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.98,
+      friction: 5,
+      useNativeDriver: true,
+    }).start();
+  };
 
-const UserCard: React.FC<DataProps> = ({element}) => {
-  // convierte el array de element a un string formato json
-  const jsonData = encodeURIComponent(JSON.stringify(element))
+  const handlePressOut = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      friction: 5,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
-    <Link href={`../${jsonData}`} style={styles.link} >
-      <View style={styles.card}>
-        {/* User Info and Image */}
-        <View style={styles.userInfoContainer}>
-          <View style={styles.userTextContainer}>
-            <Text style={styles.userName}>{element.user}</Text>
-            <View style={styles.userAvatar} />
-            <Text style={styles.priceText}>{element.price}$</Text>
-          </View>
-        </View>
-      
-        {/* central info */}
-        <View style={styles.tripInfoContainer}>
-            <View style={styles.line}>
-              <View style={styles.infoColumn}>
-                {/* <Text style={styles.infoLabel}>Hora de</Text> */}
-                <Text style={styles.infoLabel}>Salida:</Text>
-                <Text style={styles.infoValue}>{element.time}/{element.date}</Text>
-              </View>
-              <View style={styles.infoColumn}>
-                <Text style={styles.infoLabel}>Cupos</Text>
-                {/* <Text style={styles.infoLabel}>Libres:</Text> */}
-                <Text style={styles.infoValue}>{element.free}</Text>
-              </View>
-            </View>
-            <View style={styles.line1}>
-              <View style={styles.infoColumn}>
-                <Text style={styles.infoLabel}>START:</Text>
-                <Text style={styles.infoValue}>{element.startZone}</Text>
-              </View>
-              <View style={styles.infoColumn}>
-                <Text style={styles.infoLabel}>FINISH:</Text>
-                <Text style={styles.infoValue}>{element.endZone}</Text>
-              </View>
-            </View>
-          </View>
-      
-        {/* Ratings and Navigation */}
-        {/* <View style={styles.rightSection}>
-              !!!el codidgo de las estrellas
-          <View style={styles.starContainer}>
-          {[...Array(5)].map((_, index) => (
-            <Ionicons key={index} name="star" size={16} color="#FFC107" />
-            ))}
-            </View>
-            !!!!el codigo de la flecha siguiente
-            <TouchableOpacity style={styles.navButton}>
-            <Ionicons name="chevron-forward" size={24} color="black" />
-            </TouchableOpacity>
-            
-            </View> */}
-        
-      </View>
-  </Link>
+    <Animated.View style={[styles.mainContainer, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
+      <LinearGradient
+        colors={[theme.gradientStart, theme.gradientEnd]}
+        style={styles.borderContainer}
+      >
+        <Link href={`../${jsonData}`} asChild>
+          <TouchableOpacity
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            activeOpacity={1}
+            style={styles.link}
+          >
+            <View style={styles.card}>
+              {/* Sección izquierda */}
+              <LinearGradient
+                colors={[theme.subtleBackground, `${theme.subtleBackground}33`]}
+                style={styles.leftSection}
+              >
+                <Text style={[styles.userName, { color: theme.text }]} numberOfLines={1} ellipsizeMode="tail">
+                  {element.user}
+                </Text>
+                <View style={[styles.userAvatar, { borderColor: theme.accent, backgroundColor: theme.cardBackground }]}>
+                  <Text style={[styles.avatarInitial, { color: theme.text }]}>
+                    {element.user.charAt(0).toUpperCase()}
+                  </Text>
+                </View>
+                <Text style={[styles.priceText, { color: theme.accent }]}>
+                  ${element.price}
+                </Text>
+              </LinearGradient>
 
-    
+              {/* Sección central */}
+              <View style={[styles.centerSection, { backgroundColor: theme.cardBackground }]}>
+                <View style={styles.infoRow}>
+                  <Text style={[styles.infoLabel, { color: theme.labelText }]}>SALIDA</Text>
+                  <Text style={[styles.infoValue, { color: theme.text }]}>
+                    {element.time} / {element.date}
+                  </Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Text style={[styles.infoLabel, { color: theme.labelText }]}>INICIO</Text>
+                  <Text style={[styles.infoValue, { color: theme.text }]}>{element.startZone}</Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Text style={[styles.infoLabel, { color: theme.labelText }]}>FIN</Text>
+                  <Text style={[styles.infoValue, { color: theme.text }]}>{element.endZone}</Text>
+                </View>
+              </View>
+
+              {/* Sección derecha */}
+              <View style={[styles.rightSection, { backgroundColor: theme.subtleBackground }]}>
+                <Text style={[styles.cuposLabel, { color: theme.labelText }]}>CUPOS</Text>
+                <Text style={[styles.cuposValue, { color: theme.accent }]}>
+                  {element.free}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </Link>
+      </LinearGradient>
+    </Animated.View>
   );
 };
 
-
 const styles = StyleSheet.create({
-  link: {
-    backgroundColor: '#f0f0f0',
-    height:155,
-    width: width*0.95,
-    marginHorizontal: width*0.025,
-    marginTop: 1,
-    marginBottom: 10,
+  mainContainer: {
+    width: '100%',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  borderContainer: {
     borderRadius: 16,
+    overflow: 'hidden',
     shadowColor: '#000',
-    shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 8,
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+  link: {
+    width: '100%',
   },
   card: {
-    height: '100%',
-    width: '100%',
     flexDirection: 'row',
-    //justifyContent: 'space-between',
-    // padding: 16,
+    height: 'auto',
   },
-  userInfoContainer: {
-    flexDirection: 'row',
+  leftSection: {
+    width: '30%',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 15,
+    padding: 8,
   },
-  userTextContainer: {
+  centerSection: {
+    width: '45%',
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    justifyContent: 'center',
+  },
+  rightSection: {
+    width: '25%',
     alignItems: 'center',
+    paddingTop: 10,
   },
-  userName: {
-    fontWeight: 'bold',
-    fontSize: width*dLabel,
+  infoRow: {
+    marginBottom: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    gap: 4,
   },
   userAvatar: {
     width: 40,
     height: 40,
-    backgroundColor: 'red',
     borderRadius: 20,
-    marginTop: 8,
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 4,
   },
-  priceText: {
-    color: 'green',
+  avatarInitial: {
+    fontSize: 18,
     fontWeight: 'bold',
-    fontSize: 20,
-    marginTop: 8,
   },
-  tripInfoContainer: {
-    // flexDirection: 'column',
-    margin: 'auto',
-  },
-  infoColumn: {
-    flexDirection: 'column',
-    // justifyContent: 'space-between',
+  userName: {
+    fontWeight: '700',
+    fontSize: 13,
+    maxWidth: '100%',
+    textAlign: 'center',
     marginBottom: 4,
   },
-  infoLabel: {
-    fontSize: 16,
+  priceText: {
     fontWeight: 'bold',
-    color: '#555',
+    fontSize: 16,
+    marginTop: 4,
+  },
+  infoLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    marginBottom: 2,
   },
   infoValue: {
-    fontSize: 15,
-    color: '#777',
-    textAlign:'center',
+    fontSize: 13,
+    fontWeight: '400',
   },
-  rightSection: {
-    alignItems: 'center',
+  cuposLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    marginBottom: 2,
   },
-  starContainer: {
-    flexDirection: 'row',
-    marginBottom: 8,
+  cuposValue: {
+    fontSize: 22,
+    fontWeight: 'bold',
   },
-  navButton: {
-    padding: 8,
-    backgroundColor: '#ddd',
-    borderRadius: 16,
-  },
-  line: {
-    flexDirection: 'row',
-    justifyContent:'space-between',
-    gap:15,
-  },
-  line1: {
-    flexDirection: 'column',
-  }
 });
 
 export default UserCard;

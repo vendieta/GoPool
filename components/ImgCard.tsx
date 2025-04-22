@@ -6,6 +6,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 type Props = PropsWithChildren<{
   img: ReactElement;
   color: string;
+  
 }>;
 
 export default function ImgCard({ children, img, color }: Props) {

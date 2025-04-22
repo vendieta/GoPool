@@ -1,89 +1,130 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, Animated } from 'react-native';
+import { 
+  View, 
+  TextInput, 
+  Text, 
+  StyleSheet, 
+  Animated, 
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard
+} from 'react-native';
 
 interface Props {
-  element: string;
   value: string;
   onChangeText: (text: string) => void;
   secureTextEntry?: boolean;
+  label: string;
+  placeholder?: string;
 }
 
-export default function Input({ element, value, onChangeText, secureTextEntry = false }: Props) {
-  const [labelPosition, setLabelPosition] = useState(new Animated.Value(13));
-  const [labelPadding, setLabelPadding] = useState(new Animated.Value(10));
+export default function Input({ 
+  value, 
+  onChangeText, 
+  secureTextEntry = false, 
+  label, 
+  placeholder 
+}: Props) {
+  const [isFocused, setIsFocused] = useState(false);
+  const labelPosition = new Animated.Value(value ? 1 : 0);
+  const labelOpacity = new Animated.Value(value ? 1 : 0.5);
+  const labelScale = new Animated.Value(value ? 0.8 : 1);
 
   useEffect(() => {
-    if (value.length > 0) {
+    Animated.parallel([
       Animated.timing(labelPosition, {
-        toValue: -25,
-        duration: 300,
-        useNativeDriver: false, // Cambio a false para soportar top
-      }).start();
+        toValue: (value || isFocused) ? 1 : 0,
+        duration: 200,
+        useNativeDriver: false,
+      }),
+      Animated.timing(labelOpacity, {
+        toValue: (value || isFocused) ? 0 : 0.5,
+        duration: 200,
+        useNativeDriver: false,
+      }),
+      Animated.timing(labelScale, {
+        toValue: (value || isFocused) ? 0.8 : 1,
+        duration: 200,
+        useNativeDriver: false,
+      })
+    ]).start();
+  }, [value, isFocused]);
 
-      Animated.timing(labelPadding, {
-        toValue: 2,
-        duration: 300,
-        useNativeDriver: false, // Ya estaba en false, lo mantengo
-      }).start();
-    } else {
-      Animated.timing(labelPosition, {
-        toValue: 13,
-        duration: 300,
-        useNativeDriver: false, // Cambio a false para soportar top
-      }).start();
-
-      Animated.timing(labelPadding, {
-        toValue: 10,
-        duration: 300,
-        useNativeDriver: false, // Cambio a false para consistencia
-      }).start();
-    }
-  }, [value]);
+  const labelStyle = {
+    transform: [
+      { 
+        translateY: labelPosition.interpolate({
+          inputRange: [0, 1],
+          outputRange: [13, -25]
+        })
+      },
+      {
+        scale: labelScale.interpolate({
+          inputRange: [0.8, 1],
+          outputRange: [0.8, 1]
+        })
+      }
+    ],
+    opacity: labelOpacity,
+    left: 15,
+    zIndex: 1,
+    backgroundColor: (value || isFocused) ? '#f5f5f5' : 'transparent',
+    paddingHorizontal: 4,
+  };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        value={value}
-        onChangeText={onChangeText}
-        placeholder=""
-        placeholderTextColor="transparent"
-        secureTextEntry={secureTextEntry}
-        autoCapitalize="none"
-      />
-      <Animated.Text
-        style={[styles.label, { top: labelPosition, paddingLeft: labelPadding }]}
-      >
-        {element}
-      </Animated.Text>
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.innerContainer}>
+          <TextInput
+            style={styles.input}
+            value={value}
+            onChangeText={onChangeText}
+            placeholder={placeholder || ''}
+            placeholderTextColor="transparent"
+            secureTextEntry={secureTextEntry}
+            autoCapitalize="none"
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+          />
+          <Animated.Text style={[styles.label, labelStyle]}>
+            {label}
+          </Animated.Text>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    gap: 1,
+    flex: 1,
+    width: '100%',
+  },
+  innerContainer: {
     position: 'relative',
     width: '100%',
-    marginBottom: 15,
-  },
-  label: {
-    fontSize: 14,
-    position: 'absolute',
-    pointerEvents: 'none',
-    color: '#666',
+    marginBottom: 20,
   },
   input: {
     width: '100%',
     height: 50,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 10,
+    borderRadius: 50,
     color: '#333',
     fontSize: 16,
     backgroundColor: '#f5f5f5',
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingHorizontal: 15,
+    paddingTop: 15,
+  },
+  label: {
+    fontSize: 14,
+    position: 'absolute',
+    color: '#666',
   },
 });

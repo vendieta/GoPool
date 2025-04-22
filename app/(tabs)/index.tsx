@@ -1,61 +1,52 @@
 import ScrollRefresh from '@/components/ScrollRefresh';
-import { useEffect, useState } from 'react';
 import { useNavigation } from "expo-router";
-import { useUserInfo } from '@/hooks/userContext';
-import LoginScreen from '@/app/(sesionScreen)/homeLogin';
+import { View, ActivityIndicator } from 'react-native';
+import { useEffect, useState } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 
-// ! mejorar esta pantalla porque cuando se abre se muestra el login por un tiempo y despues el index
-
+// Configuración inicial del splash screen
 SplashScreen.preventAutoHideAsync();
 
 export default function HomeScreen() {
-  const { session, isLoading } = useUserInfo();
-  // const { session, isLoading } = {session: 'true', isLoading: true};
-  console.log('esto es lo que sale en la sesion del home:     ', session)
+  const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
-  const [loaded, error] = useFonts({
+  const [fontsLoaded] = useFonts({
     SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  // Se maneja la carga de fuentes y actualización de navegación en un solo useEffect
+  // Efecto para manejar la carga inicial
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync(); // Esconde el splash cuando las fuentes se cargan
-    }
-    
-    // Controlar las opciones de navegación solo cuando session y loaded cambien
-    // if (session === null) {
-    //   navigation.setOptions({
-    //     tabBarStyle: { display: "none" },
-    //     headerShown: false
-    //   });
-    // } else {
-      navigation.setOptions({
-        headerShown: true,
-        tabBarStyle: { display: "flex" }, // Muestra tabBar si hay sesión
-      });
-    // }
+    const initialize = async () => {
+      // Simulación de carga inicial (1 segundo)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setIsLoading(false);
+      
+      if (fontsLoaded) {
+        await SplashScreen.hideAsync();
+      }
+    };
 
-  }, [session, loaded, navigation]);
+    initialize();
+  }, [fontsLoaded]);
 
-  if (isLoading) {
-    return null; // Aquí puedes poner un spinner
-  }
-  // Si hay error al cargar las fuentes, puedes manejarlo aquí.
-  if (error) {
-    console.error('Error al cargar las fuentes:', error);
-    return null; // O un componente de fallback visual
-  }
+  // Configuración de navegación
+  useEffect(() => {
+    navigation.setOptions({
+      tabBarStyle: { display: "flex" }, // Siempre mostrar la barra de pestañas
+      headerShown: true // Siempre mostrar el header
+    });
+  }, [navigation]);
 
-  if (!loaded) {
-    return null; // Puedes poner un spinner o algo que indique carga
+  // Pantalla de carga mientras se inicializa
+  if (!fontsLoaded || isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
-  // return session ? <ScrollRefresh /> : <LoginScreen />;
-  return <ScrollRefresh /> ;
+  // Mostrar directamente el ScrollRefresh
+  return <ScrollRefresh />;
 }
-
-
-

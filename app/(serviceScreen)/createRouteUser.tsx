@@ -187,8 +187,3 @@ const styles = StyleSheet.create({
     left : (width/2)-30,
   }
 })
-
-
-
-
-

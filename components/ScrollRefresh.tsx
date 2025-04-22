@@ -1,113 +1,168 @@
-import React, { useState , useEffect } from 'react';
-import { StyleSheet, View , RefreshControl , FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, RefreshControl, FlatList } from 'react-native';
 import UserCard from './TEST/UserCard';
-import { ThemedView } from './ThemedView';
-import { supabase } from '@/supabaseClient';
-import { Link } from 'expo-router';
-// const AnimatedFlatList = Animated.createAnimatedComponent(FlatList) 
-// const HEADER_HEIGHT = 250;
+import { useTheme } from '@/components/Themed/ContextTheme';
 
 interface Item {
   id: string;
   userName: string;
   price: number;
-  date: string; // O Date dependiendo del formato que usas
-  time: string; // O Date dependiendo de tu formato
+  date: string;
+  time: string;
   free: number;
   startZone: string;
   endZone: string;
 }
 
-
 const ScrollRefresh = () => {
-
-  const [ data , setData] = useState<any[]>([]); // Estado para almacenar los datos
-  const [error, setError] = useState<string>(''); // Estado para manejar errores
-  const [refreshing, setRefreshing] = useState(false); // Estado para controlar el refresco
+  const { theme } = useTheme();
+  const [data, setData] = useState<Item[]>([
+    {
+      id: '1',
+      userName: 'Juan Pérez',
+      price: 5,
+      date: '2023-05-15',
+      time: '08:30',
+      free: 3,
+      startZone: 'Centro',
+      endZone: 'Norte'
+    },
+    {
+      id: '2',
+      userName: 'María García',
+      price: 16,
+      date: '2023-05-16',
+      time: '14:15',
+      free: 2,
+      startZone: 'Sur',
+      endZone: 'Este'
+    },
+    {
+      id: '3',
+      userName: 'Carlos López',
+      price: 2,
+      date: '2023-05-17',
+      time: '10:45',
+      free: 4,
+      startZone: 'Oeste',
+      endZone: 'Centro'
+    },
+    {
+      id: '4',
+      userName: 'Ana Martínez',
+      price: 17,
+      date: '2023-05-18',
+      time: '16:20',
+      free: 1,
+      startZone: 'Norte',
+      endZone: 'Sur'
+    },
+    {
+      id: '5',
+      userName: 'Carlos López',
+      price: 2,
+      date: '2023-05-17',
+      time: '10:45',
+      free: 4,
+      startZone: 'Oeste',
+      endZone: 'Centro'
+    },
+    {
+      id: '6',
+      userName: 'Carlos López',
+      price: 2,
+      date: '2023-05-17',
+      time: '10:45',
+      free: 4,
+      startZone: 'Oeste',
+      endZone: 'Centro'
+    },
+  ]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchData = async () => {
-    const { data, error } = await supabase
-    .from('cardData') // Especifica tu tabla aquí
-    .select('*'); // O especifica las columnas que quieres recuperar
-    
-    if (error) {
-      setError(error.message); // Si hay un error, lo guardamos en el estado
-      return;
+    try {
+      setRefreshing(false);
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      setRefreshing(false);
     }
-    
-    setData(data); // Si todo va bien, guardamos los datos
-    console.log(data[2])
   };
 
   useEffect(() => {
     fetchData();
-  }, []); // Este efecto se ejecutará solo una vez, al montar el componente
+  }, []);
 
-
-  
-  // Función que simula una actualización de datos
   const onRefresh = () => {
-  setRefreshing(true);
-  setTimeout(() => {
-    fetchData();
-    setRefreshing(false);
-  }, 2500);
-};
-   // Renderiza cada elemento de la lista
-  const renderItem = ({ item }: { item: Item }) => {
-    // * Este codigo permite mostrar en consola la key de cada tarjeta
-    // console.log('id       :',item)
-    // console.log('startzone       :',item.startZone)
-    return(
-      <UserCard element={{
-        user:item.userName,
-        price:item.price,
-        date:item.date,
-        time: item.time,
-        free: item.free,
-        startZone: item.startZone,
-        endZone: item.endZone,
-      }}
-      />
-)}
-  
-  return (
+    setRefreshing(true);
+    setTimeout(() => {
+      fetchData();
+    }, 1500);
+  };
 
-      <ThemedView style={{flex:1,}}>
-        <View style={styles.container}>
-          <FlatList
-            style={styles.containerCard}
-            // contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
-            data={data}
-            keyExtractor={(item)=> item.id}
-            renderItem={renderItem}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={['#FF0000', '#00FF00', '#0000FF']} // Colores del spinner (Android)
-                tintColor="#FF0000" // Color del spinner (iOS)
-                title="Refrescando..." // Título (iOS)
-                titleColor="#0000FF" // Color del título (iOS)
-                />
-              }
-            >
-        </FlatList>
-        </View>
-      </ThemedView>
+  const renderItem = ({ item }: { item: Item }) => (
+    <View style={[
+      styles.cardContainer,
+      { 
+        backgroundColor: theme.cardBackground,
+        borderColor: theme.primary,
+      }
+    ]}>
+      <UserCard
+        element={{
+          user: item.userName,
+          price: item.price,
+          date: item.date,
+          time: item.time,
+          free: item.free,
+          startZone: item.startZone,
+          endZone: item.endZone,
+        }}
+      />
+    </View>
+  );
+
+  return (
+    <View style={[
+      styles.container, 
+      { 
+        backgroundColor: theme.background,
+      }
+    ]}>
+      <FlatList
+        data={data}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        contentContainerStyle={styles.listContent}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[theme.primary]}
+            tintColor={theme.primary}
+          />
+        }
+        ItemSeparatorComponent={() => (
+          <View style={{ height: 0, backgroundColor: 'transparent' }} />
+        )}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container:{
+  container: {
     flex: 1,
-    
+    paddingHorizontal: 5,
+    paddingVertical: 0,
   },
-  containerCard:{
-    flexGrow: 1, // Asegura que el contenido ocupe todo el espacio disponible
+  listContent: {
+    paddingVertical: 1,
   },
-  link: {
-  }
+  cardContainer: {
+    overflow: 'hidden',
+    width: '100%',
+  },
 });
 
 export default ScrollRefresh;

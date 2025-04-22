@@ -1,5 +1,5 @@
 import type { PropsWithChildren, ReactElement } from 'react';
-import { StyleSheet , Dimensions} from 'react-native';
+import { StyleSheet, Dimensions, View } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedRef,
@@ -7,24 +7,22 @@ import Animated, {
   useScrollViewOffset,
 } from 'react-native-reanimated';
 
-import { ThemedView } from '@/components/ThemedView';
+import { useTheme } from '../components/Themed/ContextTheme';
 import { useBottomTabOverflow } from '@/components/ui/TabBarBackground';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
 
 const HEADER_HEIGHT = 250;
 
+const { width, height } = Dimensions.get('window');
+
 type Props = PropsWithChildren<{
   headerImage: ReactElement;
-  headerBackgroundColor: { dark: string; light: string };
 }>;
 
 export default function ParallaxScrollView({
   children,
   headerImage,
-  headerBackgroundColor,
 }: Props) {
-  const colorScheme = useColorScheme() ?? 'light';
+  const { theme } = useTheme();
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
   const bottom = useBottomTabOverflow();
@@ -46,7 +44,7 @@ export default function ParallaxScrollView({
   });
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}> 
       <Animated.ScrollView
         ref={scrollRef}
         scrollEventThrottle={16}
@@ -55,28 +53,32 @@ export default function ParallaxScrollView({
         <Animated.View
           style={[
             styles.header,
-            { backgroundColor: headerBackgroundColor[colorScheme] },
+            { backgroundColor: theme.primary },
             headerAnimatedStyle,
           ]}>
           {headerImage}
         </Animated.View>
-        <ThemedView style={styles.content}>{children}</ThemedView>
+        <View style={[styles.content, { backgroundColor: theme.cardBackground }]}>{children}</View>
       </Animated.ScrollView>
-    </ThemedView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
-    alignItems:'center',
+    flex: 1,
+    alignItems: 'center',
   },
   header: {
     height: HEADER_HEIGHT,
     overflow: 'hidden',
+    width: width,
   },
   content: {
     gap: 20,
     flex: 1,
+    width: width,
+    padding: 20,
+    borderRadius: 15,
   },
 });

@@ -5,7 +5,6 @@ const problem = () => {
     
     return(
         <View>
-            <Text>Cont con nuestro departamento de </Text>
         </View>
     );
 };
