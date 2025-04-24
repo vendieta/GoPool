@@ -50,13 +50,13 @@ export default function CreateCountU() {
                 placeholder="Ingresa tu nombre de usuario"
               />
               <Input
-                label="CORREO ELECTRÓNICO"
+                label="CORREO ELECTRÓNICO ESPOL"
                 value={formData.correo}
                 onChangeText={(text) => handleInputChange('correo', text)}
                 placeholder="ejemplo@espol.edu.ec"
               />
               <Input
-                label="FECHA DE NACIMIENTO"
+                label="FECHA DE NACIMIENTO DD/MM/AAAA"
                 value={formData.fechaNacimiento}
                 onChangeText={(text) => handleInputChange('fechaNacimiento', text)}
                 placeholder="DD/MM/AAAA"
