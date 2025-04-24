@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Dimensions, ImageBackground, ScrollView, Keyboa
 import BottomStyle from '@/components/BottomStyle';
 import Input from '@/components/Input';
 import { useState } from 'react';
+import DateInputSimple from '@/components/InputDate';
 
 const { width, height } = Dimensions.get('window');
 
@@ -31,7 +32,7 @@ export default function CreateCountE() {
         style={styles.container}
       >
         <View style={styles.overlay}>
-          <ScrollView 
+          <ScrollView
             contentContainerStyle={styles.scrollContainer}
             keyboardShouldPersistTaps="handled"
           >
@@ -47,26 +48,25 @@ export default function CreateCountE() {
                 label="NOMBRE DE USUARIO"
                 value={formData.username}
                 onChangeText={(text) => handleInputChange('username', text)}
-                placeholder="Ingresa tu nombre de usuario"
+                placeholder="NOMBRE DE USUARIO"
               />
               <Input
                 label="CORREO ELECTRÓNICO"
                 value={formData.correo}
                 onChangeText={(text) => handleInputChange('correo', text)}
-                placeholder="ejemplo@correo.com"
+                placeholder="CORREO ELECTRÓNICO"
               />
-              <Input
-                label="FECHA DE NACIMIENTO"
+              <DateInputSimple
                 value={formData.fechaNacimiento}
-                onChangeText={(text) => handleInputChange('fechaNacimiento', text)}
-                placeholder="DD/MM/AAAA"
+                onChange={(dateString) => handleInputChange('fechaNacimiento', dateString)}
+                placeholder="FECHA DE NACIMIENTO"
               />
               <Input
                 label="CONTRASEÑA"
                 value={formData.password}
                 onChangeText={(text) => handleInputChange('password', text)}
                 secureTextEntry
-                placeholder="Crea una contraseña segura"
+                placeholder="CONTRASEÑA SEGURA"
               />
             </View>
           </ScrollView>
@@ -131,6 +131,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputsContainer: {
+    
     width: '100%',
     marginBottom: 20,
   },
