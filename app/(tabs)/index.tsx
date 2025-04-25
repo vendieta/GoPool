@@ -10,7 +10,7 @@ import LoginScreen from '../(sesionScreen)/homeLogin';
 SplashScreen.preventAutoHideAsync();
 
 export default function HomeScreen() {
-  const [ session, setSesion ] = useState(true);
+  const [ session, setSesion ] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({

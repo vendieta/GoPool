@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { 
   View, 
   TextInput, 
   Text, 
   StyleSheet, 
-  Animated, 
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
@@ -26,53 +25,6 @@ export default function Input({
   label, 
   placeholder 
 }: Props) {
-  const [isFocused, setIsFocused] = useState(false);
-  const labelPosition = new Animated.Value(value ? 1 : 0);
-  const labelOpacity = new Animated.Value(value ? 1 : 0.5);
-  const labelScale = new Animated.Value(value ? 0.8 : 1);
-
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(labelPosition, {
-        toValue: (value || isFocused) ? 1 : 0,
-        duration: 200,
-        useNativeDriver: false,
-      }),
-      Animated.timing(labelOpacity, {
-        toValue: (value || isFocused) ? 0 : 0.5,
-        duration: 200,
-        useNativeDriver: false,
-      }),
-      Animated.timing(labelScale, {
-        toValue: (value || isFocused) ? 0.8 : 1,
-        duration: 200,
-        useNativeDriver: false,
-      })
-    ]).start();
-  }, [value, isFocused]);
-
-  const labelStyle = {
-    transform: [
-      { 
-        translateY: labelPosition.interpolate({
-          inputRange: [0, 1],
-          outputRange: [13, -25]
-        })
-      },
-      {
-        scale: labelScale.interpolate({
-          inputRange: [0.8, 1],
-          outputRange: [0.8, 1]
-        })
-      }
-    ],
-    opacity: labelOpacity,
-    left: 15,
-    zIndex: 1,
-    backgroundColor: (value || isFocused) ? '#f5f5f5' : 'transparent',
-    paddingHorizontal: 4,
-  };
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -85,15 +37,10 @@ export default function Input({
             value={value}
             onChangeText={onChangeText}
             placeholder={placeholder || ''}
-            placeholderTextColor="transparent"
+            placeholderTextColor="#999"
             secureTextEntry={secureTextEntry}
             autoCapitalize="none"
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
           />
-          <Animated.Text style={[styles.label, labelStyle]}>
-            {label}
-          </Animated.Text>
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -106,7 +53,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   innerContainer: {
-    position: 'relative',
     width: '100%',
     marginBottom: 20,
   },
@@ -124,7 +70,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    position: 'absolute',
     color: '#666',
+    marginBottom: 5,
+    marginLeft: 10,
   },
 });
