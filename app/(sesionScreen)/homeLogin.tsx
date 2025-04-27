@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   createAccountContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: height * 0.03,
+    marginTop: 20,
   },
   createAccountText: {
     fontSize: width * 0.035,
