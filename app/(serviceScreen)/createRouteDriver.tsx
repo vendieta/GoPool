@@ -2,7 +2,7 @@ import { View , Text  , StyleSheet, Alert , Image, Button , Dimensions , useColo
 import MapView , { Marker , Region } from "react-native-maps";
 import React , { useState , useRef , useEffect } from "react";
 import * as Location from 'expo-location';
-import ActionPannel from "@/components/ActionPannel";
+import ActionPannelDriver from "@/components/driver/ActionPannelDriver"; 
 import { useLocation } from "@/hooks/useLocation";
 
 const { width , height } = Dimensions.get('window')
@@ -74,14 +74,8 @@ export default function Map () {
     // mostramos las coordenadas por la consola
     console.log('Coordenada del centro del mapa:  ', center);
   };
-  
-  // const addMarker = () => {
-
-
-  // }
 
   const confCoordinate = ( data : string ) => {
-
 
     let newLocation : locationPoint;
 
@@ -148,16 +142,7 @@ export default function Map () {
               source={require('../../assets/images/puntero.png')}
               style = {styles.pointer}/>
           </View>
-      
-      {/* Boton para confirmar la ubicacion seleccionada
-      <View style = { styles.buttonContainer}>
-        <Button
-          title="Confirmar Ubicacion"
-          onPress={handleConfirmLocation}
-          />
-      </View> */}
-      
-      <ActionPannel region={region} confCoordinate={confCoordinate}/>
+      <ActionPannelDriver region={region} confCoordinate={confCoordinate}/>
     </View>
   );
   }
