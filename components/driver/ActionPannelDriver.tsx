@@ -9,38 +9,61 @@ interface Coordinate {
 
 
 interface Props {
-region : Coordinate
-confCoordinate: (data: "startPoint" | "endPoint" | "menu") => void;
+    region : Coordinate;
+    confCoordinate: (data: "startPoint" | "endPoint" | "point1" | "point2" | "point3") => void;
+    Markers: locationPoint[];
 }
+
+interface locationPoint {
+    id : string,
+    coordinate : Coordinate,
+    isStart? : boolean,
+    isDestination? : boolean
+}
+
 
 
 export default function ActionPannelDriver (data : Props){
-const router = useRouter();
-const [ controler , setControler ] = useState('startPoint')
+    const router = useRouter();
+    const [ controler , setControler ] = useState('startPoint')
+    const [components, setComponents] = useState<number[]>([]);
+    console.log(controler)
+    // estas constantes van a alvergar las coordenadas
+    const [ startPoint , setStartPoint ] = useState<string>('     ')
+    const [ endPoint , setEndPoint ] = useState<string>('     ')
+    const [ points , setPoints ] = useState<locationPoint[]>([])
 
-// estas constantes van a alvergar las coordenadas
-const [ startPoint , setStartPoint ] = useState<string>('     ')
-const [ endPoint , setEndPoint ] = useState<string>('     ')
+    const pointStart = (x : Coordinate) => {
+        data.confCoordinate('startPoint')
+        setControler('menu')
+        setStartPoint(data.region.longitude.toString())
+    }
 
-const pointStart = (x : Coordinate) => {
-    data.confCoordinate('startPoint')
-    setControler('menu')
-    setStartPoint(data.region.longitude.toString())
-}
-
-const pointEnd = (x : Coordinate) => {
-    data.confCoordinate('endPoint')
-    setControler('menu')
-    setEndPoint(data.region.longitude.toString())
-}
-
-const send = () => {
-    router.push("/send");
-} 
-
-const plus = (x : Coordinate) => {
+    const pointEnd = (x : Coordinate) => {
+        data.confCoordinate('endPoint')
+        setControler('menu')
+        setEndPoint(data.region.longitude.toString())
+    }
     
-}
+    const point = (x : "point1" | "point2" | "point3") => {
+        data.confCoordinate(x)
+        setControler('menu')
+        console.log('puntos: ',points)
+    }
+
+    const send = () => {
+        router.push("/send");
+    } 
+
+    const plus = () => {
+        if (components.length < 3) {
+            setComponents(prev => [...prev, prev.length + 2]);
+        } else {
+            console.log('Ya llegaste al máximo de 3 componentes');
+        }
+        console.log('plus')
+        
+    }
 
 
 
@@ -70,13 +93,21 @@ return (
                     <Pressable onPress={() => setControler('startPoint')}>
                         <Text style = { styles.ubi} >{startPoint}</Text>
                     </Pressable>
+                    {components.map((comp, index) => (
+                        <View key={index}>
+                            <Text style={styles.textUbi}>Tu ubicacion</Text>
+                            <Pressable onPress={() => setControler(`point${comp-1}`)}>
+                                <Text style={styles.ubi}>{data.Markers.find((p) => p.id === `point${comp-1}`)?.coordinate?.longitude ?? " "} </Text>
+                            </Pressable>
+                        </View>
+                    ))}
                     <Text style={styles.textUbi}>Tu destino</Text>
                     <Pressable onPress={() => setControler('endPoint')}>
                         <Text style = { styles.ubi} >{endPoint}</Text>
                     </Pressable>
                 </View>
                 <View style={styles.subContainerPlus}>
-                    <TouchableOpacity onPress={() => plus}>
+                    <TouchableOpacity onPress={plus}>
                         <Text style={styles.plus}>
                             +
                         </Text>
@@ -102,10 +133,23 @@ return (
             <Pressable onPress={() => pointEnd(data.region)}>
                 <Text style = {styles.button} >Confirmar</Text>
             </Pressable>
-        </> : 
+        </> : controler === "point1" || controler === "point2" || controler === "point3" ?
         <>
-
-        </>
+            <Text style = {styles.text}>Punto de destino</Text>
+            <Text style = {styles.ubi}>{data.region.longitude}</Text>
+            {/* aqui va el input del lugar de partida y envia los datos a la api con el algoritmo 
+                aqui podriamos usar la api de google la cual me da el nombre de la ubicacion por las coodenadas*/}
+            {/* <Text style = { styles.text } >Punto de destino</Text>
+            <Text style = {styles.ubi}>{data.pointEnd}</Text> */}
+        
+            {/* aqui va el inpunt del lugar de destino y envia los dato a la api con el algoritmo
+                aqui tambien hacemos lo mismo de arriba*/}
+        
+            <Pressable onPress={() => point(controler)}>
+                <Text style = {styles.button} >Confirmar</Text>
+            </Pressable>
+        </> :
+        <></>
         }
     </View>
 );

@@ -15,7 +15,7 @@ interface Coordinate {
 interface locationPoint {
   id : string,
   coordinate : Coordinate,
-  isStrat? : boolean,
+  isStart? : boolean,
   isDestination? : boolean
 }
 
@@ -80,13 +80,13 @@ export default function Map () {
     let newLocation : locationPoint;
 
     if (data === 'startPoint'){
-      setMarkers(prev => prev.filter(loc => !loc.isStrat));
+      setMarkers(prev => prev.filter(loc => !loc.isStart));
       newLocation = {
         id: 'startPoint',
         coordinate: region,
         // title: 'punto de partida',
-        isStrat: true
-      }
+        isStart: true
+      };
     } else if  (data === 'endPoint') {
       // Remover cualquier ubicación de destino existente
       setMarkers(prev => prev.filter(loc => !loc.isDestination));
@@ -94,15 +94,17 @@ export default function Map () {
         id: 'endPoint',
         coordinate:region,
         isDestination: true
-      };} 
-      // else {
-      //   newLocation = {
-      //     id: ''
-      //   }
-      // }
+      };
+    } else if (data === "point1" || data === "point2" || data === "point3") {
+        setMarkers(prev => prev.filter(loc => !(loc.id === data)));
+        newLocation = {
+          id: data,
+          coordinate: region,
+        }
+      }
       setMarkers(prev => [...prev, newLocation]);
   }
-  console.log(markers)
+  console.log('estos son los markers: ',markers)
   // Renderizamos la interfaz de la aplicacion
   return(
     <View>
@@ -142,7 +144,7 @@ export default function Map () {
               source={require('../../assets/images/puntero.png')}
               style = {styles.pointer}/>
           </View>
-      <ActionPannelDriver region={region} confCoordinate={confCoordinate}/>
+      <ActionPannelDriver region={region} confCoordinate={confCoordinate} Markers={markers}/>
     </View>
   );
   }
