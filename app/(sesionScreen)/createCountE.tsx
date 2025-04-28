@@ -131,7 +131,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputsContainer: {
-    
     width: '100%',
     marginBottom: 20,
   },
