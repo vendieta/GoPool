@@ -56,8 +56,8 @@ export default function Info() {
                 <View style={[styles.avatar, { backgroundColor: theme.accent }]}>
                   <Text style={styles.avatarText}>{data.user.charAt(0).toUpperCase()}</Text>
                 </View>
-                {/* <Text style={[styles.userName, { color: theme.text }]}>{data.user}</Text> */}
-                <Text style={[styles.userName, { color: theme.text }]}>Max Atahualpa taguantisuyo Paquisha goku</Text>
+                <Text style={[styles.userName, { color: theme.text }]}>{data.user}</Text>
+                {/* <Text style={[styles.userName, { color: theme.text }]}>Max Atahualpa taguantisuyo Paquisha goku</Text> */}
                 <Text style={[styles.userStatus, { color: theme.labelText }]}>
                   {data.free > 0 ? `${data.free} cupos disponibles` : 'Sin cupos'}
                 </Text>

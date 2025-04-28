@@ -27,7 +27,7 @@ export default function TabTwoScreen() {
         end={{ x: 1, y: 0 }}
       >
         <Image
-          source={require('@/assets/images/icon-turtle.png')}
+          source={require('@/assets/images/tortuCar.png')}
           style={styles.headerImage}
           resizeMode="contain"
         />

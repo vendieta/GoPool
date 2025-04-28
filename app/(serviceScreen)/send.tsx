@@ -1,28 +1,58 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image, Animated } from "react-native";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-export default function sent() {
+export default function Sent() {
     const router = useRouter();
+    const position = useRef(new Animated.Value(0)).current; // Valor inicial de la posición X
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-        // Resetear el stack de navegación y redirigir a "/home"
-        router.replace("/");
-        // Alternativa con reset explícito (si usas navegación por stack):
-        // router.navigate({
-        //   pathname: "/home",
-        //   params: { resetNavigation: true }, // (Opcional, si necesitas lógica adicional)
-        // });
-      }, 3000); // 3000 ms = 3 segundos
+        // Animación de izquierda a derecha
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(position, {
+                    toValue: 1.7,  // Valor final (derecha)
+                    duration: 3500, // Duración de la animación en ms
+                    useNativeDriver: true, // Mejor rendimiento
+                }),
+                Animated.timing(position, {
+                    toValue: 0,  // Volver al inicio (izquierda)
+                    duration: 3500,
+                    useNativeDriver: true,
+                })
+            ])
+        ).start();
 
-      return () => clearTimeout(timer); // Limpiar el timer al desmontar el componente
+        // Temporizador para redirección
+        const timer = setTimeout(() => {
+            router.replace("/");
+        }, 2950); // Reducí el tiempo a 10 segundos (10000ms) para el ejemplo
+
+        return () => {
+            clearTimeout(timer);
+            position.stopAnimation(); // Detener la animación al desmontar
+        };
     }, []);
-    return(
+
+    // Interpolación para el rango de movimiento
+    const translateX = position.interpolate({
+        inputRange: [0, 1],
+        outputRange: [-100, 100], // Ajusta estos valores según el movimiento deseado
+    });
+
+    return (
         <View style={styles.container}>
-            <Text>listo se buscara un driver para tu ruta</Text>
+            <Animated.View 
+                style={[
+                    styles.imageContainer,
+                    { transform: [{ translateX }] }
+                ]}
+            >
+                <Image style={styles.img} source={require('@/assets/images/tortuCar.png')}/>
+            </Animated.View>
+            <Text style={styles.text}>Se buscara un driver para tu ruta</Text>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -31,5 +61,16 @@ const styles = StyleSheet.create({
         backgroundColor: 'red',
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    imageContainer: {
+        // Estilos adicionales si son necesarios
+    },
+    img: {
+        height: 150,
+        width: 150
+    },
+    text: {
+        fontSize: 20
+        
     }
-})
+});
