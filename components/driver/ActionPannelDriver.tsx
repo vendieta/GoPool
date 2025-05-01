@@ -12,6 +12,7 @@ interface Props {
     region : Coordinate;
     confCoordinate: (data: "startPoint" | "endPoint" | "point1" | "point2" | "point3") => void;
     Markers: locationPoint[];
+    delete: (data: "point1" | "point2" | "point3") => void;
 }
 
 interface locationPoint {
@@ -58,11 +59,21 @@ export default function ActionPannelDriver (data : Props){
     const plus = () => {
         if (components.length < 3) {
             setComponents(prev => [...prev, prev.length + 2]);
+            console.log(components)
         } else {
             console.log('Ya llegaste al máximo de 3 componentes');
+            console.log(components)
         }
         console.log('plus')
-        
+    }
+
+    const deleteMarkers = (x: "point1" | "point2" | "point3") => {
+        data.delete(x)
+        console.log(x)
+        if (components.length > 0) {
+            components.pop();
+            console.log(components);
+        }
     }
 
 
@@ -96,9 +107,14 @@ return (
                     {components.map((comp, index) => (
                         <View key={index}>
                             <Text style={styles.textUbi}>Tu ubicacion</Text>
-                            <Pressable onPress={() => setControler(`point${comp-1}`)}>
-                                <Text style={styles.ubi}>{data.Markers.find((p) => p.id === `point${comp-1}`)?.coordinate?.longitude ?? " "} </Text>
-                            </Pressable>
+                            <View style={{flexDirection: 'row', gap: 13}}>
+                                <Pressable style={{width: '100%'}} onPress={() => setControler(`point${comp-1}`)}>
+                                    <Text style={styles.ubi}>{data.Markers.find((p) => p.id === `point${comp-1}`)?.coordinate?.longitude ?? " "} </Text>
+                                </Pressable>
+                                <TouchableOpacity onPress={() => deleteMarkers(`point${comp-1}` as "point1" | "point2" | "point3")} style={{justifyContent: 'center', paddingHorizontal: 12, borderRadius: 50, backgroundColor: 'red'}} >
+                                    <Text style={{fontSize: 17, }}>X</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     ))}
                     <Text style={styles.textUbi}>Tu destino</Text>
@@ -106,17 +122,17 @@ return (
                         <Text style = { styles.ubi} >{endPoint}</Text>
                     </Pressable>
                 </View>
-                <View style={styles.subContainerPlus}>
-                    <TouchableOpacity onPress={plus}>
-                        <Text style={styles.plus}>
-                            +
-                        </Text>
-                    </TouchableOpacity>
-                </View>
             </View>
-            <TouchableOpacity onPress={send}>
-                <Text style = { styles.aceptar } >Aceptar</Text>
-            </TouchableOpacity>
+            <View style={styles.subContainerPlus}>
+                <TouchableOpacity style={{justifyContent: 'center'}} onPress={send}>
+                    <Text style = { styles.aceptar } >Aceptar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{justifyContent: 'center'}} onPress={plus}>
+                    <Text style={styles.plus}>
+                        +
+                    </Text>
+                </TouchableOpacity>
+            </View>
 
         </> : controler === 'endPoint' ?
         <>
@@ -194,7 +210,6 @@ const styles = StyleSheet.create(
     padding: 10,
     backgroundColor: 'orange',
     borderRadius: 100,
-    marginTop: 15
     },
     containerMenu: {
         flexDirection: 'row',
@@ -206,15 +221,18 @@ const styles = StyleSheet.create(
         width: '85%'
     },
     subContainerPlus: {
-        height: '100%',
-        justifyContent: 'center'
+        justifyContent: 'flex-end',
+        backgroundColor: 'red',
+        width: '70%',
+        flexDirection: 'row',
+        gap: '30%',
+        marginTop: 20,
     },
     plus: {
         fontSize: 25,
         backgroundColor: 'orange',
         paddingHorizontal: 10,
         borderRadius: 20,
-        marginLeft: 10 
     },
     textUbi: {
         fontSize: 16,

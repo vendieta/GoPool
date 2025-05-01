@@ -104,6 +104,11 @@ export default function Map () {
       }
       setMarkers(prev => [...prev, newLocation]);
   }
+  const deleteMarkers = (id: "point1" | "point2" | "point3") => {
+    setMarkers(prev => prev.filter(marker => marker.id !== id));
+    console.log('aqui estan las markers eliminadas', markers)
+  };
+  
   console.log('estos son los markers: ',markers)
   // Renderizamos la interfaz de la aplicacion
   return(
@@ -144,7 +149,7 @@ export default function Map () {
               source={require('../../assets/images/puntero.png')}
               style = {styles.pointer}/>
           </View>
-      <ActionPannelDriver region={region} confCoordinate={confCoordinate} Markers={markers}/>
+      <ActionPannelDriver region={region} confCoordinate={confCoordinate} Markers={markers} delete={deleteMarkers}/>
     </View>
   );
   }
