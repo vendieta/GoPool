@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, RefreshControl, FlatList } from 'react-native';
-import UserCard from './TEST/UserCard';
 import { useTheme } from '@/components/Themed/ContextTheme';
 
 interface Item {
@@ -108,17 +107,7 @@ const ScrollRefresh = () => {
         borderColor: theme.primary,
       }
     ]}>
-      <UserCard
-        element={{
-          user: item.userName,
-          price: item.price,
-          date: item.date,
-          time: item.time,
-          free: item.free,
-          startZone: item.startZone,
-          endZone: item.endZone,
-        }}
-      />
+      
     </View>
   );
 
