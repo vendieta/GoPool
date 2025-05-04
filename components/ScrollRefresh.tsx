@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, RefreshControl, FlatList } from 'react-native';
 import { useTheme } from '@/components/Themed/ContextTheme';
+import UserCard from './TEST/UserCard';
 
 interface Item {
   id: string;
@@ -100,15 +101,30 @@ const ScrollRefresh = () => {
   };
 
   const renderItem = ({ item }: { item: Item }) => (
-    <View style={[
-      styles.cardContainer,
-      { 
-        backgroundColor: theme.cardBackground,
-        borderColor: theme.primary,
-      }
-    ]}>
-      
-    </View>
+    <UserCard 
+      user= {item.userName}
+      price= {item.price}
+      puntos= {['Mucho Lote 2 (todas las urbanizaciones)',
+        'Horizonte Dorado',
+        'Jardines del Río' ,
+        'La Romareda',
+        'La Perla',
+        'Oasis',
+        '...',
+        'Urb. Veranda',
+        'Ciudad del Río 1 y 2' ,
+        // '🔺Metrópolis 1 y 2',
+        // '🔺Guamote',
+        // '🔺Mall El Fortin',
+        // '🔺Tía Lomas de la Florida',
+        // '🔺Metrópolis 1 (solo en retorno paso)',
+        // '🔺Ciudad del Río 1 (solo en retorno paso)',
+        'espol'
+        ]}
+      horaSalida= {item.time}
+      horaLlegada= '07:00'
+      cupos= {item.free}
+    />
   );
 
   return (
@@ -118,32 +134,39 @@ const ScrollRefresh = () => {
         backgroundColor: theme.background,
       }
     ]}>
-      <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={styles.listContent}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={[theme.primary]}
-            tintColor={theme.primary}
-          />
-        }
-        ItemSeparatorComponent={() => (
-          <View style={{ height: 0, backgroundColor: 'transparent' }} />
-        )}
-      />
-    </View>
+      {/* <View style={styles.subContainer}> */}
+        <FlatList
+          data={data}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: 'space-around', paddingBottom: 10, gap: 10 }}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator= {false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[theme.primary]}
+              tintColor={theme.primary}
+            />
+          }
+          ItemSeparatorComponent={() => (
+            <View style={{ height: 0, backgroundColor: 'transparent' }} />
+          )}
+        />
+      </View>
+    // </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
     paddingHorizontal: 5,
     paddingVertical: 0,
+    alignItems: 'center'
   },
   listContent: {
     paddingVertical: 1,
@@ -152,6 +175,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     width: '100%',
   },
+  subContainer: {
+    flex: 1,
+  }
 });
 
 export default ScrollRefresh;

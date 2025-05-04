@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React, { useEffect } from 'react';
-import { Platform, View, StyleSheet } from 'react-native';
+import { Platform, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
@@ -9,6 +9,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { useTheme } from '@/components/Themed/ContextTheme';
+import AntDesign from '@expo/vector-icons/AntDesign';
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -54,8 +56,16 @@ export default function TabLayout() {
           options={{
             headerShown: true,
             headerTitle: 'GOPOOL',
+            headerRight: () => ( <TouchableOpacity
+              onPress={() => alert("Botón derecho presionado!")}
+              style={{ padding: 5, marginRight: 15}}
+            >
+              <AntDesign name="filter" size={24} color="white" />
+              {/* También podrías usar un <Text> o cualquier componente */}
+            </TouchableOpacity>),
             title: 'Home',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+            tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} 
+            />,
           }}
         />
         <Tabs.Screen
