@@ -1,7 +1,9 @@
+import PriceInput from "@/components/driver/PriceInput";
+import RoutePointsInput from "@/components/driver/RoutePointsInput";
+import SeatsInput from "@/components/driver/SeatsInput";
 import TimeInput from "@/components/driver/TimeInput";
 import Desplegable from "@/components/driver/ZonaSelector";
-import ZonaSelector from "@/components/driver/ZonaSelector";
-import { View , Text, TextInput , StyleSheet, Alert , Image, Button , Dimensions , useColorScheme, Platform  } from "react-native";
+import { View , Text, TextInput , StyleSheet, ScrollView, Alert , Image, Button , Dimensions , useColorScheme, Platform, TouchableOpacity  } from "react-native";
 
 export default function CreateRoutesDriver() {
 
@@ -12,34 +14,51 @@ export default function CreateRoutesDriver() {
 
   return(
     <View style={styles.container}>
-      <View style={styles.subContainer}>
-        <Text style={styles.title}>Crea tu viaje</Text>
-        <View style={styles.inputContainer}>
-          {/* <Text  style={styles.text}>hora de salidas</Text>
-          <TextInput 
-            placeholder="hola"
-            style={styles.input}/> */}
-          <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-around'}}>
-            <TimeInput />
-            <TimeInput/>
-          </View>
-          <View style={{flexDirection: 'row', justifyContent: 'space-around', width: '100%'}}>
-            <View style={{width: '45%'}}>
-              <Text style={styles.zonaText}>De que zona partes?</Text>
-              <Desplegable />
+      <ScrollView  
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+      }}>
+        <View style={[styles.subContainer, Platform.OS === 'web' ? { width: '100%',} : { width: '95%',}]}>
+          <View style={styles.inputContainer}>
+            <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-around'}}>
+              <TimeInput 
+              backColor="#fab1a0"
+              SalEnt="Salida"/>
+              <TimeInput
+              backColor="#81ecec"
+              SalEnt="Llegada"/>
             </View>
-            <View style={{width: '45%'}}>
-              <Text style={styles.zonaText}>A que zona vas?</Text>
-              <Desplegable />
+            <View style={{flexDirection: 'row', justifyContent: 'space-around', width: '100%'}}>
+              <View style={{width: '45%'}}>
+                <Text style={styles.zonaText}>De que zona partes?</Text>
+                <Desplegable 
+                text="hola"
+                backColor= '#fab1a0'/>
+              </View>
+              <View style={{width: '45%'}}>
+                <Text style={styles.zonaText}>A que zona vas?</Text>
+                <Desplegable 
+                text="hola"
+                backColor= '#81ecec'/>
+              </View>
             </View>
+            <View style={{width: '100%'}}>
+              <PriceInput/>
+            </View>
+            <View style={{width: '100%'}}><SeatsInput/></View>
+            <View style={{width: '100%'}}>
+              <RoutePointsInput />
+            </View>
+            <TouchableOpacity>
+              <Text>Crear</Text>
+            </TouchableOpacity>
           </View>
-
-          <TextInput
-            placeholder="Norte"
-            style={styles.input}
-          />
         </View>
-      </View>
+      </ScrollView>
     </View>
   )
 }
@@ -49,13 +68,11 @@ const styles = StyleSheet.create({
     flex : 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   subContainer: {
-    height: '80%',
-    width: '90%',
     backgroundColor: 'white',
     borderRadius: 20,
-    marginTop: '10%'
+    marginTop: '1%',
     
   },
   title: {

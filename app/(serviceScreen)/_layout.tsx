@@ -14,7 +14,8 @@ export default function Layout() {
       <Stack>
         <Stack.Screen
           name="createRouteDriver"
-          options={{headerShown: false}}
+          options={{headerShown: true, title: 'Crea tu viaje'}}
+          
         />
         <Stack.Screen
           name="createRouteUser"

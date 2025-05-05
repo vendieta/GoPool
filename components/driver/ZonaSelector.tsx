@@ -3,7 +3,14 @@ import { View, Text, TouchableOpacity} from 'react-native';
 
 const opciones = ['Norte', 'Sur', 'Este', 'Oeste', 'Espol'];
 
-const Desplegable = () => {
+interface Props {
+    backColor: string;
+    text: string;
+    save?: () => void; 
+}
+
+
+export default function Desplegable ({backColor, text}: Props) {
 const [mostrarOpciones, setMostrarOpciones] = useState(false);
 const [seleccionado, setSeleccionado] = useState< null| string >(null);
 
@@ -19,12 +26,12 @@ return (
         <TouchableOpacity
             onPress={alternarDesplegar}
             style={{
-            backgroundColor: '#3498db',
+            backgroundColor: backColor,
             padding: 15,
             borderRadius: 10,
             }}
         >
-            <Text style={{ color: 'white', textAlign: 'center' }}>
+            <Text style={{ fontWeight: '600', color: '#2d3436', textAlign: 'center' }}>
             {seleccionado ? `Dirección: ${seleccionado}` : 'Selecciona una dirección'}
             </Text>
         </TouchableOpacity>
@@ -56,4 +63,3 @@ return (
 );
 };
 
-export default Desplegable;

@@ -11,6 +11,13 @@ import DateTimePicker, {
 DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 
+
+interface Props {
+    backColor: string;
+    SalEnt: string;
+    save?: () => void;
+}
+
 // Web dropdowns personalizados
 const WebDropdown = ({
 label,
@@ -41,89 +48,88 @@ onChange: (v: any) => void;
 </View>
 );
 
-const TimeInput: React.FC = () => {
-const [hora, setHora] = useState<Date | null>(null);
-const [mostrarPicker, setMostrarPicker] = useState(false);
+export default function TimeInput ({backColor, SalEnt} : Props)  {
+    const [hora, setHora] = useState<Date | null>(null);
+    const [mostrarPicker, setMostrarPicker] = useState(false);
 
-// Web selectors
-const [webHora, setWebHora] = useState(12);
-const [webMinuto, setWebMinuto] = useState(0);
-const [webPeriodo, setWebPeriodo] = useState<'AM' | 'PM'>('AM');
+    // Web selectors
+    const [webHora, setWebHora] = useState(12);
+    const [webMinuto, setWebMinuto] = useState(0);
+    const [webPeriodo, setWebPeriodo] = useState<'AM' | 'PM'>('AM');
 
-const horas12 = Array.from({ length: 12 }, (_, i) => i + 1); // 1-12
-const minutos = Array.from({ length: 60 }, (_, i) => i); // 0-59
+    const horas12 = Array.from({ length: 12 }, (_, i) => i + 1); // 1-12
+    const minutos = Array.from({ length: 60 }, (_, i) => i); // 0-59
 
-const abrirPicker = () => setMostrarPicker(true);
+    const abrirPicker = () => setMostrarPicker(true);
 
-const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
-    setMostrarPicker(false);
-    if (selectedDate) {
-    setHora(selectedDate);
-    }
-};
+    const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+        setMostrarPicker(false);
+        if (selectedDate) {
+        setHora(selectedDate);
+        }
+    };
 
-const formatearHora12 = (date: Date): string => {
-    let hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours === 0 ? 12 : hours;
-    return `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
-};
+    const formatearHora12 = (date: Date): string => {
+        let hours = date.getHours();
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours === 0 ? 12 : hours;
+        return `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+    };
 
-const handleWebConfirm = () => {
-    let h = webHora % 12;
-    if (webPeriodo === 'PM') h += 12;
-    const nuevaHora = new Date();
-    nuevaHora.setHours(h);
-    nuevaHora.setMinutes(webMinuto);
-    nuevaHora.setSeconds(0);
-    setHora(nuevaHora);
-};
+    const handleWebConfirm = () => {
+        let h = webHora % 12;
+        if (webPeriodo === 'PM') h += 12;
+        const nuevaHora = new Date();
+        nuevaHora.setHours(h);
+        nuevaHora.setMinutes(webMinuto);
+        nuevaHora.setSeconds(0);
+        setHora(nuevaHora);
+    };
 
-return (
-    <View style={[styles.container, Platform.OS === 'web' ? {padding: 5} : {padding: 20}]}>
-    {Platform.OS === 'web' ? (
-        <View style={styles.webSelectorContainer}>
-            <Text style={styles.title}>Hora de salida</Text>
-            <View style={styles.webSelectRow}>
-                <WebDropdown label="Hora" items={horas12} value={webHora} onChange={setWebHora} />
-                <WebDropdown label="Minuto" items={minutos} value={webMinuto} onChange={setWebMinuto} />
-                <WebDropdown label="AM/PM" items={['AM', 'PM']} value={webPeriodo} onChange={setWebPeriodo} />
+    return (
+        <View style={[styles.container, Platform.OS === 'web' ? {padding: 5} : {padding: 20}]}>
+        {Platform.OS === 'web' ? (
+            <View style={styles.webSelectorContainer}>
+                <Text style={styles.title}>Hora de salida</Text>
+                <View style={styles.webSelectRow}>
+                    <WebDropdown label="Hora" items={horas12} value={webHora} onChange={setWebHora} />
+                    <WebDropdown label="Minuto" items={minutos} value={webMinuto} onChange={setWebMinuto} />
+                    <WebDropdown label="AM/PM" items={['AM', 'PM']} value={webPeriodo} onChange={setWebPeriodo} />
+                </View>
+                <TouchableOpacity style={[styles.button, {backgroundColor: backColor}]} onPress={handleWebConfirm}>
+                    <Ionicons name="checkmark-circle" size={24} color="#2d3436" style={{ marginRight: 8 }} />
+                    <Text style={styles.confirmButtonText}>Confirmar</Text>
+                </TouchableOpacity>
+                {hora && (
+                    <Text style={styles.resultado}>Salida: {formatearHora12(hora)}</Text>
+                )}
             </View>
-            <TouchableOpacity style={styles.confirmButton} onPress={handleWebConfirm}>
-                <Ionicons name="checkmark-circle" size={24} color="#fff" style={{ marginRight: 8 }} />
-                <Text style={styles.confirmButtonText}>Confirmar</Text>
+        ) : (
+            <>
+            <TouchableOpacity style={[styles.button, {backgroundColor: backColor}]} onPress={abrirPicker}>
+                <Ionicons name="time-outline" size={24} color="#2d3436" style={styles.icon} />
+                <Text style={styles.buttonText}>
+                {hora ? `${SalEnt}: \n${formatearHora12(hora)}` : `Hora de \n${SalEnt}`}
+                </Text>
             </TouchableOpacity>
-            {hora && (
-                <Text style={styles.resultado}>Salida: {formatearHora12(hora)}</Text>
-            )}
-        </View>
-    ) : (
-        <>
-        <TouchableOpacity style={styles.button} onPress={abrirPicker}>
-            <Ionicons name="time-outline" size={24} color="#fff" style={styles.icon} />
-            <Text style={styles.buttonText}>
-            {hora ? `Entrada: ${formatearHora12(hora)}` : 'Hora de salida'}
-            </Text>
-        </TouchableOpacity>
 
-        {mostrarPicker && (
-            <DateTimePicker
-            value={hora || new Date()}
-            mode="time"
-            is24Hour={false}
-            display="default"
-            onChange={onChange}
-            />
+            {mostrarPicker && (
+                <DateTimePicker
+                value={hora || new Date()}
+                mode="time"
+                is24Hour={false}
+                display="default"
+                onChange={onChange}
+                />
+            )}
+            </>
         )}
-        </>
-    )}
-    </View>
-);
+        </View>
+    );
 };
 
-export default TimeInput;;
 
 const styles: any = StyleSheet.create({
 container: {
@@ -137,18 +143,20 @@ title: {
     color: '#2d3436',
 },
 button: {
-    backgroundColor: '#6c5ce7',
+    // backgroundColor: '#6c5ce7',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 14,
+    paddingVertical: 10,
+    marginTop: 10,
     paddingHorizontal: 10,
     borderRadius: 20,
     elevation: 6,
     width: '100%'
 },
 buttonText: {
-    color: 'white',
     fontSize: 16,
+    fontWeight: '600',
+    color: '#2d3436',
 },
 icon: {
     marginRight: 10,
@@ -156,7 +164,7 @@ icon: {
 webSelectorContainer: {
     backgroundColor: '#dfe6e9',
     borderRadius: 15,
-    padding: 5,
+    padding: 4,
     shadowColor: '#ccc',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.4,
@@ -196,9 +204,9 @@ confirmButton: {
     alignItems: 'center',
 },
 confirmButtonText: {
-    color: '#fff',
-    fontWeight: '600',
     fontSize: 16,
+    fontWeight: '600',
+    color: '#2d3436',
 },
 resultado: {
     marginTop: 15,

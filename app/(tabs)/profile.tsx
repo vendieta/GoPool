@@ -1,9 +1,10 @@
-import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity, Linking } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { Collapsible } from '@/components/Collapsible';
 import { FontAwesome5, MaterialIcons, Feather } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import { useTheme } from '../../components/Themed/ContextTheme';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,18 +30,19 @@ export default function Perfil() {
         { icon: 'schedule', Component: MaterialIcons, title: 'Programados', link: '/(optionScreen)/scheduledTrips' }
       ]
     },
-    {
-      title: "Pagos",
-      items: [
-        { icon: 'credit-card', Component: MaterialIcons, title: 'Agregar pago', link: '/(optionScreen)/addPaymentMethod' },
-        { icon: 'payment', Component: MaterialIcons, title: 'Métodos', link: '/(optionScreen)/viewPaymentMethods' }
-      ]
-    },
+    // {
+    //   title: "Pagos",
+    //   items: [
+    //     { icon: 'credit-card', Component: MaterialIcons, title: 'Agregar pago', link: '/(optionScreen)/addPaymentMethod' },
+    //     { icon: 'payment', Component: MaterialIcons, title: 'Métodos', link: '/(optionScreen)/viewPaymentMethods' }
+    //   ]
+    // },
     {
       title: "Ayuda",
       items: [
-        { icon: 'support-agent', Component: MaterialIcons, title: 'Soporte', link: '/(optionScreen)/contactSupport' },
-        { icon: 'help-outline', Component: MaterialIcons, title: 'FAQ', link: '/(optionScreen)/faq' }
+        { icon: 'support-agent', Component: MaterialIcons, title: 'Soporte', link: 'https://api.whatsapp.com/send/?phone=593963102238&text=Hola%2C+quiero+contactarme+con+acessor&type=phone_number&app_absent=0' },
+        { icon: 'help-outline', Component: MaterialIcons, title: 'FAQ', link: '/(optionScreen)/faq' },
+        { icon: 'donate', Component: FontAwesome5, title: 'Donaciones', link: 'https://api.whatsapp.com/send/?phone=593963102238&text=Hola%2C+Me+gustaria+apoyar+en+el+proyecto&type=phone_number&app_absent=0' }
       ]
     },
     {
@@ -72,7 +74,22 @@ export default function Perfil() {
             <View key={index} style={styles.section}>
               <Collapsible title={section.title}>
                 <View style={styles.itemsContainer}>
-                  {section.items.map((item, itemIndex) => (
+                  {section.items.map((item, itemIndex) => ( 
+                    item.title === 'Soporte' ? (
+                    <TouchableOpacity 
+                    key={itemIndex}
+                    style={[styles.item, { 
+                      backgroundColor: theme.cardBackground,
+                      borderColor: theme.border
+                    }]}
+                    activeOpacity={0.7}
+                    onPress={() => Linking.openURL(item.link)}
+                  >
+                    <item.Component name={item.icon} size={22} color={theme.accent} />
+                    <Text style={[styles.itemText, { color: theme.text }]}>
+                      {item.title}
+                    </Text>
+                  </TouchableOpacity>) : (
                     <TouchableOpacity 
                       key={itemIndex}
                       style={[styles.item, { 
@@ -86,7 +103,7 @@ export default function Perfil() {
                       <Text style={[styles.itemText, { color: theme.text }]}>
                         {item.title}
                       </Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>)
                   ))}
                 </View>
               </Collapsible>
