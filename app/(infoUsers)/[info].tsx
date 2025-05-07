@@ -3,16 +3,20 @@ import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { useEffect } from "react";
 import { useTheme } from "@/components/Themed/ContextTheme";
 import { MaterialIcons } from "@expo/vector-icons";
-
+import SeatsInput from "@/components/driver/SeatsInput";
+import RoutesPannel from "@/components/user/RoutesPannel";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 interface Producto {
   user: string;
   price: number;
   date: string;
-  time: string;
-  free: number;
-  startZone: string;
-  endZone: string;
+  departureTime: string;
+  seats: number;
+  arrivalTime: string;
+  routePoints: string[];
+  zoneInit: string;
+  zoneEnd: string;
 }
 
 export default function Info() {
@@ -23,8 +27,10 @@ export default function Info() {
   const data: Producto = typeof info === "string"
     ? JSON.parse(decodeURIComponent(info))
     : ({} as Producto);
-
-  useEffect(() => {
+  
+    
+    useEffect(() => {
+    console.log(data)
     if (Object.keys(data).length > 0) {
       navigation.setOptions({
         title: `Detalles de ${data.user}`,
@@ -36,6 +42,13 @@ export default function Info() {
   }, [navigation, data, theme]);
 
   const InfoCard = ({ title, value }: { title: string; value: string | number }) => (
+    <View style={[styles.infoCard, { backgroundColor: theme.cardBackground }]}>
+      <Text style={[styles.cardTitle, { color: theme.labelText }]}>{title}</Text>
+      <Text style={[styles.cardValue, { color: theme.text }]}>{value}</Text>
+    </View>
+  );
+
+  const InfoCard2 = ({ title, value }: { title: string; value: string | number }) => (
     <View style={[styles.infoCard, { backgroundColor: theme.cardBackground }]}>
       <Text style={[styles.cardTitle, { color: theme.labelText }]}>{title}</Text>
       <Text style={[styles.cardValue, { color: theme.text }]}>{value}</Text>
@@ -54,29 +67,36 @@ export default function Info() {
               </View>
               <View style={styles.profileHeader}>
                 <View style={[styles.avatar, { backgroundColor: theme.accent }]}>
-                  <Text style={styles.avatarText}>{data.user.charAt(0).toUpperCase()}</Text>
+                  {/* <Text style={styles.avatarText}>{data.user.charAt(0).toUpperCase()}</Text> */}
                 </View>
                 <Text style={[styles.userName, { color: theme.text }]}>{data.user}</Text>
                 {/* <Text style={[styles.userName, { color: theme.text }]}>Max Atahualpa taguantisuyo Paquisha goku</Text> */}
                 <Text style={[styles.userStatus, { color: theme.labelText }]}>
-                  {data.free > 0 ? `${data.free} cupos disponibles` : 'Sin cupos'}
+                  {data.seats > 0 ? `${data.seats} cupos disponibles` : 'Sin cupos'}
                 </Text>
               </View>
               <View style={styles.lateral}>
-                <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Hora</Text>
-                <Text style={[styles.lateralValue, { color: theme.text }]}>{data.time}</Text>
+                <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Fecha</Text>
+                <Text style={[styles.lateralValue, { color: theme.text }]}>{data.date}</Text>
               </View>
             </View>
         
-            <View style={styles.section}>
-              <InfoCard title="Fecha" value={data.date} />
+            <View style={[styles.section, {flexDirection: 'row', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center'}]}>
+              <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.departureTime}</Text></View>
+              <FontAwesome name="long-arrow-right" size={25} color="#fff" />
+              <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data.zoneEnd}</Text><Text  style={{color: theme.text}}>{data.arrivalTime}</Text></View>
+              {/* <View style={{alignItems: 'center'}}><Text style={{color: theme.text}}>{data.date}</Text></View>
+              <View style={{flexDirection: 'row', justifyContent: 'space-around'}}><Text style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.zoneEnd}</Text></View> */}
+            </View>
+            
+            <View style={[styles.section, {backgroundColor: theme.cardBackground, padding: 10}]}>
+              <Text style={[styles.cardTitle, { color: theme.labelText}]}>Rutas</Text>
+              <RoutesPannel routes={data.routePoints} />
             </View>
 
-            <View style={styles.section}>
-              <InfoCard title="Origen" value={data.startZone} />
-              <InfoCard title="Destino" value={data.endZone} />
+            <View style={[styles.section, {backgroundColor: theme.cardBackground, padding: 10}]}>
+              <SeatsInput x={data.seats} />
             </View>
-
 
             <View style={[styles.contactButton, { backgroundColor: theme.accent }]}>
               <Text style={styles.contactButtonText}>Contactar a {data.user}</Text>
@@ -136,14 +156,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   section: {
-    gap: 12,
+    borderRadius: 10,
+    
+
   },
   infoCard: {
     padding: 12,
     borderRadius: 8,
   },
   cardTitle: {
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: '500',
     marginBottom: 4,
   },

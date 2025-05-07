@@ -5,6 +5,8 @@ import TimeInput from "@/components/driver/TimeInput";
 import Desplegable from "@/components/driver/ZonaSelector";
 import { View , Text, TextInput , StyleSheet, ScrollView, Alert , Image, Button , Dimensions , useColorScheme, Platform, TouchableOpacity  } from "react-native";
 
+const {width} = Dimensions.get('window')
+
 export default function CreateRoutesDriver() {
 
   const handleZonaSelect = (zona: string) => {
@@ -20,7 +22,7 @@ export default function CreateRoutesDriver() {
         flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        width: '100%',
+        width: width*.95,
       }}>
         <View style={[styles.subContainer, Platform.OS === 'web' ? { width: '100%',} : { width: '95%',}]}>
           <View style={styles.inputContainer}>
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     marginTop: '1%',
-    
+    padding: 5
   },
   title: {
     textAlign: 'center',

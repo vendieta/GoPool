@@ -8,11 +8,15 @@ Platform,
 } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-const SeatInput: React.FC = () => {
+interface Props {
+    x?: number 
+}
+
+const SeatInput: React.FC = ({x}: Props) => {
 const [seats, setSeats] = useState(0);
 
 const updateSeats = (delta: number) => {
-    setSeats((prev) => Math.max(0, prev + delta));
+    setSeats((prev) => Math.min(x || Infinity, Math.max(0, prev + delta)));
 };
 
 return (

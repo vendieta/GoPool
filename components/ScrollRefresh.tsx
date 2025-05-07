@@ -104,7 +104,7 @@ const ScrollRefresh = () => {
     <UserCard 
       user= {item.userName}
       price= {item.price}
-      puntos= {['Mucho Lote 2 (todas las urbanizaciones)',
+      routePoints= {['Mucho Lote 2 (todas las urbanizaciones)',
         'Horizonte Dorado',
         'Jardines del Río' ,
         'La Romareda',
@@ -113,17 +113,21 @@ const ScrollRefresh = () => {
         '...',
         'Urb. Veranda',
         'Ciudad del Río 1 y 2' ,
-        // '🔺Metrópolis 1 y 2',
-        // '🔺Guamote',
-        // '🔺Mall El Fortin',
-        // '🔺Tía Lomas de la Florida',
-        // '🔺Metrópolis 1 (solo en retorno paso)',
-        // '🔺Ciudad del Río 1 (solo en retorno paso)',
+        '🔺Metrópolis 1 y 2',
+        '🔺Guamote',
+        '🔺Mall El Fortin',
+        '🔺Tía Lomas de la Florida',
+        '🔺Metrópolis 1 (solo en retorno paso)',
+        '🔺Ciudad del Río 1 (solo en retorno paso)',
         'espol'
-        ]}
-      horaSalida= {item.time}
-      horaLlegada= '07:00'
-      cupos= {item.free}
+        ]
+      }
+      arrivalTime= {item.time}
+      departureTime= '07:00'
+      seats= {item.free}
+      date='6/5/25'
+      zoneInit= 'Norte'
+      zoneEnd='Espols'
     />
   );
 
@@ -139,8 +143,8 @@ const ScrollRefresh = () => {
           data={data}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
-          numColumns={2}
-          columnWrapperStyle={{ justifyContent: 'space-around', paddingBottom: 10, gap: 10 }}
+          // numColumns={2}
+          // columnWrapperStyle={{ justifyContent: 'space-around', paddingBottom: 10, gap: 10 }}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator= {false}
           refreshControl={
