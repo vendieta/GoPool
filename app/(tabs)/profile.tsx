@@ -1,9 +1,12 @@
-import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity, Linking } from "react-native";
+import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity, Linking, Platform } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { Collapsible } from '@/components/Collapsible';
 import { FontAwesome5, MaterialIcons, Feather } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import { useTheme } from '../../components/Themed/ContextTheme';
+import { useApi } from '@/hooks/useApi';
+import { useEffect } from 'react';
+import useStorage from "@/hooks/useStorage";
 
 
 const { width, height } = Dimensions.get('window');
@@ -11,8 +14,39 @@ const { width, height } = Dimensions.get('window');
 export default function Perfil() {
   const router = useRouter();
   const { theme } = useTheme();
+  const {
+    storedValue: access_token,
+    setItem: setAccess_token,
+    removeItem: removeAccess_token
+  } = useStorage('access_token');
+  const {
+    storedValue: refresh_token,
+    setItem: setRefresh_token,
+    removeItem: removeRefresh_token
+  } = useStorage('refresh_token');
+  const {
+    storedValue: userId,
+    setItem: setId,
+    removeItem: removeId
+  } = useStorage('userId');
+  const {
+    storedValue: userEmail,
+    setItem: setUserEmail,
+    removeItem: removeUserEmail
+  } = useStorage('userEmail');
 
-  const outSession = () => router.replace('/');
+
+
+
+  const outSession = async () => {
+      console.log(access_token,refresh_token,userEmail,userId)
+      await removeRefresh_token('refresh_token')
+      await removeAccess_token('access_token')
+      await removeUserEmail('userEmail')
+      await removeId('userId')
+      console.log(access_token,refresh_token,userEmail,userId)
+    router.replace('/')
+  };
 
   const sections = [
     {
@@ -67,7 +101,7 @@ export default function Perfil() {
       // headerHeight removed as it is not supported by ParallaxScrollView
     >
       <View style={[styles.contentContainer, { backgroundColor: theme.background }]}>
-        <Text style={[styles.userText, { color: theme.text }]}>¡Hola!</Text>
+        <Text style={[styles.userText, { color: theme.text }]}>hola</Text>
         
         <View style={styles.scrollContent}>
           {sections.map((section, index) => (

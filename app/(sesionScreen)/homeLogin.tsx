@@ -1,36 +1,74 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, Platform } from 'react-native';
 import { Link, Route } from 'expo-router';
 import { useState } from 'react';
-
+import { useApi } from '@/hooks/useApi';
 // Importamos el componente BottomStyle (ajusta la ruta según tu estructura)
 import BottomStyle from '../../components/BottomStyle'; // Ajusta esta ruta si es necesario
+import useStorage from '@/hooks/useStorage';
 
 const { width, height } = Dimensions.get('window');
 
-interface LoginForm {
-  email: string;
-  password: string;
-}
 
-interface LoginResponse {
-  access: string;
-  refresh: string;
-  message?: string;
+
+interface LoginForm {
+  access_token: string;
+  refresh_token: string;
+  user: {
+    id: string;
+    email: string;
+  }
 }
 
 export default function LoginScreen() {
+  const { data, loading, error, post } = useApi<LoginForm>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  console.log(email,password)
+  const {
+    storedValue: access_token,
+    setItem: setAccess_token,
+  } = useStorage('access_token');
+  const {
+    storedValue: refresh_token,
+    setItem: setRefresh_token,
+  } = useStorage('refresh_token');
+  const {
+    storedValue: userId,
+    setItem: setId,
+  } = useStorage('userId');
+  const {
+    storedValue: userEmail,
+    setItem: setUserEmail,
+  } = useStorage('userEmail');
+
+
+
   // Definimos el objeto con el título y la ruta para el botón
-  const loginButtonData: { title: string; link: Route } = {
+  const loginButtonData: { title: string; link: Route, onPress: () => void } = {
     title: 'LOG IN',
     link: '/', // Cambia la ruta según tu estructura de navegación	
+    onPress: () => createTrip(email, password)
+  };
+
+  // Función para login
+  const createTrip = async (email: string, password: string) => {
+    console.log('credenciales: ',email, password)
+    post('/api/auth/login', {
+      email: email,
+      password: password
+    });
+    if (data) {
+      await setUserEmail('userId', data.user.email);
+      await setId('userEmail', data.user.id)
+      await setAccess_token('access_token', data.access_token)
+      await setRefresh_token('refresh_token', data.refresh_token)
+    }
+    console.log('data sesion: ', data)
+    console.log('storage total: ', access_token, refresh_token, 'userid y email:  ', userEmail, userId)
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bienvenido a GoPol comenzemos tu viaje!</Text>
+      <Text style={styles.title}>Bienvenido a GoPool comenzemos tu viaje!</Text>
       <Text style={styles.subtitle}>Te ayudaré a contactar con otras personas con las que compartes una ruta</Text>
       <Text style={styles.subtitle}>Sign In to your account</Text>
 
@@ -42,7 +80,7 @@ export default function LoginScreen() {
           keyboardType="email-address"
           autoCapitalize="none"
           // value={formData.email}
-          // onChangeText={(text) => handleInputChange('email', text)}
+          onChangeText={setEmail}
         />
         <TextInput
           style={styles.input}
@@ -51,7 +89,7 @@ export default function LoginScreen() {
           secureTextEntry
           autoCapitalize="none"
           // value={formData.password}
-          // onChangeText={(text) => handleInputChange('password', text)}
+          onChangeText={setPassword}
         />
         <TouchableOpacity>
           <Text style={styles.forgotPassword}>Forgot your password?

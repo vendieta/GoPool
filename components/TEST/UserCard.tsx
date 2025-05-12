@@ -38,7 +38,6 @@ horizontal = false,
 zoneInit,
 zoneEnd,
 }) => {
-    console.log('esta son las rutas',routePoints)
 
       // Validación rápida
     const isValid =
