@@ -144,13 +144,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   title: {
-    fontSize: width * 0.08,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#000',
     marginBottom: height * 0.02,
   },
   subtitle: {
-    fontSize: width * 0.04,
+    fontSize: 17,
     color: '#666',
     marginBottom: height * 0.03,
   },
@@ -163,12 +163,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: height * 0.02,
     marginBottom: height * 0.015,
-    fontSize: width * 0.04,
+    fontSize: 15,
     color: '#000',
   },
   forgotPassword: {
     color: '#666',
-    fontSize: width * 0.035,
+    fontSize: 12,
     textAlign: 'right',
   },
   createAccountContainer: {
@@ -177,11 +177,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   createAccountText: {
-    fontSize: width * 0.035,
+    fontSize: 15,
     color: '#666',
   },
   createAccountLink: {
-    fontSize: width * 0.035,
+    fontSize: 15,
     color: '#ff4d4d',
     fontWeight: 'bold',
   },
