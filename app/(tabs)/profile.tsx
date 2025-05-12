@@ -7,6 +7,7 @@ import { useTheme } from '../../components/Themed/ContextTheme';
 import { useApi } from '@/hooks/useApi';
 import { useEffect } from 'react';
 import useStorage from "@/hooks/useStorage";
+import { useLoginContext } from "@/hooks/useLoginContext";
 
 
 const { width, height } = Dimensions.get('window');
@@ -14,6 +15,7 @@ const { width, height } = Dimensions.get('window');
 export default function Perfil() {
   const router = useRouter();
   const { theme } = useTheme();
+  const { toggleState } = useLoginContext();
   const {
     storedValue: access_token,
     setItem: setAccess_token,
@@ -44,6 +46,7 @@ export default function Perfil() {
       await removeAccess_token('access_token')
       await removeUserEmail('userEmail')
       await removeId('userId')
+      toggleState()
       console.log(access_token,refresh_token,userEmail,userId)
     router.replace('/')
   };

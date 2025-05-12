@@ -1,6 +1,6 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, Platform } from 'react-native';
 import { Link, Route } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApi } from '@/hooks/useApi';
 // Importamos el componente BottomStyle (ajusta la ruta según tu estructura)
 import BottomStyle from '../../components/BottomStyle'; // Ajusta esta ruta si es necesario
@@ -57,19 +57,34 @@ export default function LoginScreen() {
     post('/api/auth/login', {
       email: email,
       password: password
-    });
+    });}
   //! hay que manejar mejor estoooooooooooooooooooooooooooooooooooooooo
+  useEffect(() => {
+    console.log('estoy el useEffect')
     if (data) {
+    const handleLoginSuccess = async () => {
+      toggleState();
       await setUserEmail('userId', data.user.email);
       await setId('userEmail', data.user.id);
       await setAccess_token('access_token', data.access_token);
       await setRefresh_token('refresh_token', data.refresh_token);
-      toggleState()
       console.log('este es el state del login:  ', state)
+      console.log('este es el state del login:  ', state);
+    };
+    handleLoginSuccess();
     }
-    console.log('data sesion: ', data)
-    console.log('storage total: ', access_token, refresh_token, 'userid y email:  ', userEmail, userId)
-  };
+  }, [data]);
+  //   if (data) {
+  //     toggleState()
+  //     await setUserEmail('userId', data.user.email);
+  //     await setId('userEmail', data.user.id);
+  //     await setAccess_token('access_token', data.access_token);
+  //     await setRefresh_token('refresh_token', data.refresh_token);
+  //     console.log('este es el state del login:  ', state)
+  //   }
+  //   console.log('data sesion: ', data)
+  //   console.log('storage total: ', access_token, refresh_token, 'userid y email:  ', userEmail, userId)
+  // };
 
   return (
     <View style={styles.container}>
