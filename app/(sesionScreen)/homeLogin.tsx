@@ -5,6 +5,7 @@ import { useApi } from '@/hooks/useApi';
 // Importamos el componente BottomStyle (ajusta la ruta según tu estructura)
 import BottomStyle from '../../components/BottomStyle'; // Ajusta esta ruta si es necesario
 import useStorage from '@/hooks/useStorage';
+import { useLoginContext } from '@/hooks/useLoginContext';
 
 const { width, height } = Dimensions.get('window');
 
@@ -23,6 +24,7 @@ export default function LoginScreen() {
   const { data, loading, error, post } = useApi<LoginForm>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { state, toggleState } = useLoginContext()
   const {
     storedValue: access_token,
     setItem: setAccess_token,
@@ -56,11 +58,14 @@ export default function LoginScreen() {
       email: email,
       password: password
     });
+  //! hay que manejar mejor estoooooooooooooooooooooooooooooooooooooooo
     if (data) {
       await setUserEmail('userId', data.user.email);
-      await setId('userEmail', data.user.id)
-      await setAccess_token('access_token', data.access_token)
-      await setRefresh_token('refresh_token', data.refresh_token)
+      await setId('userEmail', data.user.id);
+      await setAccess_token('access_token', data.access_token);
+      await setRefresh_token('refresh_token', data.refresh_token);
+      toggleState()
+      console.log('este es el state del login:  ', state)
     }
     console.log('data sesion: ', data)
     console.log('storage total: ', access_token, refresh_token, 'userid y email:  ', userEmail, userId)
