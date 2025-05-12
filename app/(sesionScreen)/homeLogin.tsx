@@ -6,6 +6,7 @@ import { useApi } from '@/hooks/useApi';
 import BottomStyle from '../../components/BottomStyle'; // Ajusta esta ruta si es necesario
 import useStorage from '@/hooks/useStorage';
 import { useLoginContext } from '@/hooks/useLoginContext';
+import { useRouter } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
@@ -21,6 +22,7 @@ interface LoginForm {
 }
 
 export default function LoginScreen() {
+  const router = useRouter();
   const { data, loading, error, post } = useApi<LoginForm>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -70,6 +72,7 @@ export default function LoginScreen() {
       await setRefresh_token('refresh_token', data.refresh_token);
       console.log('este es el state del login:  ', state)
       console.log('este es el state del login:  ', state);
+      router.replace('/');
     };
     handleLoginSuccess();
     }

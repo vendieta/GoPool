@@ -12,13 +12,11 @@ interface DataProps {
 export default function BottomStyle({ element }: DataProps) {
   if (element.onPress) {
     return (
-    <Link href={element.link!} style={styles.container} onPress={() => console.log('aaaaaaaaaaaaa')} asChild>
       <TouchableOpacity onPress={element.onPress} style={styles.container}>
         <View style={styles.botton}>
           <Text style={styles.text}>{element.title}</Text>
         </View>
-      </TouchableOpacity>
-    </Link>
+    </TouchableOpacity>
     );
   }
 
