@@ -134,7 +134,7 @@ shadowOpacity: 0.1,
 shadowRadius: 4,
 elevation: 3,
 marginBottom: 16,
-maxWidth: 500,
+// maxWidth: 500,
 alignSelf: 'center',
 ...Platform.select({
     web: {

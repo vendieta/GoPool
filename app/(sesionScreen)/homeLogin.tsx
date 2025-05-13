@@ -124,9 +124,9 @@ export default function LoginScreen() {
       <BottomStyle element={loginButtonData} />
 
       <View style={styles.createAccountContainer}>
-        <Text style={styles.createAccountText}>Don't have an account? </Text>
+        <Text style={styles.createAccountText}>No tienes cuenta? </Text>
         <Link href="/createCount" asChild>
-          <Text style={styles.createAccountLink}>CREATE</Text>
+          <Text style={styles.createAccountLink}>REGISTRATE</Text>
         </Link>
       </View>
     </View>

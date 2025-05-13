@@ -6,6 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import LoginScreen from '../(sesionScreen)/homeLogin';
 import { useLoginContext } from '@/hooks/useLoginContext';
+import useStorage from '@/hooks/useStorage';
 
 // Evitar que el splash se oculte automáticamente
 SplashScreen.preventAutoHideAsync();
@@ -13,10 +14,25 @@ SplashScreen.preventAutoHideAsync();
 export default function HomeScreen() {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
-  const {state} = useLoginContext()
+  const {state, toggleState} = useLoginContext()
+    const {
+    storedValue: refresh_token
+  } = useStorage('refresh_token');
+  console.log('este es el storage que se ve si se guarda en web:    ', refresh_token)
   console.log('este es el state:    ',state)
 
-
+  // useEffect(() => {
+  //   if (refresh_token) {
+  //     if (!state) {
+  //       toggleState()
+  //     }
+  //   }
+  // }, [])
+  useEffect(() => {
+    if (refresh_token && !state) {
+      toggleState()
+    }
+  }, [refresh_token])
 
 
   const [fontsLoaded] = useFonts({
