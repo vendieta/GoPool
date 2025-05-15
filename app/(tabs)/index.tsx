@@ -15,7 +15,7 @@ export default function HomeScreen() {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const {state, toggleState} = useLoginContext()
-    const {
+  const {
     storedValue: refresh_token
   } = useStorage('refresh_token');
   console.log('este es el storage que se ve si se guarda en web:    ', refresh_token)

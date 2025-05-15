@@ -117,7 +117,12 @@ export default function createCountDriver() {
                 secureTextEntry={true}
                 autoCapitalize="none"
               />
-              <TextInput
+              <DateInputSimple 
+                value={fechNa}
+                onChange={setFechNa}
+                placeholder='Fecha de nacimiento'
+                />
+              {/* <TextInput
                 style={styles.input}
                 value={fechNa}
                 onChangeText={setFechNa}
@@ -125,7 +130,7 @@ export default function createCountDriver() {
                 placeholderTextColor="#999"
                 // secureTextEntry={secureTextEntry}
                 autoCapitalize="none"
-              />
+              /> */}
             </View>
           </ScrollView>
 

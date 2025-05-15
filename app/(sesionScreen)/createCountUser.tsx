@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, Dimensions, ImageBackground, ScrollView, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity } from 'react-native';
-import BottomStyle from '@/components/BottomStyle';
-import Input from '@/components/Input';
+import { View, Text, StyleSheet, Dimensions, ImageBackground, ScrollView, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useState } from 'react';
 import { useApi } from '@/hooks/useApi';
+import DateInputSimple from '@/components/InputDate';
+import GalleryFt from '@/components/imgs/GalleryFt';
 
 const { width, height } = Dimensions.get('window');
 
@@ -35,10 +35,20 @@ export default function CreateCountUser() {
   const send = () => {
     if(userName && name && lastName && email && password && fechNa && numMatricula && confPassword) {
       post('/', {
-        
+      
       })
+    } else {
+      Alert.alert(
+        "Error", // Título del alert
+        "Hubo un problema, por favor intenta nuevamente.", // Mensaje
+        [
+          { text: "Aceptar", onPress: () => console.log("Error aceptado") }, // Botón de aceptación
+        ],
+      );
     }
   }
+
+
   return (
     <ImageBackground
       source={require('@/assets/images/tortucar.jpeg')}
@@ -62,6 +72,26 @@ export default function CreateCountUser() {
 
             {/* Inputs */}
             <View style={styles.inputsContainer}>
+              <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+                <TextInput
+                  style={styles.inputPart}
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="NOMBRE"
+                  placeholderTextColor="#999"
+                  // secureTextEntry={secureTextEntry}
+                  autoCapitalize="none"
+                />
+                <TextInput
+                  style={styles.inputPart}
+                  value={lastName}
+                  onChangeText={setLastName}
+                  placeholder="APELLIDO"
+                  placeholderTextColor="#999"
+                  // secureTextEntry={secureTextEntry}
+                  autoCapitalize="none"
+                />
+              </View>
               <TextInput
                 style={styles.input}
                 value={userName}
@@ -71,33 +101,22 @@ export default function CreateCountUser() {
                 // secureTextEntry={secureTextEntry}
                 autoCapitalize="none"
               />
-              <TextInput
-                style={styles.input}
-                value={name}
-                onChangeText={setName}
-                placeholder="NOMBRE"
-                placeholderTextColor="#999"
-                // secureTextEntry={secureTextEntry}
-                autoCapitalize="none"
-              />
-              <TextInput
-                style={styles.input}
-                value={lastName}
-                onChangeText={setLastName}
-                placeholder="APELLIDO"
-                placeholderTextColor="#999"
-                // secureTextEntry={secureTextEntry}
-                autoCapitalize="none"
-              />
-              <TextInput
-                style={styles.input}
-                value={numMatricula}
-                onChangeText={setNumMatricula}
-                placeholder="NUMERO DE MATRICULA"
-                placeholderTextColor="#999"
-                // secureTextEntry={secureTextEntry}
-                autoCapitalize="none"
-              />
+              <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+                <TextInput
+                  style={styles.inputMatricula}
+                  value={numMatricula}
+                  onChangeText={setNumMatricula}
+                  placeholder="NUMERO DE MATRICULA"
+                  placeholderTextColor="#999"
+                  // secureTextEntry={secureTextEntry}
+                  autoCapitalize="none"
+                />
+                <GalleryFt
+                  setImage={setFtMatricula}
+                  image={ftMatricula}
+                  styleT={styles.inputFtMatricula}
+                  />
+              </View>
               <TextInput
                 style={styles.input}
                 value={email}
@@ -125,15 +144,11 @@ export default function CreateCountUser() {
                 secureTextEntry={true}
                 autoCapitalize="none"
               />
-              <TextInput
-                style={styles.input}
-                value={fechNa}
-                onChangeText={setFechNa}
-                placeholder="FECHA DE NACIMIENTO"
-                placeholderTextColor="#999"
-                // secureTextEntry={secureTextEntry}
-                autoCapitalize="none"
-              />
+              <DateInputSimple 
+                    value={fechNa}
+                    onChange={setFechNa}
+                    placeholder='Fecha de nacimiento'
+                    />
             </View>
           </ScrollView>
 
@@ -236,4 +251,45 @@ const styles = StyleSheet.create({
   color: '#fff',
   fontWeight: 'bold',
   },
+  inputPart: {
+    width: '49%',
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 50,
+    color: '#333',
+    fontSize: 16,
+    maxWidth: 777,
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 15,
+    paddingTop: 15,
+  },
+  inputMatricula: {
+    width: '75%',
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 50,
+    color: '#333',
+    fontSize: 15,
+    maxWidth: 777,
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 10,
+    // paddingTop: 15,
+  },
+  inputFtMatricula: {
+    width: '24%',
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 50,
+    color: '#333',
+    fontSize: 15,
+    maxWidth: 777,
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 10,
+    alignItems: 'center', 
+    justifyContent: 'center'
+    // paddingTop: 15,
+  }
 });
