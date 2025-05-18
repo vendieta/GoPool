@@ -9,7 +9,7 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 interface Props {
-  value: string;
+  value: string | undefined;
   onChange: (dateString: string) => void;
   placeholder?: string;
 }
@@ -17,7 +17,7 @@ interface Props {
 export default function DateInputSimple({ 
   value, 
   onChange, 
-  placeholder = 'DD/MM/AAAA' 
+  placeholder = 'DD-MM-AAAA' 
 }: Props) {
   const [date, setDate] = useState(value ? new Date(value) : null);
   const [showPicker, setShowPicker] = useState(false);
@@ -26,7 +26,11 @@ export default function DateInputSimple({
     setShowPicker(false);
     if (selectedDate) {
       setDate(selectedDate);
-      onChange(selectedDate.toLocaleDateString('es-ES')); // Formato DD/MM/AAAA
+      // onChange(selectedDate.toLocaleDateString('es-ES')); // Formato DD/MM/AAAA
+      const day = String(selectedDate.getDate()).padStart(2, '0');
+      const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+      const year = selectedDate.getFullYear();
+      onChange(`${year}-${month}-${day}`);
     }
   };
 

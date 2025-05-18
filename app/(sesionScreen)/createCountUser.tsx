@@ -1,53 +1,82 @@
 import { View, Text, StyleSheet, Dimensions, ImageBackground, ScrollView, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useApi } from '@/hooks/useApi';
 import DateInputSimple from '@/components/InputDate';
 import GalleryFt from '@/components/imgs/GalleryFt';
+import { useRouter } from 'expo-router';
+import LoadingOverlay from '@/components/loading/LoadingOverlay';
 
 const { width, height } = Dimensions.get('window');
 
 interface RegisterFrom {
-  email: string,
-  password: string,
-  metadata: {
-    nombre: string,
-    usuario: string,
-    lastname: string,
-    nummatricula: string,
-    fechanacimiento: string,  // Opcional
-    fotomatricula: string // Opcional
+  success: boolean,
+  user: {
+    email: string | undefined,
+    password: string | undefined,
+    metadata: {
+      nombre: string | undefined,
+      usuario: string | undefined,
+      lastName: string | undefined,
+      numMatricula: string | undefined,
+      fechanacimiento: string | undefined,  // Opcional
+      fotomatricula: string | undefined // Opcional
+      }
   }
 }
 
 export default function CreateCountUser() {
+  const router = useRouter();
   const { data, loading, error, post } = useApi<RegisterFrom>();
-  const [ userName, setUserName ] = useState('')
-  const [ name, setName ] = useState('')
-  const [ lastName, setLastName ] = useState('')
-  const [ email, setEmail ] = useState('')
-  const [ password, setPassword ] = useState('')
-  const [ fechNa, setFechNa ] = useState('')
-  const [ numMatricula, setNumMatricula ] = useState('')
-  const [ ftMatricula, setFtMatricula ] = useState('')
-  const [ confPassword, setConfPassword ] = useState('')
+  const [ userName, setUserName ] = useState<string>()
+  const [ name, setName ] = useState<string | undefined>()
+  const [ lastName, setLastName ] = useState<string | undefined>()
+  const [ email, setEmail ] = useState<string | undefined>()
+  const [ password, setPassword ] = useState<string | undefined>()
+  const [ fechNa, setFechNa ] = useState<string | undefined>()
+  const [ numMatricula, setNumMatricula ] = useState<string | undefined>()
+  const [ ftMatricula, setFtMatricula ] = useState<string | undefined>()
+  const [ confPassword, setConfPassword ] = useState<string | undefined>()
   
   
   const send = () => {
-    if(userName && name && lastName && email && password && fechNa && numMatricula && confPassword) {
-      post('/', {
-      
-      })
-    } else {
-      Alert.alert(
-        "Error", // Título del alert
-        "Hubo un problema, por favor intenta nuevamente.", // Mensaje
-        [
-          { text: "Aceptar", onPress: () => console.log("Error aceptado") }, // Botón de aceptación
-        ],
-      );
-    }
+  // Validaciones previas
+  if (!userName || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula) {
+    return Alert.alert("Error", "Por favor complete todos los campos.");
   }
 
+  // Validar dominio del correo
+  if (!email.endsWith("@espol.edu.ec")) {
+    return Alert.alert("Correo inválido", "El correo debe pertenecer al dominio @espol.edu.ec");
+  }
+
+  // Validar coincidencia de contraseñas
+  if (password !== confPassword) {
+    return Alert.alert("Contraseña incorrecta", "Las contraseñas no coinciden.");
+  }
+
+  console.log(email, password, name, userName, lastName, numMatricula, fechNa,ftMatricula)
+  // Si todo está bien, enviamos los datos al backend
+  post('/api/auth/register', {
+    email: email,
+    password: password,
+    metadata: {
+      nombre: name,
+      usuario: userName,
+      lastname: lastName,
+      nummatricula: numMatricula,
+      fechanacimiento: fechNa,
+      fotomatricula: ftMatricula
+    }
+  });
+  console.log(error)
+  console.log('esta es la data que se guarda: ', data)
+};
+
+  useEffect(() => {
+    if (data && data.success) {
+      router.replace('/');
+    }
+  }, [data])
 
   return (
     <ImageBackground
@@ -64,100 +93,104 @@ export default function CreateCountUser() {
             contentContainerStyle={styles.scrollContainer}
             keyboardShouldPersistTaps="handled"
           >
-            {/* Encabezado */}
-            <View style={styles.header}>
-              <Text style={styles.title}>CREA TU CUENTA</Text>
-              <Text style={styles.subtitle}>USUARIO ESPOL</Text>
-            </View>
+    
+            <View style={{ height: '100%', maxWidth: 600,  paddingTop: 25, paddingHorizontal: 5}}>
+              {/* Encabezado */}
+                
+              <View style={styles.header}>
+                <Text style={styles.title}>CREA TU CUENTA</Text>
+                <Text style={styles.subtitle}>USUARIO ESPOL</Text>
+              </View>
 
-            {/* Inputs */}
-            <View style={styles.inputsContainer}>
-              <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-                <TextInput
-                  style={styles.inputPart}
-                  value={name}
-                  onChangeText={setName}
-                  placeholder="NOMBRE"
-                  placeholderTextColor="#999"
-                  // secureTextEntry={secureTextEntry}
-                  autoCapitalize="none"
-                />
-                <TextInput
-                  style={styles.inputPart}
-                  value={lastName}
-                  onChangeText={setLastName}
-                  placeholder="APELLIDO"
-                  placeholderTextColor="#999"
-                  // secureTextEntry={secureTextEntry}
-                  autoCapitalize="none"
-                />
-              </View>
-              <TextInput
-                style={styles.input}
-                value={userName}
-                onChangeText={setUserName}
-                placeholder="NICKNAME/APODO"
-                placeholderTextColor="#999"
-                // secureTextEntry={secureTextEntry}
-                autoCapitalize="none"
-              />
-              <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-                <TextInput
-                  style={styles.inputMatricula}
-                  value={numMatricula}
-                  onChangeText={setNumMatricula}
-                  placeholder="NUMERO DE MATRICULA"
-                  placeholderTextColor="#999"
-                  // secureTextEntry={secureTextEntry}
-                  autoCapitalize="none"
-                />
-                <GalleryFt
-                  setImage={setFtMatricula}
-                  image={ftMatricula}
-                  styleT={styles.inputFtMatricula}
-                  />
-              </View>
-              <TextInput
-                style={styles.input}
-                value={email}
-                onChangeText={setEmail}
-                placeholder="CORREO ELECTRÓNICO ESPOL"
-                placeholderTextColor="#999"
-                // secureTextEntry={secureTextEntry}
-                autoCapitalize="none"
-              />
-              <TextInput
-                style={styles.input}
-                value={password}
-                onChangeText={setPassword}
-                placeholder="CONTRASEÑA"
-                placeholderTextColor="#999"
-                secureTextEntry={true}
-                autoCapitalize="none"
-              />
-              <TextInput
-                style={styles.input}
-                value={confPassword}
-                onChangeText={setConfPassword}
-                placeholder="CONFIRME CONTRASEÑA"
-                placeholderTextColor="#999"
-                secureTextEntry={true}
-                autoCapitalize="none"
-              />
-              <DateInputSimple 
-                    value={fechNa}
-                    onChange={setFechNa}
-                    placeholder='Fecha de nacimiento'
+              {/* Inputs */}
+              <View style={styles.inputsContainer}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%',}}>
+                  <TextInput
+                    style={styles.inputPart}
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="NOMBRE"
+                    placeholderTextColor="#999"
+                    // secureTextEntry={secureTextEntry}
+                    autoCapitalize="none"
                     />
+                  <TextInput
+                    style={styles.inputPart}
+                    value={lastName}
+                    onChangeText={setLastName}
+                    placeholder="APELLIDO"
+                    placeholderTextColor="#999"
+                    // secureTextEntry={secureTextEntry}
+                    autoCapitalize="none"
+                    />
+                </View>
+                <TextInput
+                  style={styles.input}
+                  value={userName}
+                  onChangeText={setUserName}
+                  placeholder="NICKNAME/APODO"
+                  placeholderTextColor="#999"
+                  // secureTextEntry={secureTextEntry}
+                  autoCapitalize="none"
+                  />
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+                  <TextInput
+                    style={styles.inputMatricula}
+                    value={numMatricula}
+                    onChangeText={setNumMatricula}
+                    placeholder="NUMERO DE MATRICULA"
+                    placeholderTextColor="#999"
+                    // secureTextEntry={secureTextEntry}
+                    autoCapitalize="none"
+                    />
+                  <GalleryFt
+                    setImage={(x: string | undefined) => setFtMatricula(x)}
+                    image={ftMatricula}
+                    styleT={styles.inputFtMatricula}
+                    />
+                </View>
+                <TextInput
+                  style={styles.input}
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder="CORREO ELECTRÓNICO ESPOL"
+                  placeholderTextColor="#999"
+                  // secureTextEntry={secureTextEntry}
+                  autoCapitalize="none"
+                  />
+                <TextInput
+                  style={styles.input}
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="CONTRASEÑA"
+                  placeholderTextColor="#999"
+                  secureTextEntry={true}
+                  autoCapitalize="none"
+                  />
+                <TextInput
+                  style={styles.input}
+                  value={confPassword}
+                  onChangeText={setConfPassword}
+                  placeholder="CONFIRME CONTRASEÑA"
+                  placeholderTextColor="#999"
+                  secureTextEntry={true}
+                  autoCapitalize="none"
+                  />
+                <DateInputSimple 
+                      value={fechNa}
+                      onChange={setFechNa}
+                      placeholder='Fecha de nacimiento'
+                      />
+            {/* Botón de registro */}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.containerButton} onPress={send}>
+                <Text style={styles.textButton}>REGISTRARSE</Text>
+              </TouchableOpacity>
+            </View>
+              </View>
             </View>
           </ScrollView>
-
-          {/* Botón de registro */}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.containerButton}>
-              <Text style={styles.textButton}>REGISTRARSE</Text>
-            </TouchableOpacity>
-          </View>
+          <LoadingOverlay visible={loading}/>
         </View>
       </KeyboardAvoidingView>
     </ImageBackground>
@@ -175,10 +208,11 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(105, 105, 105, 0.85)',
+    backgroundColor: 'rgba(37, 41, 36, 0.88)',
     padding: 10,
     width: '100%',
-    height: '100%'
+    height: '100%',
+    alignItems: 'center'
   },
   scrollContainer: {
     flexGrow: 1,
@@ -210,7 +244,6 @@ const styles = StyleSheet.create({
     maxWidth: 777,
     backgroundColor: '#f5f5f5',
     paddingHorizontal: 15,
-    paddingTop: 15,
   },
   subtitle: {
     fontSize: 25,
@@ -262,7 +295,6 @@ const styles = StyleSheet.create({
     maxWidth: 777,
     backgroundColor: '#f5f5f5',
     paddingHorizontal: 15,
-    paddingTop: 15,
   },
   inputMatricula: {
     width: '75%',

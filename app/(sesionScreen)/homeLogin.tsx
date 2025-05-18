@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, Platform, Alert } from 'react-native';
 import { Link, Route } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { useApi } from '@/hooks/useApi';
@@ -7,6 +7,7 @@ import BottomStyle from '../../components/BottomStyle'; // Ajusta esta ruta si e
 import useStorage from '@/hooks/useStorage';
 import { useLoginContext } from '@/hooks/useLoginContext';
 import { useRouter } from 'expo-router';
+import LoadingOverlay from '@/components/loading/LoadingOverlay';
 
 const { width, height } = Dimensions.get('window');
 
@@ -55,26 +56,31 @@ export default function LoginScreen() {
 
   // Función para login
   const createTrip = async (email: string, password: string) => {
-    console.log('credenciales: ',email, password)
-    post('/api/auth/login', {
-      email: email,
-      password: password
-    });}
+    if ( email && password ) {
+      console.log('credenciales: ',email, password)
+      post('/api/auth/login', {
+        email: email,
+        password: password
+      })
+    } else {
+      Alert.alert("Datos vacios", "Ingrese todos los datos correctamente.");
+    }
+    }
   //! hay que manejar mejor estoooooooooooooooooooooooooooooooooooooooo
   useEffect(() => {
     console.log('estoy el useEffect')
     if (data) {
-    const handleLoginSuccess = async () => {
-      toggleState();
-      await setUserEmail('userId', data.user.email);
-      await setId('userEmail', data.user.id);
-      await setAccess_token('access_token', data.access_token);
-      await setRefresh_token('refresh_token', data.refresh_token);
-      console.log('este es el state del login:  ', state)
-      console.log('este es el state del login:  ', state);
-      router.replace('/');
-    };
-    handleLoginSuccess();
+      const handleLoginSuccess = async () => {
+        toggleState();
+        await setUserEmail('userId', data.user.email);
+        await setId('userEmail', data.user.id);
+        await setAccess_token('access_token', data.access_token);
+        await setRefresh_token('refresh_token', data.refresh_token);
+        console.log('este es el state del login:  ', state)
+        console.log('este es el state del login:  ', state);
+        router.replace('/');
+      };
+      handleLoginSuccess();
     }
   }, [data]);
   //   if (data) {
@@ -129,6 +135,7 @@ export default function LoginScreen() {
           <Text style={styles.createAccountLink}>REGISTRATE</Text>
         </Link>
       </View>
+      <LoadingOverlay visible={loading}/>
     </View>
   );
 }

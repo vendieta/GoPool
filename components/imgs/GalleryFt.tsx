@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Text, ViewStyle } from 'react-native';
 
 interface Props {
     setImage: (x: string) => void
-    image: string | null
+    image: string | null | undefined
     styleT: ViewStyle
 }
 

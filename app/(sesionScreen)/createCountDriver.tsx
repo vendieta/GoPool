@@ -46,103 +46,107 @@ export default function createCountDriver() {
             contentContainerStyle={styles.scrollContainer}
             keyboardShouldPersistTaps="handled"
           >
-            {/* Encabezado */}
-            <View style={styles.header}>
-              <Text style={styles.title}>CREA TU CUENTA</Text>
-              <Text style={styles.subtitle}>USUARIO EXTERNO</Text>
-            </View>
+            <View style={{ height: '100%', maxWidth: 600,  paddingTop: 25, paddingHorizontal: 5}}>
+              {/* Encabezado */}
+              <View style={styles.header}>
+                <Text style={styles.title}>CREA TU CUENTA</Text>
+                <Text style={styles.subtitle}>COMO CONDUCTOR</Text>
+              </View>
 
-            {/* Inputs */}
-            <View style={styles.inputsContainer}>
-              <TextInput
-                style={styles.input}
-                value={userName}
-                onChangeText={setUserName}
-                placeholder="NICKNAME/APODO"
-                placeholderTextColor="#999"
-                // secureTextEntry={secureTextEntry}
-                autoCapitalize="none"
-              />
-              <TextInput
-                style={styles.input}
-                value={name}
-                onChangeText={setName}
-                placeholder="NOMBRE"
-                placeholderTextColor="#999"
-                // secureTextEntry={secureTextEntry}
-                autoCapitalize="none"
-              />
-              <TextInput
-                style={styles.input}
-                value={lastName}
-                onChangeText={setLastName}
-                placeholder="APELLIDO"
-                placeholderTextColor="#999"
-                // secureTextEntry={secureTextEntry}
-                autoCapitalize="none"
-              />
-              <TextInput
-                style={styles.input}
-                value={numMatricula}
-                onChangeText={setNumMatricula}
-                placeholder="NUMERO DE MATRICULA"
-                placeholderTextColor="#999"
-                // secureTextEntry={secureTextEntry}
-                autoCapitalize="none"
-              />
-              <TextInput
-                style={styles.input}
-                value={email}
-                onChangeText={setEmail}
-                placeholder="CORREO ELECTRÓNICO ESPOL"
-                placeholderTextColor="#999"
-                // secureTextEntry={secureTextEntry}
-                autoCapitalize="none"
-              />
-              <TextInput
-                style={styles.input}
-                value={password}
-                onChangeText={setPassword}
-                placeholder="CONTRASEÑA"
-                placeholderTextColor="#999"
-                secureTextEntry={true}
-                autoCapitalize="none"
-              />
-              <TextInput
-                style={styles.input}
-                value={confPassword}
-                onChangeText={setConfPassword}
-                placeholder="CONFIRME CONTRASEÑA"
-                placeholderTextColor="#999"
-                secureTextEntry={true}
-                autoCapitalize="none"
-              />
-              <DateInputSimple 
-                value={fechNa}
-                onChange={setFechNa}
-                placeholder='Fecha de nacimiento'
-                />
-              {/* <TextInput
-                style={styles.input}
-                value={fechNa}
-                onChangeText={setFechNa}
-                placeholder="FECHA DE NACIMIENTO"
-                placeholderTextColor="#999"
-                // secureTextEntry={secureTextEntry}
-                autoCapitalize="none"
-              /> */}
+              {/* Inputs */}
+              <View style={styles.inputsContainer}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+                  <TextInput
+                    style={styles.inputPart}
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="NOMBRE"
+                    placeholderTextColor="#999"
+                    // secureTextEntry={secureTextEntry}
+                    autoCapitalize="none"
+                    />
+                  <TextInput
+                    style={styles.inputPart}
+                    value={lastName}
+                    onChangeText={setLastName}
+                    placeholder="APELLIDO"
+                    placeholderTextColor="#999"
+                    // secureTextEntry={secureTextEntry}
+                    autoCapitalize="none"
+                    />
+                </View>
+                <TextInput
+                  style={styles.input}
+                  value={userName}
+                  onChangeText={setUserName}
+                  placeholder="NICKNAME/APODO"
+                  placeholderTextColor="#999"
+                  // secureTextEntry={secureTextEntry}
+                  autoCapitalize="none"
+                  />
+                <TextInput
+                  style={styles.input}
+                  value={numMatricula}
+                  onChangeText={setNumMatricula}
+                  placeholder="NUMERO DE MATRICULA"
+                  placeholderTextColor="#999"
+                  // secureTextEntry={secureTextEntry}
+                  autoCapitalize="none"
+                  />
+                <TextInput
+                  style={styles.input}
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder="CORREO ELECTRÓNICO ESPOL"
+                  placeholderTextColor="#999"
+                  // secureTextEntry={secureTextEntry}
+                  autoCapitalize="none"
+                  />
+                <TextInput
+                  style={styles.input}
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="CONTRASEÑA"
+                  placeholderTextColor="#999"
+                  secureTextEntry={true}
+                  autoCapitalize="none"
+                  />
+                <TextInput
+                  style={styles.input}
+                  value={confPassword}
+                  onChangeText={setConfPassword}
+                  placeholder="CONFIRME CONTRASEÑA"
+                  placeholderTextColor="#999"
+                  secureTextEntry={true}
+                  autoCapitalize="none"
+                  />
+                <DateInputSimple 
+                  value={fechNa}
+                  onChange={setFechNa}
+                  placeholder='Fecha de nacimiento'
+                  />
+                {/* <TextInput
+                  style={styles.input}
+                  value={fechNa}
+                  onChangeText={setFechNa}
+                  placeholder="FECHA DE NACIMIENTO"
+                  placeholderTextColor="#999"
+                  // secureTextEntry={secureTextEntry}
+                  autoCapitalize="none"
+                  /> */}
+                {/* Botón de registro (fuera del ScrollView pero dentro del KeyboardAvoidingView) */}
+                <View style={styles.buttonContainer}>
+                  <BottomStyle
+                    element={{
+                      title: 'REGISTRARSE',
+                      link: '/',
+                    }}
+                  />
+                </View>
+              </View>
             </View>
           </ScrollView>
 
-          {/* Botón de registro (fuera del ScrollView pero dentro del KeyboardAvoidingView) */}
-          <View style={styles.buttonContainer}>
-            <BottomStyle
-              element={{
-                title: 'REGISTRARSE',
-                link: '/',
-              }}
-            />
-          </View>
         </View>
       </KeyboardAvoidingView>
     </ImageBackground>
@@ -163,6 +167,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(37, 41, 36, 0.88)',
     padding: 10,
+    alignItems: 'center'
   },
   scrollContainer: {
     flexGrow: 1,
@@ -213,6 +218,17 @@ const styles = StyleSheet.create({
     maxWidth: 777,
     backgroundColor: '#f5f5f5',
     paddingHorizontal: 15,
-    paddingTop: 15,
+  },
+    inputPart: {
+    width: '49%',
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 50,
+    color: '#333',
+    fontSize: 16,
+    maxWidth: 777,
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 15,
   },
 });
