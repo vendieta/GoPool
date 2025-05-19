@@ -26,7 +26,7 @@ zoneEnd: string;
 horizontal?: boolean;
 }
 
-const TripCard: React.FC<TripCardProps> = ({
+const UserCard: React.FC<TripCardProps> = ({
 user,
 departureTime,
 arrivalTime,
@@ -123,7 +123,7 @@ zoneEnd,
     );
     };
 
-    export default TripCard;
+    export default UserCard;
 
 const cardBase: ViewStyle = {
 backgroundColor: '#fff',

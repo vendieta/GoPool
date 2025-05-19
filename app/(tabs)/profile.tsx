@@ -5,7 +5,7 @@ import { FontAwesome5, MaterialIcons, Feather } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import { useTheme } from '../../components/Themed/ContextTheme';
 import { useApi } from '@/hooks/useApi';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useStorage from "@/hooks/useStorage";
 import { useLoginContext } from "@/hooks/useLoginContext";
 
@@ -13,6 +13,7 @@ import { useLoginContext } from "@/hooks/useLoginContext";
 const { width, height } = Dimensions.get('window');
 
 export default function Perfil() {
+  const [ tipo, setTipo ] = useState(false)
   const router = useRouter();
   const { theme } = useTheme();
   const { toggleState } = useLoginContext();
@@ -51,13 +52,21 @@ export default function Perfil() {
     router.replace('/')
   };
 
-  const sections = [
-    {
+  const sections = [ 
+    tipo? {
       title: "Configuración",
       items: [
         { icon: 'settings', Component: Feather, title: 'Ajustes', link: '/(optionScreen)/config' },
         { icon: 'user-check', Component: Feather, title: 'Cuenta', link: '/(optionScreen)/accountStatement' },
-        { icon: 'user', Component: FontAwesome5, title: 'Temas', link: '/(optionScreen)/themes' }
+        { icon: 'user', Component: FontAwesome5, title: 'Temas', link: '/(optionScreen)/themes' },
+        { icon: 'car', Component: FontAwesome5, title: 'Registrar Vehiculo', link: '/(optionScreen)/themes' },
+      ]
+    }: {
+      title: "Configuración",
+      items: [
+        { icon: 'settings', Component: Feather, title: 'Ajustes', link: '/(optionScreen)/config' },
+        { icon: 'user-check', Component: Feather, title: 'Cuenta', link: '/(optionScreen)/accountStatement' },
+        { icon: 'user', Component: FontAwesome5, title: 'Temas', link: '/(optionScreen)/themes' },
       ]
     },
     {
@@ -67,13 +76,13 @@ export default function Perfil() {
         { icon: 'schedule', Component: MaterialIcons, title: 'Programados', link: '/(optionScreen)/scheduledTrips' }
       ]
     },
-    // {
+    // tipo ? {
     //   title: "Pagos",
     //   items: [
     //     { icon: 'credit-card', Component: MaterialIcons, title: 'Agregar pago', link: '/(optionScreen)/addPaymentMethod' },
     //     { icon: 'payment', Component: MaterialIcons, title: 'Métodos', link: '/(optionScreen)/viewPaymentMethods' }
     //   ]
-    // },
+    // } : null,
     {
       title: "Ayuda",
       items: [

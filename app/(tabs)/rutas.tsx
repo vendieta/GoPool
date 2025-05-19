@@ -1,12 +1,15 @@
-import { StyleSheet, Image, View, Text, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, Image, View, Text, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 import { useTheme } from '@/components/Themed/ContextTheme';
 import Opcion from '@/components/TEST/Opcion';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import UserCard from '@/components/TEST/UserCard';
 
 const { width } = Dimensions.get('window');
 
 export default function TabTwoScreen() {
+  const [ tipo, setTipo ] = useState(true)
   const { theme } = useTheme();
   const isLightTheme = theme.name === 'light';
 
@@ -43,38 +46,87 @@ export default function TabTwoScreen() {
       <View style={styles.contentContainer}>
         <View style={[styles.optionsCard, { backgroundColor: cardBackground }]}>
           <Text style={[styles.sectionTitle, { color: textColor }]}>
-            <MaterialIcons name="directions" size={20} color={accentColor} /> Opciones de Ruta
+            <MaterialIcons name="directions" size={20} color={accentColor} /> { tipo ? 'Opciones de Ruta' : 'Rutas por tomar' }
           </Text>
-          <Text style={[styles.sectionTitle, { color: textColor }]}>Selecciona una opción:</Text>
+          <Text style={[styles.sectionTitle, { color: textColor }]}>{tipo ? 'Selecciona una opción: ' : null }</Text>
           <View style={styles.optionsContainer}>
-            <Opcion
-              element={{
-                link: '/(serviceScreen)/createRouteUser',
-                title: 'Ruta pasajero',
-                icon: 'person',
-                description: 'Busca un conductor para tu viaje',
-                color: '#4CAF50'
-              }}
-              element1={{
-                link: '/(serviceScreen)/createRouteDriver',
-                title: 'Ruta conductor',
-                icon: 'directions-car',
-                description: 'Ofrece tus cupos disponibles',
-                color: '#2196F3'
-              }}
-            />
+            { tipo ? 
+              <Opcion
+                element={{
+                  link: '/(serviceScreen)/createRouteUser',
+                  title: 'Ver tus ruta como pasajero',
+                  icon: 'person',
+                  description: 'Mira los viajes que contrataste',
+                  color: '#4CAF50'
+                }}
+                element1={{
+                  link: '/(serviceScreen)/createRouteDriver',
+                  title: 'Crear ruta conductor',
+                  icon: 'directions-car',
+                  description: 'Ofrece tus cupos disponibles',
+                  color: '#2196F3'
+                }}
+              />
+            :
+                  <View style={{flexDirection: 'column'}}>
+                    <UserCard 
+                      user= {'pepe'}
+                      price= {5}
+                      routePoints= {['Mucho Lote 2 (todas las urbanizaciones)',
+                        'Horizonte Dorado',
+                        'Jardines del Río' ,
+                        'La Romareda',
+                        'La Perla',
+                        'Oasis',
+                        '...',
+                        'Urb. Veranda',
+                        'Ciudad del Río 1 y 2' ,
+                        '🔺Metrópolis 1 y 2',
+                        '🔺Guamote',
+                        '🔺Mall El Fortin',
+                        '🔺Tía Lomas de la Florida',
+                        '🔺Metrópolis 1 (solo en retorno paso)',
+                        '🔺Ciudad del Río 1 (solo en retorno paso)',
+                        'espol'
+                        ]
+                      }
+                      arrivalTime= {'09:00'}
+                      departureTime= '07:00'
+                      seats= {5}
+                      date='6/5/25'
+                      zoneInit= 'Norte'
+                      zoneEnd='Espol'
+                    />
+                    <View style={styles.extraInfo}>
+                      <Text>cupos comprados: {5}</Text>
+                      <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                        <TouchableOpacity style={{width: '50%', alignItems: 'center'}}>
+                          <Text>img</Text>
+                          <Text>informacion del vehiculo</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{width: '50%', alignItems: 'center'}}>
+                          <Text>whatssap</Text>
+                          <Text>Contactar al conductor</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View> 
+            }
           </View>
         </View>
 
         {/* Sección adicional (puedes agregar más contenido aquí) */}
-        <View style={[styles.infoCard, { backgroundColor: cardBackground }]}>
-          <Text style={[styles.infoTitle, { color: textColor }]}>
-            <MaterialIcons name="info" size={18} color={accentColor} /> ¿Cómo funciona?
-          </Text>
-          <Text style={[styles.infoText, { color: isLightTheme ? '#666' : '#aaa' }]}>
-            Selecciona si deseas buscar un viaje como pasajero u ofrecer tus cupos disponibles como conductor.
-          </Text>
-        </View>
+        {tipo ? 
+          null :
+          <View style={[styles.infoCard, { backgroundColor: cardBackground }]}>
+            <Text style={[styles.infoTitle, { color: textColor }]}>
+              <MaterialIcons name="info" size={18} color={accentColor} /> ¿Cómo funciona?
+            </Text>
+            <Text style={[styles.infoText, { color: isLightTheme ? '#666' : '#aaa' }]}>
+              Selecciona si deseas buscar un viaje como pasajero u ofrecer tus cupos disponibles como conductor.
+            </Text>
+          </View>
+        }
       </View>
     </ScrollView>
   );
@@ -158,4 +210,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
   },
+  extraInfo:{
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 10
+  }
 });
