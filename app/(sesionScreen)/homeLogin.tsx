@@ -8,6 +8,7 @@ import useStorage from '@/hooks/useStorage';
 import { useLoginContext } from '@/hooks/useLoginContext';
 import { useRouter } from 'expo-router';
 import LoadingOverlay from '@/components/loading/LoadingOverlay';
+import { useRoleContext } from '@/hooks/useRoleContext';
 
 const { width, height } = Dimensions.get('window');
 
@@ -19,10 +20,12 @@ interface LoginForm {
   user: {
     id: string;
     email: string;
-  }
+  };
+  isDriver: boolean;
 }
 
 export default function LoginScreen() {
+  const { isDriver, toggleRole } = useRoleContext();
   const router = useRouter();
   const { data, loading, error, post } = useApi<LoginForm>();
   const [email, setEmail] = useState('');
@@ -44,7 +47,10 @@ export default function LoginScreen() {
     storedValue: userEmail,
     setItem: setUserEmail,
   } = useStorage('userEmail');
-
+  const {
+    storedValue: role,
+    setItem: setRole,
+  } = useStorage('role');
 
 
   // Definimos el objeto con el título y la ruta para el botón
@@ -70,12 +76,15 @@ export default function LoginScreen() {
   useEffect(() => {
     console.log('estoy el useEffect')
     if (data) {
+      console.log(data.isDriver)
       const handleLoginSuccess = async () => {
         toggleState();
         await setUserEmail('userId', data.user.email);
         await setId('userEmail', data.user.id);
         await setAccess_token('access_token', data.access_token);
         await setRefresh_token('refresh_token', data.refresh_token);
+        await setRole('role', data.isDriver.toString());
+        if (data.isDriver){toggleRole()}
         console.log('este es el state del login:  ', state)
         console.log('este es el state del login:  ', state);
         router.replace('/');

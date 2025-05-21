@@ -36,16 +36,22 @@ export default function Perfil() {
     setItem: setUserEmail,
     removeItem: removeUserEmail
   } = useStorage('userEmail');
+  const {
+    storedValue: role,
+    setItem: setRole,
+    removeItem: removeRole
+  } = useStorage('role');
 
 
 
 
   const outSession = async () => {
-      console.log(access_token,refresh_token,userEmail,userId)
+      console.log(access_token,refresh_token,userEmail,userId,role)
       await removeRefresh_token('refresh_token')
       await removeAccess_token('access_token')
       await removeUserEmail('userEmail')
       await removeId('userId')
+      await removeRole('role')
       toggleState()
       console.log(access_token,refresh_token,userEmail,userId)
     router.replace('/')
