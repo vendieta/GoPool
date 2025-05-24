@@ -35,8 +35,10 @@ export const useApi = <T>(): ApiResponse<T> => {
     setError(null);
     try {
       const response = await apiService.post<T>(endpoint, data);
+      console.log('apirespondedor: ', response)
       setData(response);
     } catch (err: any) {
+      console.log('api: ', err)
       setError(err.message || 'Error al realizar la solicitud POST');
     } finally {
       setLoading(false);

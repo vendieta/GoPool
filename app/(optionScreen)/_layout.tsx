@@ -16,6 +16,7 @@ export default function layout() {
             <Stack.Screen name="help" options={{title:'Servicios de ayuda'}}/>
             <Stack.Screen name="problem" options={{title:'Reportar problemas'}}/>
             <Stack.Screen name='themes' options={{title:'Temas'}}/>
+            <Stack.Screen name='registerCar' options={{title:'Regsitra tu auto'}}/>
         </Stack>
     )
 }

@@ -2,14 +2,15 @@ import * as ImagePicker from 'expo-image-picker';
 import { View, TouchableOpacity, Text, ViewStyle } from 'react-native';
 
 interface Props {
-    setImage: (x: string) => void
+    setImage: (x: string | null | undefined) => void
     image: string | null | undefined
     styleT: ViewStyle
+    text: string
 }
 
 
 
-export default function GalleryFt ({setImage, image, styleT}: Props) {
+export default function GalleryFt ({setImage, image, styleT, text}: Props) {
 
     const pickImage = async () => {
     // Pedir permiso para acceder a la galería
@@ -31,15 +32,15 @@ export default function GalleryFt ({setImage, image, styleT}: Props) {
 
     console.log('data completa: ')
     if (!result.canceled) {
-        setImage(result.assets[0].uri);
-        console.log('foto matricula en base64: ', result.assets[0].base64)
+        setImage(result.assets[0].base64);
+        console.log('foto matricula en base64: ', result.assets[0].file)
     }
     // console.log('foto matricula: ', ftMatricula)
     };
 
     return(
     <TouchableOpacity style={[styleT, image? {borderColor: 'green', borderWidth: 5} : null]} onPress={pickImage}>
-        <View><Text style={[{fontSize: 11, textAlign: 'center',color: '#999'}, image? {color: 'green'} : null]}>{ image? 'Listo' : 'Credencial de estudiante' }</Text></View>
+        <View><Text style={[{fontSize: 11, textAlign: 'center',color: '#999'}, image? {color: 'green'} : null]}>{ image? 'Listo' : `${text}` } </Text></View>
     </TouchableOpacity>
     )
 }

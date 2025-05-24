@@ -34,7 +34,7 @@ export default function CreateCountUser() {
   const [ password, setPassword ] = useState<string | undefined>()
   const [ fechNa, setFechNa ] = useState<string | undefined>()
   const [ numMatricula, setNumMatricula ] = useState<string | undefined>()
-  const [ ftMatricula, setFtMatricula ] = useState<string | undefined>()
+  const [ ftMatricula, setFtMatricula ] = useState<string | undefined |  null>()
   const [ confPassword, setConfPassword ] = useState<string | undefined>()
   
   
@@ -57,14 +57,14 @@ export default function CreateCountUser() {
   console.log(email, password, name, userName, lastName, numMatricula, fechNa,ftMatricula)
   // Si todo está bien, enviamos los datos al backend
   post('/api/auth/register', {
-    email: email,
-    password: password,
+    email: email.trim(),
+    password: password.trim(),
     metadata: {
-      nombre: name,
-      usuario: userName,
-      lastname: lastName,
-      nummatricula: numMatricula,
-      fechanacimiento: fechNa,
+      nombre: name.trim(),
+      usuario: userName.trim(),
+      lastname: lastName.trim(),
+      nummatricula: numMatricula.trim(),
+      fechanacimiento: fechNa.trim(),
       fotomatricula: ftMatricula
     }
   });
@@ -144,7 +144,8 @@ export default function CreateCountUser() {
                     autoCapitalize="none"
                     />
                   <GalleryFt
-                    setImage={(x: string | undefined) => setFtMatricula(x)}
+                    text='Credencial de estudiante'
+                    setImage={(x: string | null | undefined) => setFtMatricula(x)}
                     image={ftMatricula}
                     styleT={styles.inputFtMatricula}
                     />

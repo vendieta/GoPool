@@ -1,23 +1,26 @@
 // src/api/api.ts
 import axios from 'axios';
+import { Alert } from 'react-native';
 
 const api = axios.create({
-baseURL: 'https://qb2dfea1va.execute-api.us-east-2.amazonaws.com/v1',
-timeout: 7000,
-headers: {
-    'Content-Type': 'application/json',
-},
+    baseURL: 'https://qb2dfea1va.execute-api.us-east-2.amazonaws.com/v1',
+    timeout: 7000,
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
 
 api.interceptors.response.use(
 (response) => response,
 (error) => {
     if (error.response) {
-    console.error('Error de respuesta:', error.response.status, error.response.data);
+        console.error('Error de respuesta:', error.response.status, error.response.data);
+        error.response.data.msg?  Alert.alert("Error", error.response.data.msg) : null;
+        error.response.data.error.message ?  Alert.alert("Error", error.response.data.error.message) : null;
     } else if (error.request) {
-    console.error('Error de conexión:', error.request);
+        console.error('Error de conexión:', error.request);
     } else {
-    console.error('Error:', error.message);
+        console.error('Error:', error.message);
     }
     return Promise.reject(error);
 }

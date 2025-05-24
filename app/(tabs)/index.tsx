@@ -16,18 +16,21 @@ export default function HomeScreen() {
   const { isDriver, toggleRole } = useRoleContext();
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
+<<<<<<< Updated upstream
+  const navigation = useNavigation();
+=======
   const {state, toggleState} = useLoginContext()
   const {
     storedValue: refresh_token
   } = useStorage('refresh_token');
-    const {
+  const {
     storedValue: role,
     setItem: setRole,
   } = useStorage('role');
   console.log('rol inicial',isDriver)
+  console.log('storage del rol: ', role, !role)
   // console.log('este es el storage que se ve si se guarda en web:    ', refresh_token)
   // console.log('este es el state:    ',state)
-
   // useEffect(() => {
   //   if (refresh_token) {
   //     if (!state) {
@@ -36,18 +39,21 @@ export default function HomeScreen() {
   //   }
   // }, [])
   console.log('esto es el tipo que se muestra: ', role)
+  console.log('esto es el tipo que se muestra: ', role)
   useEffect(() => {
     if (refresh_token && !state) {
       toggleState()
     }
   }, [refresh_token])
+
   useEffect(() => {
-    if ( !role && role === 'true') {
+    if ( !isDriver && role) {
       toggleRole()
     }
   }, [role])
 
 
+>>>>>>> Stashed changes
   const [fontsLoaded] = useFonts({
     SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
   });

@@ -3,13 +3,20 @@ import { useTheme } from '@/components/Themed/ContextTheme';
 import Opcion from '@/components/TEST/Opcion';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
+<<<<<<< Updated upstream
+=======
 import { useState } from 'react';
 import UserCard from '@/components/TEST/UserCard';
+import { useRoleContext } from '@/hooks/useRoleContext';
+>>>>>>> Stashed changes
 
 const { width } = Dimensions.get('window');
 
 export default function TabTwoScreen() {
-  const [ tipo, setTipo ] = useState(true)
+<<<<<<< Updated upstream
+=======
+  const { isDriver } = useRoleContext();
+>>>>>>> Stashed changes
   const { theme } = useTheme();
   const isLightTheme = theme.name === 'light';
 
@@ -46,11 +53,33 @@ export default function TabTwoScreen() {
       <View style={styles.contentContainer}>
         <View style={[styles.optionsCard, { backgroundColor: cardBackground }]}>
           <Text style={[styles.sectionTitle, { color: textColor }]}>
-            <MaterialIcons name="directions" size={20} color={accentColor} /> { tipo ? 'Opciones de Ruta' : 'Rutas por tomar' }
+<<<<<<< Updated upstream
+            <MaterialIcons name="directions" size={20} color={accentColor} /> Opciones de Ruta
           </Text>
           <Text style={[styles.sectionTitle, { color: textColor }]}>{tipo ? 'Selecciona una opción: ' : null }</Text>
           <View style={styles.optionsContainer}>
-            { tipo ? 
+            <Opcion
+              element={{
+                link: '/(serviceScreen)/createRouteUser',
+                title: 'Ruta pasajero',
+                icon: 'person',
+                description: 'Busca un conductor para tu viaje',
+                color: '#4CAF50'
+              }}
+              element1={{
+                link: '/(serviceScreen)/createRouteDriver',
+                title: 'Ruta conductor',
+                icon: 'directions-car',
+                description: 'Ofrece tus cupos disponibles',
+                color: '#2196F3'
+              }}
+            />
+=======
+            <MaterialIcons name="directions" size={20} color={accentColor} /> { isDriver ? 'Opciones de Ruta' : 'Rutas por tomar' }
+          </Text>
+          <Text style={[styles.sectionTitle, { color: textColor }]}>{isDriver ? 'Selecciona una opción: ' : null }</Text>
+          <View style={styles.optionsContainer}>
+            { isDriver ? 
               <Opcion
                 element={{
                   link: '/(serviceScreen)/createRouteUser',
@@ -112,11 +141,22 @@ export default function TabTwoScreen() {
                     </View>
                   </View> 
             }
+>>>>>>> Stashed changes
           </View>
         </View>
 
         {/* Sección adicional (puedes agregar más contenido aquí) */}
-        {tipo ? 
+<<<<<<< Updated upstream
+        <View style={[styles.infoCard, { backgroundColor: cardBackground }]}>
+          <Text style={[styles.infoTitle, { color: textColor }]}>
+            <MaterialIcons name="info" size={18} color={accentColor} /> ¿Cómo funciona?
+          </Text>
+          <Text style={[styles.infoText, { color: isLightTheme ? '#666' : '#aaa' }]}>
+            Selecciona si deseas buscar un viaje como pasajero u ofrecer tus cupos disponibles como conductor.
+          </Text>
+        </View>
+=======
+        {isDriver ? 
           null :
           <View style={[styles.infoCard, { backgroundColor: cardBackground }]}>
             <Text style={[styles.infoTitle, { color: textColor }]}>
@@ -127,6 +167,7 @@ export default function TabTwoScreen() {
             </Text>
           </View>
         }
+>>>>>>> Stashed changes
       </View>
     </ScrollView>
   );

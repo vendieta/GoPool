@@ -1,36 +1,109 @@
-import { View, Text, StyleSheet, Dimensions, ImageBackground, ScrollView, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
-import BottomStyle from '@/components/BottomStyle';
-import Input from '@/components/Input';
-import { useState } from 'react';
+import { View, Text, StyleSheet, Dimensions, ImageBackground, ScrollView, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { useEffect, useState } from 'react';
+import { useApi } from '@/hooks/useApi';
 import DateInputSimple from '@/components/InputDate';
+import GalleryFt from '@/components/imgs/GalleryFt';
+import { useRouter } from 'expo-router';
+import LoadingOverlay from '@/components/loading/LoadingOverlay';
 
 const { width, height } = Dimensions.get('window');
 
-export default function createCountDriver() {
-    const [ userName, setUserName ] = useState('')
-  const [ name, setName ] = useState('')
-  const [ lastName, setLastName ] = useState('')
-  const [ email, setEmail ] = useState('')
-  const [ password, setPassword ] = useState('')
-  const [ fechNa, setFechNa ] = useState('')
-  const [ numMatricula, setNumMatricula ] = useState('')
-  const [ ftMatricula, setFtMatricula ] = useState('')
-  const [ confPassword, setConfPassword ] = useState('')
+interface RegisterFrom {
+  success: boolean,
+  user: {
+    email: string | undefined,
+    password: string | undefined,
+    metadata: {
+      nombre: string | undefined,
+      usuario: string | undefined,
+      lastName: string | undefined,
+      numMatricula: string | undefined,
+      fechanacimiento: string | undefined,  // Opcional
+      fotomatricula: string | undefined, // Opcional
+      fotoDriver: string | undefined,
+      fotoLicencia: string | undefined,
+      numeroLicencia: string | undefined
+      }
+  }
+}
+
+export default function CreateCountUser() {
+  const router = useRouter();
+  const { data, loading, error, post } = useApi<RegisterFrom>();
+  const [ userName, setUserName ] = useState<string>()
+  const [ name, setName ] = useState<string | undefined>()
+  const [ lastName, setLastName ] = useState<string | undefined>()
+  const [ email, setEmail ] = useState<string | undefined>()
+  const [ password, setPassword ] = useState<string | undefined>()
+  const [ fechNa, setFechNa ] = useState<string | undefined>()
+  const [ numMatricula, setNumMatricula ] = useState<string | undefined>()
+  const [ ftMatricula, setFtMatricula ] = useState<string | undefined |  null>()
+  const [ ftLicencia, setFtLicencia ] = useState<string | undefined |  null>()
+  const [ numLicencia, setNumLicencia ] = useState<string | undefined>()
+  const [ confPassword, setConfPassword ] = useState<string | undefined>()
+  
+  
+  const send = () => {
+  // Validaciones previas
+  if (!userName || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula) {
+    return Alert.alert("Error", "Por favor complete todos los campos.");
+  }
+
+  // Validar dominio del correo
+  if (!email.endsWith("@espol.edu.ec")) {
+    return Alert.alert("Correo inválido", "El correo debe pertenecer al dominio @espol.edu.ec");
+  }
+
+  // Validar coincidencia de contraseñas
+  if (password !== confPassword) {
+    return Alert.alert("Contraseña incorrecta", "Las contraseñas no coinciden.");
+  }
+
+// {
+//   "email": "ejempxlo@espol.edu.ec",
+//   "password": "Contraseña123",
+//   "metadata": {
+//     "nombre": "Juan",
+//     "usuario": "juancho99",
+//     "lastname": "Pérez",
+//     "nummatricula": "ABC12345",
+//     "fechanacimiento": "2000-01-15",
+//     "fotomatricula": "https://ruta-a-la-foto.com/fotoMatricula.jpg",
+//     "fotodriver": "https://ruta-a-la-foto.com/fotoDriver.jpg",
+//     "fotolicencia": "https://ruta-a-la-foto.com/fotoLicencia.jpg",
+//     "numeroLicencia": "LIC12345678"
+//   }
+// }
 
 
-  const [formData, setFormData] = useState({
-    username: '',
-    correo: '',
-    fechaNacimiento: '',
-    password: '',
+
+
+  console.log(email, password, name, userName, lastName, numMatricula, fechNa,ftMatricula)
+  // Si todo está bien, enviamos los datos al backend
+  post('/api/auth/register-driverform', {
+    email: email.trim(),
+    password: password.trim(),
+    metadata: {
+      nombre: name.trim(),
+      usuario: userName.trim(),
+      lastname: lastName.trim(),
+      nummatricula: numMatricula.trim(),
+      fechanacimiento: fechNa.trim(),
+      fotomatricula: "https://ruta-a-la-foto.com/fotoDriver.jpg",
+      fotodriver: "https://ruta-a-la-foto.com/fotoDriver.jpg",
+      fotolicencia: "https://ruta-a-la-foto.com/fotoDriver.jpg",
+      numeroLicencia: numLicencia?.trim()
+    }
   });
+  console.log(error)
+  console.log('esta es la data que se guarda: ', data)
+};
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  useEffect(() => {
+    if (data && data.success) {
+      router.replace('/');
+    }
+  }, [data])
 
   return (
     <ImageBackground
@@ -39,6 +112,7 @@ export default function createCountDriver() {
       resizeMode="cover"
     >
       <KeyboardAvoidingView
+        // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}
       >
         <View style={styles.overlay}>
@@ -46,16 +120,18 @@ export default function createCountDriver() {
             contentContainerStyle={styles.scrollContainer}
             keyboardShouldPersistTaps="handled"
           >
+    
             <View style={{ height: '100%', maxWidth: 600,  paddingTop: 25, paddingHorizontal: 5}}>
               {/* Encabezado */}
+                
               <View style={styles.header}>
                 <Text style={styles.title}>CREA TU CUENTA</Text>
-                <Text style={styles.subtitle}>COMO CONDUCTOR</Text>
+                <Text style={styles.subtitle}>USUARIO ESPOL</Text>
               </View>
 
               {/* Inputs */}
               <View style={styles.inputsContainer}>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%',}}>
                   <TextInput
                     style={styles.inputPart}
                     value={name}
@@ -84,15 +160,40 @@ export default function createCountDriver() {
                   // secureTextEntry={secureTextEntry}
                   autoCapitalize="none"
                   />
-                <TextInput
-                  style={styles.input}
-                  value={numMatricula}
-                  onChangeText={setNumMatricula}
-                  placeholder="NUMERO DE MATRICULA"
-                  placeholderTextColor="#999"
-                  // secureTextEntry={secureTextEntry}
-                  autoCapitalize="none"
-                  />
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+                  <TextInput
+                    style={styles.inputMatricula}
+                    value={numMatricula}
+                    onChangeText={setNumMatricula}
+                    placeholder="NUMERO DE MATRICULA"
+                    placeholderTextColor="#999"
+                    // secureTextEntry={secureTextEntry}
+                    autoCapitalize="none"
+                    />
+                  <GalleryFt
+                    text='foto del carnet estudiantil'
+                    setImage={(x: string | null | undefined) => setFtMatricula(x)}
+                    image={ftMatricula}
+                    styleT={styles.inputFtMatricula}
+                    />
+                </View>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+                  <TextInput
+                    style={styles.inputMatricula}
+                    value={numLicencia}
+                    onChangeText={setNumLicencia}
+                    placeholder="NUMERO DE LICENCIA"
+                    placeholderTextColor="#999"
+                    // secureTextEntry={secureTextEntry}
+                    autoCapitalize="none"
+                    />
+                  <GalleryFt
+                    text='Foto de licencia'
+                    setImage={(x: string | null | undefined) => setFtLicencia(x)}
+                    image={ftLicencia}
+                    styleT={styles.inputFtMatricula}
+                    />
+                </View>
                 <TextInput
                   style={styles.input}
                   value={email}
@@ -121,39 +222,26 @@ export default function createCountDriver() {
                   autoCapitalize="none"
                   />
                 <DateInputSimple 
-                  value={fechNa}
-                  onChange={setFechNa}
-                  placeholder='Fecha de nacimiento'
-                  />
-                {/* <TextInput
-                  style={styles.input}
-                  value={fechNa}
-                  onChangeText={setFechNa}
-                  placeholder="FECHA DE NACIMIENTO"
-                  placeholderTextColor="#999"
-                  // secureTextEntry={secureTextEntry}
-                  autoCapitalize="none"
-                  /> */}
-                {/* Botón de registro (fuera del ScrollView pero dentro del KeyboardAvoidingView) */}
-                <View style={styles.buttonContainer}>
-                  <BottomStyle
-                    element={{
-                      title: 'REGISTRARSE',
-                      link: '/',
-                    }}
-                  />
-                </View>
+                      value={fechNa}
+                      onChange={setFechNa}
+                      placeholder='Fecha de nacimiento'
+                      />
+            {/* Botón de registro */}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.containerButton} onPress={send}>
+                <Text style={styles.textButton}>REGISTRARSE</Text>
+              </TouchableOpacity>
+            </View>
               </View>
             </View>
           </ScrollView>
-
+          <LoadingOverlay visible={loading}/>
         </View>
       </KeyboardAvoidingView>
     </ImageBackground>
   );
 }
 
-// Reutiliza exactamente los mismos estilos de CreateCountU
 const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
@@ -167,6 +255,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(37, 41, 36, 0.88)',
     padding: 10,
+    width: '100%',
+    height: '100%',
     alignItems: 'center'
   },
   scrollContainer: {
@@ -188,6 +278,18 @@ const styles = StyleSheet.create({
     letterSpacing: 1.5,
     textAlign: 'center',
   },
+  input: {
+    width: '100%',
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 50,
+    color: '#333',
+    fontSize: 16,
+    maxWidth: 777,
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 15,
+  },
   subtitle: {
     fontSize: 25,
     color: '#FFFFFF',
@@ -200,26 +302,34 @@ const styles = StyleSheet.create({
   },
   inputsContainer: {
     width: '100%',
+    marginBottom: 20,
     flexDirection: 'column',
     gap: 15,
     alignItems: 'center'
   },
   buttonContainer: {
-    
+    marginTop: 1
   },
-    input: {
-    width: '100%',
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 50,
-    color: '#333',
-    fontSize: 16,
-    maxWidth: 777,
-    backgroundColor: '#f5f5f5',
-    paddingHorizontal: 15,
+  containerButton: {
+  width: '100%',
+  alignItems: 'center',
+  paddingVertical: 15,
+  paddingHorizontal: 30,
+  borderRadius: 25,
+  backgroundColor: '#ff4d4d',
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.3,
+  shadowRadius: 3,
+  elevation: 5,
   },
-    inputPart: {
+  textButton: {
+  fontSize: 18,
+  textAlign: 'center',
+  color: '#fff',
+  fontWeight: 'bold',
+  },
+  inputPart: {
     width: '49%',
     height: 50,
     borderWidth: 1,
@@ -231,4 +341,32 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     paddingHorizontal: 15,
   },
+  inputMatricula: {
+    width: '75%',
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 50,
+    color: '#333',
+    fontSize: 15,
+    maxWidth: 777,
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 10,
+    // paddingTop: 15,
+  },
+  inputFtMatricula: {
+    width: '24%',
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 50,
+    color: '#333',
+    fontSize: 15,
+    maxWidth: 777,
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 10,
+    alignItems: 'center', 
+    justifyContent: 'center'
+    // paddingTop: 15,
+  }
 });

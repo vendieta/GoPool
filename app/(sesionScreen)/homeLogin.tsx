@@ -59,6 +59,49 @@ export default function LoginScreen() {
     link: '/', // Cambia la ruta según tu estructura de navegación	
     onPress: () => createTrip(email, password)
   };
+  // Función para login
+  const createTrip = async (email: string, password: string) => {
+    if ( email && password ) {
+      console.log('credenciales: ',email, password)
+      post('/api/auth/login', {
+        email: email.trim(),
+        password: password.trim()
+      })
+    } else {
+      Alert.alert("Datos vacios", "Ingrese todos los datos correctamente.");
+    }
+    }
+  //! hay que manejar mejor estoooooooooooooooooooooooooooooooooooooooo
+  useEffect(() => {
+    console.log('estoy el useEffect')
+    if (data) {
+      console.log(data.isDriver)
+      const handleLoginSuccess = async () => {
+        toggleState();
+        await setUserEmail('userEmail', data.user.email);
+        await setId('userId', data.user.id);
+        await setAccess_token('access_token', data.access_token);
+        await setRefresh_token('refresh_token', data.refresh_token);
+        await setRole('role', data.isDriver.toString());
+        if (data.isDriver){toggleRole()}
+        console.log('este es el state del login:  ', state)
+        console.log('este es el state del login:  ', state);
+        router.replace('/');
+      };
+      handleLoginSuccess();
+    }
+  }, [data]);
+  //   if (data) {
+  //     toggleState()
+  //     await setUserEmail('userId', data.user.email);
+  //     await setId('userEmail', data.user.id);
+  //     await setAccess_token('access_token', data.access_token);
+  //     await setRefresh_token('refresh_token', data.refresh_token);
+  //     console.log('este es el state del login:  ', state)
+  //   }
+  //   console.log('data sesion: ', data)
+  //   console.log('storage total: ', access_token, refresh_token, 'userid y email:  ', userEmail, userId)
+  // };
 
   // Función para login
   const createTrip = async (email: string, password: string) => {
@@ -109,7 +152,6 @@ export default function LoginScreen() {
       <Text style={styles.title}>Bienvenido a GoPool comenzemos tu viaje!</Text>
       <Text style={styles.subtitle}>Te ayudaré a contactar con otras personas con las que compartes una ruta</Text>
       <Text style={styles.subtitle}>Sign In to your account</Text>
-
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
