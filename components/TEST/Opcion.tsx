@@ -57,7 +57,7 @@ export default function Opcion({ element, element1 }: any) {
       <OptionCard
         {...element}
         isLightTheme={isLightTheme}
-        actionText="Buscar viaje"
+        actionText="Ver viaje"
       />
       
       <View style={[styles.separator, { 

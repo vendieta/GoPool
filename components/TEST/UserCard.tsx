@@ -26,7 +26,7 @@ zoneEnd: string;
 horizontal?: boolean;
 }
 
-const TripCard: React.FC<TripCardProps> = ({
+const UserCard: React.FC<TripCardProps> = ({
 user,
 departureTime,
 arrivalTime,
@@ -38,7 +38,6 @@ horizontal = false,
 zoneInit,
 zoneEnd,
 }) => {
-    console.log('esta son las rutas',routePoints)
 
       // Validación rápida
     const isValid =
@@ -124,7 +123,7 @@ zoneEnd,
     );
     };
 
-    export default TripCard;
+    export default UserCard;
 
 const cardBase: ViewStyle = {
 backgroundColor: '#fff',
@@ -135,7 +134,7 @@ shadowOpacity: 0.1,
 shadowRadius: 4,
 elevation: 3,
 marginBottom: 16,
-maxWidth: 500,
+// maxWidth: 500,
 alignSelf: 'center',
 ...Platform.select({
     web: {

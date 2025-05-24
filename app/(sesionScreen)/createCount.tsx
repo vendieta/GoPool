@@ -33,8 +33,8 @@ export default function CreateCount() {
       <View style={styles.overlay}>
         {/* Encabezado */}
         <View style={styles.header}>
-          <Text style={styles.title}>¡BIENVENIDO A GO POOL!</Text>
-          <Text style={styles.subtitle}>Tu viaje comienza aquí</Text>
+          <Text style={styles.title}>¡BIENVENIDO A GOPOOL!</Text>
+          <Text style={styles.subtitle}>Politecnico tu viaje comienza aquí</Text>
         </View>
 
         {/* Mensaje descriptivo */}
@@ -54,8 +54,8 @@ export default function CreateCount() {
             >
               <BottomStyle 
                 element={{
-                  title: 'USUARIO ESPOL',
-                  link: '/createCountU',
+                  title: 'USUARIO',
+                  link: '/createCountUser',
                 }}
               />
             </TouchableOpacity>
@@ -75,8 +75,8 @@ export default function CreateCount() {
             >
               <BottomStyle 
                 element={{
-                  title: 'USUARIO EXTERNO',
-                  link: '/createCountE',
+                  title: 'CONDUCTOR',
+                  link: '/createCountDriver',
                 }}
               />
             </TouchableOpacity>
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.05,
   },
   title: {
-    fontSize: width * 0.09,
+    fontSize: 35,
     fontWeight: '900',
     color: '#FFFFFF',
     marginBottom: 10,
@@ -124,8 +124,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: width * 0.05,
+    fontSize: 20,
     color: '#FFFFFF',
+    textAlign: 'center',
     fontWeight: '600',
     letterSpacing: 1,
     textShadowColor: 'rgba(0, 0, 0, 0.5)',
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.05,
   },
   messageText: {
-    fontSize: width * 0.06,
+    fontSize: 20,
     color: '#FFFFFF',
     textAlign: 'center',
     fontWeight: '800',
@@ -173,13 +174,13 @@ const styles = StyleSheet.create({
   },
   footerText: {
     color: '#FFFFFF',
-    fontSize: width * 0.04,
+    fontSize: 14,
     fontWeight: '500',
   },
   loginLink: {
     color: '#FFFFFF',
     fontWeight: '700',
-    fontSize: width * 0.04,
+    fontSize: 15,
     textDecorationLine: 'underline',
   },
 });

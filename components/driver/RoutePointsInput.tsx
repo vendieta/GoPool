@@ -108,8 +108,8 @@ return (
 
     {Object.keys(routeData).length < 20 && (
         <TouchableOpacity style={styles.addButton} onPress={addPoint}>
-        <Ionicons name="add-circle-outline" size={22} color="#fff" />
-        <Text style={styles.addButtonText}>Agregar punto</Text>
+            <Ionicons name="add-circle-outline" size={22} color="#fff" />
+            <Text style={styles.addButtonText}>Agregar punto</Text>
         </TouchableOpacity>
     )}
     </ScrollView>
@@ -170,7 +170,7 @@ addButton: {
     paddingHorizontal: 16,
     borderRadius: 12,
     alignSelf: 'center',
-    marginTop: 16,
+    marginTop: 6,
 },
 addButtonText: {
     color: '#fff',

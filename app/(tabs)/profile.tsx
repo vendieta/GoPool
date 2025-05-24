@@ -1,26 +1,78 @@
-import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity, Linking } from "react-native";
+import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity, Linking, Platform } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { Collapsible } from '@/components/Collapsible';
 import { FontAwesome5, MaterialIcons, Feather } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import { useTheme } from '../../components/Themed/ContextTheme';
+import { useApi } from '@/hooks/useApi';
+import { useEffect, useState } from 'react';
+import useStorage from "@/hooks/useStorage";
+import { useLoginContext } from "@/hooks/useLoginContext";
 
 
 const { width, height } = Dimensions.get('window');
 
 export default function Perfil() {
+  const [ tipo, setTipo ] = useState(false)
   const router = useRouter();
   const { theme } = useTheme();
+  const { toggleState } = useLoginContext();
+  const {
+    storedValue: access_token,
+    setItem: setAccess_token,
+    removeItem: removeAccess_token
+  } = useStorage('access_token');
+  const {
+    storedValue: refresh_token,
+    setItem: setRefresh_token,
+    removeItem: removeRefresh_token
+  } = useStorage('refresh_token');
+  const {
+    storedValue: userId,
+    setItem: setId,
+    removeItem: removeId
+  } = useStorage('userId');
+  const {
+    storedValue: userEmail,
+    setItem: setUserEmail,
+    removeItem: removeUserEmail
+  } = useStorage('userEmail');
+  const {
+    storedValue: role,
+    setItem: setRole,
+    removeItem: removeRole
+  } = useStorage('role');
 
-  const outSession = () => router.replace('/');
 
-  const sections = [
-    {
+
+
+  const outSession = async () => {
+      console.log(access_token,refresh_token,userEmail,userId,role)
+      await removeRefresh_token('refresh_token')
+      await removeAccess_token('access_token')
+      await removeUserEmail('userEmail')
+      await removeId('userId')
+      await removeRole('role')
+      toggleState()
+      console.log(access_token,refresh_token,userEmail,userId)
+    router.replace('/')
+  };
+
+  const sections = [ 
+    tipo? {
       title: "Configuración",
       items: [
         { icon: 'settings', Component: Feather, title: 'Ajustes', link: '/(optionScreen)/config' },
         { icon: 'user-check', Component: Feather, title: 'Cuenta', link: '/(optionScreen)/accountStatement' },
-        { icon: 'user', Component: FontAwesome5, title: 'Temas', link: '/(optionScreen)/themes' }
+        { icon: 'user', Component: FontAwesome5, title: 'Temas', link: '/(optionScreen)/themes' },
+        { icon: 'car', Component: FontAwesome5, title: 'Registrar Vehiculo', link: '/(optionScreen)/themes' },
+      ]
+    }: {
+      title: "Configuración",
+      items: [
+        { icon: 'settings', Component: Feather, title: 'Ajustes', link: '/(optionScreen)/config' },
+        { icon: 'user-check', Component: Feather, title: 'Cuenta', link: '/(optionScreen)/accountStatement' },
+        { icon: 'user', Component: FontAwesome5, title: 'Temas', link: '/(optionScreen)/themes' },
       ]
     },
     {
@@ -30,13 +82,13 @@ export default function Perfil() {
         { icon: 'schedule', Component: MaterialIcons, title: 'Programados', link: '/(optionScreen)/scheduledTrips' }
       ]
     },
-    // {
+    // tipo ? {
     //   title: "Pagos",
     //   items: [
     //     { icon: 'credit-card', Component: MaterialIcons, title: 'Agregar pago', link: '/(optionScreen)/addPaymentMethod' },
     //     { icon: 'payment', Component: MaterialIcons, title: 'Métodos', link: '/(optionScreen)/viewPaymentMethods' }
     //   ]
-    // },
+    // } : null,
     {
       title: "Ayuda",
       items: [
@@ -67,7 +119,7 @@ export default function Perfil() {
       // headerHeight removed as it is not supported by ParallaxScrollView
     >
       <View style={[styles.contentContainer, { backgroundColor: theme.background }]}>
-        <Text style={[styles.userText, { color: theme.text }]}>¡Hola!</Text>
+        <Text style={[styles.userText, { color: theme.text }]}>hola</Text>
         
         <View style={styles.scrollContent}>
           {sections.map((section, index) => (

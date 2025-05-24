@@ -5,37 +5,68 @@ import { useEffect, useState } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import LoginScreen from '../(sesionScreen)/homeLogin';
+import { useLoginContext } from '@/hooks/useLoginContext';
+import useStorage from '@/hooks/useStorage';
+import { useRoleContext } from '@/hooks/useRoleContext';
 
-// Configuración inicial del splash screen
+// Evitar que el splash se oculte automáticamente
 SplashScreen.preventAutoHideAsync();
 
 export default function HomeScreen() {
-  const [ session, setSesion ] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
+  const { isDriver, toggleRole } = useRoleContext();
   const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(true);
+  const {state, toggleState} = useLoginContext()
+  const {
+    storedValue: refresh_token
+  } = useStorage('refresh_token');
+    const {
+    storedValue: role,
+    setItem: setRole,
+  } = useStorage('role');
+  console.log('rol inicial',isDriver)
+  // console.log('este es el storage que se ve si se guarda en web:    ', refresh_token)
+  // console.log('este es el state:    ',state)
+
+  // useEffect(() => {
+  //   if (refresh_token) {
+  //     if (!state) {
+  //       toggleState()
+  //     }
+  //   }
+  // }, [])
+  console.log('esto es el tipo que se muestra: ', role)
+  useEffect(() => {
+    if (refresh_token && !state) {
+      toggleState()
+    }
+  }, [refresh_token])
+  useEffect(() => {
+    if ( !role && role === 'true') {
+      toggleRole()
+    }
+  }, [role])
+
+
   const [fontsLoaded] = useFonts({
     SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  // Efecto para manejar la carga inicial
+  // Cargar splash y fuentes
   useEffect(() => {
     const initialize = async () => {
-      // Simulación de carga inicial (1 segundo)
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simular carga
       setIsLoading(false);
-      
       if (fontsLoaded) {
         await SplashScreen.hideAsync();
       }
     };
-
     initialize();
   }, [fontsLoaded]);
 
-  // Configuración de navegación
+  // Navegación: configura el tabBar según sesión
   useEffect(() => {
-    // if (session === null) {
-    if (!session) {
+    if (!state) {
       navigation.setOptions({
         tabBarStyle: { display: "none" },
         headerShown: false
@@ -43,12 +74,12 @@ export default function HomeScreen() {
     } else {
       navigation.setOptions({
         headerShown: true,
-        tabBarStyle: { display: "flex" }, // Muestra tabBar si hay sesión
+        tabBarStyle: { display: "flex" },
       });
     };
-  }, [navigation]);
+  }, [navigation, state]);
 
-  // Pantalla de carga mientras se inicializa
+  // Mostrar pantalla de carga si no se ha terminado de cargar
   if (!fontsLoaded || isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -57,6 +88,6 @@ export default function HomeScreen() {
     );
   }
 
-  // Mostrar directamente el ScrollRefresh
-  return session ? <ScrollRefresh /> : <LoginScreen/>;
+  // Mostrar contenido según autenticación
+  return state ? <ScrollRefresh /> : <LoginScreen />;
 }

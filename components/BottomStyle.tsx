@@ -16,7 +16,7 @@ export default function BottomStyle({ element }: DataProps) {
         <View style={styles.botton}>
           <Text style={styles.text}>{element.title}</Text>
         </View>
-      </TouchableOpacity>
+    </TouchableOpacity>
     );
   }
 
@@ -33,20 +33,20 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     alignItems: 'center',
-    
-  },
-  botton: {
-    alignItems: 'center',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 25,
-    backgroundColor: '#ff4d4d', // Color rojo como en homeLogin
-    width: '100%', // Cambio a 100% para que abarque todo el ancho del contenedor
+    backgroundColor: '#ff4d4d',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 5,
+    
+  },
+  botton: {
+    alignItems: 'center',
+    width: '100%', // Cambio a 100% para que abarque todo el ancho del contenedor
   },
   text: {
     fontSize: 18,
