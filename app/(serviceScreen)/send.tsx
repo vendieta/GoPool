@@ -12,7 +12,7 @@ export default function Sent() {
             Animated.sequence([
                 Animated.timing(position, {
                     toValue: 1.7,  // Valor final (derecha)
-                    duration: 3500, // Duración de la animación en ms
+                    duration: 6000, // Duración de la animación en ms
                     useNativeDriver: true, // Mejor rendimiento
                 }),
                 Animated.timing(position, {
@@ -25,8 +25,10 @@ export default function Sent() {
 
         // Temporizador para redirección
         const timer = setTimeout(() => {
-            router.replace("/");
-        }, 2950); // Reducí el tiempo a 10 segundos (10000ms) para el ejemplo
+                router.back();  // Reemplazar la ruta y "reiniciar" la navegación
+                router.back();  // Reemplazar la ruta y "reiniciar" la navegación
+                router.back();  // Reemplazar la ruta y "reiniciar" la navegación
+                }, 3000); // Reducí el tiempo a 10 segundos (10000ms) para el ejemplo
 
         return () => {
             clearTimeout(timer);

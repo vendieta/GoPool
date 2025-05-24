@@ -4,14 +4,19 @@ import SeatsInput from "@/components/driver/SeatsInput";
 import TimeInput from "@/components/driver/TimeInput";
 import Desplegable from "@/components/driver/ZonaSelector";
 import { View , Text, TextInput , StyleSheet, ScrollView, Alert , Image, Button , Dimensions , useColorScheme, Platform, TouchableOpacity  } from "react-native";
+import { useRouter } from "expo-router";
 
 const {width} = Dimensions.get('window')
 
 export default function CreateRoutesDriver() {
-
+    const router = useRouter();
   const handleZonaSelect = (zona: string) => {
     console.log("Zona seleccionada:", zona);
     // Aquí puedes guardar la zona seleccionada en tu estado o base de datos
+  };
+
+  const send = () => {
+    router.push("/send");
   };
 
   return(
@@ -55,8 +60,8 @@ export default function CreateRoutesDriver() {
             <View style={{width: '100%'}}>
               <RoutePointsInput />
             </View>
-            <TouchableOpacity>
-              <Text>Crear</Text>
+            <TouchableOpacity style={styles.button} onPress={send}>
+              <Text>Publicar ruta</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -98,6 +103,15 @@ const styles = StyleSheet.create({
   zonaText: {
     width: '100%',
     textAlign: 'center'
+  },
+  button: {
+    padding: 10,
+    backgroundColor: 'orange',
+    borderRadius: 8,
+    marginTop: 10,
+    marginBottom: 5,
+    width: '100%',
+    alignItems: 'center'
   }
 
   
