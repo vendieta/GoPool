@@ -7,19 +7,26 @@ import { useFonts } from 'expo-font';
 import LoginScreen from '../(sesionScreen)/homeLogin';
 import { useLoginContext } from '@/hooks/useLoginContext';
 import useStorage from '@/hooks/useStorage';
+import { useRoleContext } from '@/hooks/useRoleContext';
 
 // Evitar que el splash se oculte automáticamente
 SplashScreen.preventAutoHideAsync();
 
 export default function HomeScreen() {
+  const { isDriver, toggleRole } = useRoleContext();
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const {state, toggleState} = useLoginContext()
   const {
     storedValue: refresh_token
   } = useStorage('refresh_token');
-  console.log('este es el storage que se ve si se guarda en web:    ', refresh_token)
-  console.log('este es el state:    ',state)
+    const {
+    storedValue: role,
+    setItem: setRole,
+  } = useStorage('role');
+  console.log('rol inicial',isDriver)
+  // console.log('este es el storage que se ve si se guarda en web:    ', refresh_token)
+  // console.log('este es el state:    ',state)
 
   // useEffect(() => {
   //   if (refresh_token) {
@@ -28,11 +35,17 @@ export default function HomeScreen() {
   //     }
   //   }
   // }, [])
+  console.log('esto es el tipo que se muestra: ', role)
   useEffect(() => {
     if (refresh_token && !state) {
       toggleState()
     }
   }, [refresh_token])
+  useEffect(() => {
+    if ( !role && role === 'true') {
+      toggleRole()
+    }
+  }, [role])
 
 
   const [fontsLoaded] = useFonts({
