@@ -4,23 +4,17 @@ import { Collapsible } from '@/components/Collapsible';
 import { FontAwesome5, MaterialIcons, Feather } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import { useTheme } from '../../components/Themed/ContextTheme';
-<<<<<<< Updated upstream
-=======
 import { useApi } from '@/hooks/useApi';
 import { useEffect, useState } from 'react';
 import useStorage from "@/hooks/useStorage";
 import { useLoginContext } from "@/hooks/useLoginContext";
 import { useRoleContext } from "@/hooks/useRoleContext";
->>>>>>> Stashed changes
 
 
 const { width, height } = Dimensions.get('window');
 
 export default function Perfil() {
-<<<<<<< Updated upstream
-=======
   const { isDriver, toggleRole } = useRoleContext();
->>>>>>> Stashed changes
   const router = useRouter();
   const { theme } = useTheme();
   const { toggleState } = useLoginContext();
@@ -52,25 +46,6 @@ export default function Perfil() {
 
 
 
-
-  const outSession = async () => {
-      console.log(access_token,refresh_token,userEmail,userId,role)
-      await removeRefresh_token('refresh_token')
-      await removeAccess_token('access_token')
-      await removeUserEmail('userEmail')
-      await removeId('userId')
-      await removeRole('role')
-      toggleState()
-      console.log(access_token,refresh_token,userEmail,userId)
-    router.replace('/')
-  };
-
-<<<<<<< Updated upstream
-  const sections = [
-    {
-=======
-
-
   const outSession = async () => {
       console.log(access_token,refresh_token,userEmail,userId,role)
       await removeRefresh_token('refresh_token')
@@ -86,16 +61,12 @@ export default function Perfil() {
 
   const sections = [ 
     isDriver? {
->>>>>>> Stashed changes
       title: "Configuración",
       items: [
         { icon: 'settings', Component: Feather, title: 'Ajustes', link: '/(optionScreen)/config' },
         { icon: 'user-check', Component: Feather, title: 'Cuenta', link: '/(optionScreen)/accountStatement' },
-<<<<<<< Updated upstream
-        { icon: 'user', Component: FontAwesome5, title: 'Temas', link: '/(optionScreen)/themes' }
-=======
         { icon: 'user', Component: FontAwesome5, title: 'Temas', link: '/(optionScreen)/themes' },
-        { icon: 'car', Component: FontAwesome5, title: 'Registrar Vehiculo', link: '/(optionScreen)/registerCar' },
+        { icon: 'car', Component: FontAwesome5, title: 'Vehiculo', link: '/(optionScreen)/vehiculo' },
       ]
     }: {
       title: "Configuración",
@@ -103,7 +74,6 @@ export default function Perfil() {
         { icon: 'settings', Component: Feather, title: 'Ajustes', link: '/(optionScreen)/config' },
         { icon: 'user-check', Component: Feather, title: 'Cuenta', link: '/(optionScreen)/accountStatement' },
         { icon: 'user', Component: FontAwesome5, title: 'Temas', link: '/(optionScreen)/themes' },
->>>>>>> Stashed changes
       ]
     },
     {

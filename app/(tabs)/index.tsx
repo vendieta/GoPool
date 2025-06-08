@@ -16,10 +16,7 @@ export default function HomeScreen() {
   const { isDriver, toggleRole } = useRoleContext();
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
-<<<<<<< Updated upstream
-  const navigation = useNavigation();
-=======
-  const {state, toggleState} = useLoginContext()
+  const {state, toggleState} = useLoginContext();
   const {
     storedValue: refresh_token
   } = useStorage('refresh_token');
@@ -53,7 +50,6 @@ export default function HomeScreen() {
   }, [role])
 
 
->>>>>>> Stashed changes
   const [fontsLoaded] = useFonts({
     SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
   });

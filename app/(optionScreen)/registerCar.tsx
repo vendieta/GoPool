@@ -13,11 +13,11 @@ interface response {
 
 export default function RegisterCar() {
     const router = useRouter();
-    const [ placa, setPlaca ] = useState<string>()
-    const [ modeloCar, setModeloCar ] = useState<string>()
-    const [ colorCar, setColorCar ] = useState<string>()
-    const [ capacidadMax, setCapacidadMax ] = useState<string>()
-    const [ ftCar, setFtCar ] = useState<string | null | undefined>()
+    const [ placa, setPlaca ] = useState<string>();
+    const [ modeloCar, setModeloCar ] = useState<string>();
+    const [ colorCar, setColorCar ] = useState<string>();
+    const [ capacidadMax, setCapacidadMax ] = useState<string>();
+    const [ ftCar, setFtCar ] = useState<string | null | undefined>();
     const { data, loading, error, post } = useApi<response>();
     
     const {
@@ -93,7 +93,7 @@ export default function RegisterCar() {
                         />
                 </View>
                 <GalleryFt
-                    // text='Foto de licencia'
+                    text='Foto de licencia'
                     setImage={(x: string | null | undefined) => setFtCar(x)}
                     image={ftCar}
                     styleT={styles.inputFtMatricula}

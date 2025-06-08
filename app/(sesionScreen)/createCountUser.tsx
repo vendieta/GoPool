@@ -140,6 +140,7 @@ export default function CreateCountUser() {
                     onChangeText={setNumMatricula}
                     placeholder="NUMERO DE MATRICULA"
                     placeholderTextColor="#999"
+                    
                     // secureTextEntry={secureTextEntry}
                     autoCapitalize="none"
                     />

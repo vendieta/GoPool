@@ -17,6 +17,7 @@ export default function layout() {
             <Stack.Screen name="problem" options={{title:'Reportar problemas'}}/>
             <Stack.Screen name='themes' options={{title:'Temas'}}/>
             <Stack.Screen name='registerCar' options={{title:'Regsitra tu auto'}}/>
+            <Stack.Screen name='vehiculo' options={{title:'Vehiculos'}}/>
         </Stack>
     )
 }
