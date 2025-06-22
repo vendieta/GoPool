@@ -5,12 +5,11 @@ const opciones = ['Norte', 'Sur', 'Este', 'Oeste', 'Espol'];
 
 interface Props {
     backColor: string;
-    text: string;
-    save?: () => void; 
+    save: (x: string) => void; 
 }
 
 
-export default function Desplegable ({backColor, text}: Props) {
+export default function Desplegable ({backColor, save}: Props) {
 const [mostrarOpciones, setMostrarOpciones] = useState(false);
 const [seleccionado, setSeleccionado] = useState< null| string >(null);
 
@@ -18,6 +17,8 @@ const alternarDesplegar = () => setMostrarOpciones(prev => !prev);
 
 const seleccionarOpcion = (opcion: string) => {
     setSeleccionado(opcion);
+    save(opcion);
+    console.log(opcion)
     setMostrarOpciones(false); // Cierra el desplegable al seleccionar
 };
 

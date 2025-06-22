@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 View,
 Text,
@@ -10,13 +10,18 @@ Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+
+interface Props{
+    save: (x:RouteData) => void
+}
+
 interface RouteData {
 inicio: string;
 final: string;
 [key: string]: string;
 }
 
-const RoutePointsInput: React.FC = () => {
+export default function RoutePointsInput ({save}: Props) {
 const [routeData, setRouteData] = useState<RouteData>({
     inicio: '',
     '2': '',
@@ -66,13 +71,19 @@ const removePoint = (keyToRemove: string) => {
 
 const updatePoint = (key: string, value: string) => {
     setRouteData({ ...routeData, [key]: value });
+    console.log('aaaaaaaaa',{ ...routeData, [key]: value })
 };
 
 const renderInputs = () => {
     const numericKeys = getSortedPointKeys();
 
     const orderedKeys = ['inicio', ...numericKeys, 'final'];
-
+    // save(routeData)
+    // console.log('eeeeeeeee', routeData)
+    useEffect(() => {
+        save(routeData);
+        console.log('eeeeeeeee', routeData);
+        }, [routeData]);
     return orderedKeys.map((key) => {
     const label =
         key === 'inicio'
@@ -116,7 +127,6 @@ return (
 );
 };
 
-export default RoutePointsInput;
 
 const styles = StyleSheet.create({
 container: {

@@ -43,6 +43,11 @@ export default function Perfil() {
     setItem: setRole,
     removeItem: removeRole
   } = useStorage('role');
+  // const {
+  //   storedValue: cars,
+  //   setItem: setCars,
+  //   removeItem: removeCars
+  // } = useStorage('cars');
 
 
 
@@ -53,9 +58,10 @@ export default function Perfil() {
       await removeUserEmail('userEmail')
       await removeId('userId')
       await removeRole('role')
+      // await removeCars('cars')
       toggleState()
       if (isDriver){toggleRole()}
-      console.log(access_token,refresh_token,userEmail,userId)
+      console.log(access_token,refresh_token,userEmail,userId,role)
     router.replace('/')
   };
 

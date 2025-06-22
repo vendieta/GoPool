@@ -1,9 +1,18 @@
 import * as ImagePicker from 'expo-image-picker';
 import { View, TouchableOpacity, Text, ViewStyle } from 'react-native';
 
+
+
+interface img {
+    img: string| null| undefined,
+    uri: string,
+    name: string | undefined | null ,
+    type?: string
+}
+
 interface Props {
-    setImage: (x: string | null | undefined) => void
-    image: string | null | undefined
+    setImage: (x: img) => void
+    image: img | undefined
     styleT: ViewStyle
     text: string
 }
@@ -30,9 +39,13 @@ export default function GalleryFt ({setImage, image, styleT, text}: Props) {
         base64: true
     });
 
+    //  result?.assets?.[0]?.fileName esto muestra el nombre completo del la foto:
+    // 476ec774-baa0-4604-994e-ca6f3f74e87c.jpeg
+    // result?.assets?.[0]?.mimeType esto muestra el type de la img:
+    //  image/jpeg
     console.log('data completa: ')
     if (!result.canceled) {
-        setImage(result.assets[0].base64);
+        setImage({img: result.assets[0].base64, uri: result.assets[0].uri, type: result?.assets?.[0]?.mimeType, name: result?.assets?.[0]?.fileName});
         console.log('foto matricula en base64: ', result.assets[0].file)
     }
     // console.log('foto matricula: ', ftMatricula)

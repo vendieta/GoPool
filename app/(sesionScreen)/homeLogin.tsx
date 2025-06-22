@@ -129,8 +129,7 @@ export default function LoginScreen() {
           onChangeText={setPassword}
         />
         <TouchableOpacity>
-          <Text style={styles.forgotPassword}>Forgot your password?
-          </Text>
+          <Text style={styles.forgotPassword}>Forgot your password?</Text>
         </TouchableOpacity>
       </View>
 

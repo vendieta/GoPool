@@ -15,7 +15,7 @@ DateTimePickerEvent,
 interface Props {
     backColor: string;
     SalEnt: string;
-    save?: () => void;
+    save: (x: Date) => void;
 }
 
 // Web dropdowns personalizados
@@ -48,7 +48,7 @@ onChange: (v: any) => void;
 </View>
 );
 
-export default function TimeInput ({backColor, SalEnt} : Props)  {
+export default function TimeInput ({backColor, SalEnt, save} : Props)  {
     const [hora, setHora] = useState<Date | null>(null);
     const [mostrarPicker, setMostrarPicker] = useState(false);
 
@@ -66,6 +66,7 @@ export default function TimeInput ({backColor, SalEnt} : Props)  {
         setMostrarPicker(false);
         if (selectedDate) {
         setHora(selectedDate);
+        save(selectedDate)
         }
     };
 

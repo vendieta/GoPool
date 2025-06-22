@@ -2,8 +2,10 @@ import GalleryFt from "@/components/imgs/GalleryFt";
 import { useApi } from "@/hooks/useApi";
 import useStorage from "@/hooks/useStorage";
 import { useEffect, useState } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, TextInput } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Alert, Modal, TouchableWithoutFeedback } from "react-native";
 import CarCard from "@/components/driver/RenderItems";
+import LoadingOverlay from "@/components/loading/LoadingOverlay";
+import * as FileSystem from 'expo-file-system';
 
 interface req {
     data: obj []
@@ -11,6 +13,7 @@ interface req {
 
 interface obj {
     id: string,
+    marca: string,
     placa: string,
     capacidadmax: number,
     fotovehiculo: string,
@@ -18,11 +21,28 @@ interface obj {
     color: string
 }
 
+
+interface img {
+    img: string| null| undefined,
+    uri: string,
+    name: string | undefined | null ,
+    type?: string
+}
+
+interface url {
+    success: string,
+	uploadUrl: string,
+	publicUrl: string
+}
+
 export default function Vehiculo () {
     const [ controler, setControler ] = useState(false);
-    const [ ftMatricula, setFtMatricula ] = useState<string | undefined |  null>();
+    const [ modal, setModal ] = useState(false)
+    const [ ftMatricula, setFtMatricula ] = useState<img>();
     const { data, loading, error, post } = useApi();
+    const { loading: loadingS3, error: errorS3, put } = useApi();
     const { data: data2, loading: loading2, error: error2, get } = useApi<req>();
+    const { data: dataUrl, loading: loadingUrl, error: errorUrl, post : postUrl } = useApi<url>();
     const [ marca, setMarca ] = useState<string>();
     const [ placa, setPlaca ] = useState<string>();
     const [ capMax, setCapMax ] = useState<string>();
@@ -32,37 +52,76 @@ export default function Vehiculo () {
         storedValue: userId,
         setItem: setId,
     } = useStorage('userId');
-    // se va a guardar los vehiculos obtenidos del back en una cadena de string y se va acomparar con los nuevos datos obtenidos
-    const {
-        storedValue: cars,
-        setItem: setCars,
-    } = useStorage('cars');
-
     useEffect(() => {
         if (userId) {
             console.log(`/api/vehiculo/listar/${userId}`)
             get(`/api/vehiculo/listar/${userId}`)
             console.log('el get de la lista vehiculo',data2)
         }
-    }, [userId])
-    
+    }, [userId, data])
 
-    // console.log(`fuera/api/vehiculo/listar/`, data2)
-    const add = () => {
+    console.log(ftMatricula?.uri)
+    const add = async () => {
+
         console.log('add car        ',userId)
-        console.log(data,error)
-        post('/api/vehiculo/crear', {
+        if (!userId || !placa || !capMax || !ftMatricula || !modeloCar || !color || !marca || !ftMatricula.uri) {
+            Alert.alert("Error", "Por favor complete todos los campos.");
+        return;
+        }
+
+        console.log(data,error);
+
+        await postUrl('/api/s3/upload-url', {
+            fileName: `${userId}-${ftMatricula?.name}`,
+            fileType: ftMatricula?.type
+        })
+        console.log('rulaaaaaaaaaaaaaaaaaaaaaa',dataUrl)
+        setModal(true)
+    }
+
+
+    const ok = async () => {
+        if (!dataUrl?.publicUrl || !dataUrl.uploadUrl ) {
+        console.log('error en pedir urls: ', errorUrl);
+        Alert.alert("Error", "No se pudo obtener la URL de carga.");
+        return;
+        }
+
+        console.log( 'fileName: ',`${userId}-${ftMatricula?.name}`,'fileType:', ftMatricula?.type)
+        console.log('error en pedir urls: ',errorUrl)
+        console.log('error en pedir urls: ',dataUrl)
+        console.log('urls: ', dataUrl)
+        const fileUri = ftMatricula?.uri
+        const response = await fetch(fileUri);
+        const blob = await response.blob(); // 👈 convertimos a blob binario
+        await fetch(`${dataUrl?.uploadUrl}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'image/jpeg', // o el tipo correcto según tu archivo
+            },
+            body: blob, // 👈 se manda el binario directamente
+            });
+
+        await post('/api/vehiculo/crear', {
             id_driver: userId,
             placa: placa,
             capacidadmax: capMax,
-            fotovehiculo: ftMatricula,
+            fotovehiculo: dataUrl?.publicUrl,
             modelocar: modeloCar,
             color: color,
-            // marca: kia
+            marca: marca
         });
-    }
+        setControler(!controler)
+        console.log('url: ', data)
+        setModal(false);
+        // borrar los datos una ves se suba los datos
+        // setPlaca('')
+        // setCapMax('')
+    }    
+    
     return(
         <View style={styles.container}>
+            {!loading2?
             <View style={styles.subContainer}>
             {controler ? 
             <View style={styles.inputContainer}>
@@ -124,7 +183,7 @@ export default function Vehiculo () {
                         <Text style={styles.subTitle}>Foto del vehiculo</Text>
                         <GalleryFt
                             text='Foto del vehiculo'
-                            setImage={(x: string | null | undefined) => setFtMatricula(x)}
+                            setImage={(x: img) => setFtMatricula(x)}
                             image={ftMatricula}
                             styleT={styles.inputFt}
                         />
@@ -137,27 +196,60 @@ export default function Vehiculo () {
             :
             <>
                 <Text style={{fontSize: 20}}>Carros registrados</Text>
-                <View>
+                <View style={{marginTop: 20, width: '95%', alignItems: 'center'}}>
                     {data2? (
                         data2.data?.map((obj, index)=> (
                         <CarCard
                         key={index}
-                        brand={obj.id}
+                        brand={obj.marca}
                         model= {obj.modelocar}
                         color={obj.color}
                         capacity= {obj.capacidadmax}
                         plate= {obj.placa}
-                        imageUrl="https://th.bing.com/th/id/OIP.rStTi56qv85qFlP-5LAZaAHaEK?r=0&rs=1&pid=ImgDetMain"
+                        // imageUrl="https://th.bing.com/th/id/OIP.rStTi56qv85qFlP-5LAZaAHaEK?r=0&rs=1&pid=ImgDetMain"
+                        imageUrl= {obj.fotovehiculo}
                         />
                     )) ): null}
                 </View>
-                <TouchableOpacity onPress={() => setControler(true)} style={styles.addCar}>
-                    <Text style={{fontSize: 30}}>+</Text>
-                </TouchableOpacity>
+                {(data2?.data?.length?? 0 ) < 3  ?
+                    <TouchableOpacity onPress={() => setControler(true)} style={styles.addCar}>
+                        <Text style={{fontSize: 30}}>+</Text>
+                    </TouchableOpacity> 
+                    :
+                    null
+                }
             </>
             }
-            </View>
+            </View>: null}
+            <LoadingOverlay visible={loading2 || loading || loadingUrl}/>
+            <Modal
+                transparent
+                animationType="fade"
+                visible={modal}
+                onRequestClose={ () => setModal(false)}
+            >
+                <TouchableWithoutFeedback onPress={() => setModal(false)}>
+                <View style={styles.modalOverlay}>
+                    <TouchableWithoutFeedback>
+                    <View style={styles.modalContent}>
+                        <Text style={[styles.title, {marginBottom: 10}]}>¿Estás seguro que los datos del vehiculo son correctos?</Text>
+
+                        <View style={styles.buttonRow}>
+                        <TouchableOpacity onPress={() => setModal(false)} style={styles.cancelButton}>
+                            <Text style={styles.buttonText}>Cancelar</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={ok} style={styles.acceptButton}>
+                            <Text style={styles.buttonText}>Aceptar</Text>
+                        </TouchableOpacity>
+                        </View>
+                    </View>
+                    </TouchableWithoutFeedback>
+                </View>
+                </TouchableWithoutFeedback>
+            </Modal>
         </View>
+        // </View>
     )
 }
 
@@ -168,7 +260,7 @@ const styles = StyleSheet.create({
     },
     subContainer: {
         minHeight: '70%',
-        width: '90%',
+        width: '95%',
         backgroundColor: 'white',
         borderRadius: 15,
         alignItems: 'center',
@@ -219,5 +311,41 @@ const styles = StyleSheet.create({
         marginTop: 10,
         backgroundColor: ' rgb(255, 166, 0)',
         borderRadius: 10
-    }
+    },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    elevation: 5,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  cancelButton: {
+    padding: 10,
+    backgroundColor: '#ccc',
+    borderRadius: 10,
+    flex: 1,
+    marginRight: 5,
+  },
+  acceptButton: {
+    padding: 10,
+    backgroundColor: '#4CAF50',
+    borderRadius: 10,
+    flex: 1,
+    marginLeft: 5,
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: 'white',
+    fontWeight: 'bold',
+  },
 })

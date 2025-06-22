@@ -70,6 +70,9 @@ const cardBase: ViewStyle = {
   ...Platform.select({
     web: {
       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+      gap: 75,
+      maxWidth: 500,
+      paddingHorizontal: 40
     },
   }),
 };
@@ -77,16 +80,9 @@ const cardBase: ViewStyle = {
 const styles = StyleSheet.create({
   card: {
     ...cardBase,
-    width: '100%',
+    width: '95%',
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  verticalCard: {
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  horizontalCard: {
-
   },
   carImage: {
     width: 120,

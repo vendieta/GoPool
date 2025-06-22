@@ -9,13 +9,23 @@ Platform,
 
 const BUTTON_VALUES = [-1, -.5, -.25, .25, .5, 1];
 
-const PriceInput: React.FC = () => {
+
+interface Props {
+    save: (x: any) => void
+}
+
+export default function PriceInput ({save}: Props)  {
 const [price, setPrice] = useState(0);
 
 const updatePrice = (delta: number) => {
     setPrice((prev) => {
     const newPrice = Math.max(0, parseFloat((prev + delta).toFixed(2)));
     return newPrice;
+    });
+    save((prev) => {
+    const newPrice2 = Math.max(0, parseFloat((prev + delta).toFixed(2)));
+    console.log(newPrice2)
+    return newPrice2;
     });
 };
 
@@ -46,7 +56,6 @@ return (
 );
 };
 
-export default PriceInput;
 
 const styles = StyleSheet.create({
 container: {
