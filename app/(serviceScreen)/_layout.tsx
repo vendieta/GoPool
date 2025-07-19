@@ -18,7 +18,7 @@ export default function Layout() {
           
         />
         <Stack.Screen
-          name="createRouteUser"
+          name="rutaUser"
           options={{headerShown: false}}
         />
         <Stack.Screen

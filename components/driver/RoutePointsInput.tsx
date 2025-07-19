@@ -10,9 +10,13 @@ Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+interface FormattedPoint {
+    orden: string | number;
+    descripcion: string;
+}
 
-interface Props{
-    save: (x:RouteData) => void
+interface Props {
+    save: (x: FormattedPoint[]) => void;
 }
 
 interface RouteData {
@@ -81,9 +85,15 @@ const renderInputs = () => {
     // save(routeData)
     // console.log('eeeeeeeee', routeData)
     useEffect(() => {
-        save(routeData);
-        console.log('eeeeeeeee', routeData);
-        }, [routeData]);
+        const formattedRoute = Object.entries(routeData).map(([key, value]) => {
+            const orden = key === 'inicio' ? 'inicio' : key === 'final' ? 'fin' : Number(key);
+            return { orden, descripcion: value };
+        });
+
+        save(formattedRoute);
+        console.log('eeeeeeeee', formattedRoute);
+    }, [routeData]);
+
     return orderedKeys.map((key) => {
     const label =
         key === 'inicio'

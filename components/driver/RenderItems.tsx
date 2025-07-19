@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 80,
     borderRadius: 10,
-    resizeMode: 'cover',
+    resizeMode: 'contain',
     marginBottom: 10,
   },
   infoContainer: {

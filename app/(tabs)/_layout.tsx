@@ -58,7 +58,7 @@ export default function TabLayout() {
             headerTitle: 'GOPOOL',
             headerRight: () => ( <TouchableOpacity
               onPress={() => alert("Botón derecho presionado!")}
-              style={{ padding: 5, marginRight: 15}}
+              style={{ paddingHorizontal: 5, marginRight: 15}}
             >
               <AntDesign name="filter" size={24} color="white" />
               {/* También podrías usar un <Text> o cualquier componente */}

@@ -18,6 +18,7 @@ export default function layout() {
             <Stack.Screen name='themes' options={{title:'Temas'}}/>
             <Stack.Screen name='registerCar' options={{title:'Regsitra tu auto'}}/>
             <Stack.Screen name='vehiculo' options={{title:'Vehiculos'}}/>
+            <Stack.Screen name='travelHistory' options={{title:'registro de viajes'}}/>
         </Stack>
     )
 }

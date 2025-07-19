@@ -1,97 +1,58 @@
-import React from 'react';
-import {
-View,
-Text,
-StyleSheet,
-ScrollView,
-Platform,
-ViewStyle,
-Dimensions
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Ionicons } from "@expo/vector-icons";
+import { View, Text, StyleSheet, ScrollView, Platform, ViewStyle } from "react-native";
 
-const { height, width } = Dimensions.get('window')
 
-interface TripCardProps {
-user: string;
-departureTime: string;
-arrivalTime: string;
-seats: number;
-price: number;
-routePoints: string[]; // Max 7
-date: string;
-zoneInit: string;
-zoneEnd: string;
-horizontal?: boolean;
+
+interface Props {
+    user: string;
+    departureTime: string;
+    arrivalTime: string;
+    seats: number;
+    price: number;
+    zoneInit: string;
+    zoneEnd: string
 }
 
-const UserCard: React.FC<TripCardProps> = ({
-user,
-departureTime,
-arrivalTime,
-seats,
-price,
-routePoints,
-date,
-horizontal = false,
-zoneInit,
-zoneEnd,
-}) => {
-
-      // Validación rápida
-    const isValid =
-    user &&
-    departureTime &&
-    arrivalTime &&
-    typeof seats === 'number' &&
-    typeof price === 'number' &&
-    Array.isArray(routePoints);
-
-    if (!isValid) {
-    return null; // O podrías mostrar un error en pantalla
-    }
-
-    const jsonData = encodeURIComponent(
-    JSON.stringify({
-        user,
-        departureTime,
-        arrivalTime,
-        seats,
-        price,
-        routePoints,
-        date,
-        zoneEnd,
-        zoneInit
-    })
-    );
+export default function CardTravel ({
+    user,
+    departureTime,
+    arrivalTime,
+    seats,
+    price,
+    zoneInit,
+    zoneEnd,
+    }: Props)  {
 
 
     return (
-        <Link href={{pathname: "../[info]", params: { info: jsonData} }}>
+        <>
             <View
             style={[
                 styles.card,
-                horizontal ? styles.horizontalCard : styles.verticalCard,
+                styles.verticalCard,
             ]}
             >
-            <View style={styles.header}>
+            {/* <View style={styles.header}>
                 <Text style={styles.user}>{user}</Text>
-                <Text style={styles.price}>${price.toFixed(2)}</Text>
+                </View> */}
+
+            <View style={styles.subContainer}>
+                <View style={styles.times}>
+                    <View style={styles.timeBlock}>
+                    <Ionicons name="time-outline" size={16} color="#0984e3" />
+                    <Text style={styles.timeText}>Salida: {departureTime}</Text>
+                    </View>
+                    <View style={styles.timeBlock}>
+                    <Ionicons name="time-outline" size={16} color="#00b894" />
+                    <Text style={styles.timeText}>Llegada: {arrivalTime}</Text>
+                    </View>
+                </View>
+                <View style={styles.containerPrice}>
+                    <Text style={styles.price}>${price.toFixed(2)}</Text>
+                </View >
             </View>
 
-            <View style={styles.times}>
-                <View style={styles.timeBlock}>
-                <Ionicons name="time-outline" size={16} color="#0984e3" />
-                <Text style={styles.timeText}>Salida: {departureTime}</Text>
-                </View>
-                <View style={styles.timeBlock}>
-                <Ionicons name="time-outline" size={16} color="#00b894" />
-                <Text style={styles.timeText}>Llegada: {arrivalTime}</Text>
-                </View>
-            </View>
-
-            <ScrollView
+            {/* <ScrollView
                 horizontal
                 contentContainerStyle={styles.routeScroll}
                 showsHorizontalScrollIndicator={false}
@@ -107,7 +68,7 @@ zoneEnd,
                     </View>
                 </View>
                 ))}
-            </ScrollView>
+            </ScrollView> */}
 
             <View style={styles.footer}>
                 <View style={{flexDirection: 'row', gap: 5}}>
@@ -119,22 +80,19 @@ zoneEnd,
                 </View>
             </View>
             </View>
-        </Link>
+        </>
     );
     };
-
-    export default UserCard;
 
 const cardBase: ViewStyle = {
 backgroundColor: '#fff',
 borderRadius: 14,
-paddingVertical: 8,
-paddingHorizontal: 10,
+padding: 12,
 shadowColor: '#000',
 shadowOpacity: 0.1,
 shadowRadius: 4,
 elevation: 3,
-marginBottom: 13,
+marginBottom: 16,
 // maxWidth: 500,
 alignSelf: 'center',
 ...Platform.select({
@@ -147,7 +105,12 @@ alignSelf: 'center',
 const styles = StyleSheet.create({
 card: {
     ...cardBase,
-    width: width*.95,
+    width: '95%',
+    borderWidth: 0.2
+},
+subContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
 },
 verticalCard: {
     flexDirection: 'column',
@@ -167,13 +130,20 @@ user: {
     color: '#2d3436',
 },
 price: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '700',
     color: '#d63031',
+    justifyContent: 'center',
+    alignItems: 'center'
+},
+containerPrice: {
+    justifyContent: 'center',
+    paddingRight: 10
 },
 times: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
+    gap: 10,
     marginTop: 8,
     marginBottom: 10,
 },
@@ -226,7 +196,7 @@ footer: {
     gap: 6,
 },
 seatsText: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#636e72',
 },
 });

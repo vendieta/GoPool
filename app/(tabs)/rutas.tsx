@@ -54,7 +54,7 @@ export default function TabTwoScreen() {
             { isDriver ? 
               <Opcion
                 element={{
-                  link: '/(serviceScreen)/createRouteUser',
+                  link: '/(serviceScreen)/rutaUser',
                   title: 'Ver tus ruta como pasajero',
                   icon: 'person',
                   description: 'Mira los viajes que contrataste',

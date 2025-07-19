@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, RefreshControl, FlatList } from 'react-native';
+import { StyleSheet, Text, View, RefreshControl, FlatList, TouchableOpacity } from 'react-native';
 import { useTheme } from '@/components/Themed/ContextTheme';
 import UserCard from './TEST/UserCard';
+import Box from './TEST/Box';
+import AntDesign from '@expo/vector-icons/AntDesign';
+
 
 interface Item {
   id: string;
@@ -16,6 +19,12 @@ interface Item {
 
 const ScrollRefresh = () => {
   const { theme } = useTheme();
+  const [ box1 , setBox1 ] = useState(false);
+  const [ box2 , setBox2 ] = useState(false);
+  const [ select1 , setSelect1 ] = useState<string>();
+  const [ select2 , setSelect2 ] = useState<string>();
+  console.log(select1);
+  console.log(select2);
   const [data, setData] = useState<Item[]>([
     {
       id: '1',
@@ -138,6 +147,14 @@ const ScrollRefresh = () => {
         backgroundColor: theme.background,
       }
     ]}>
+      <View style={styles.containerBox}>
+        <TouchableOpacity>
+          <AntDesign name="checkcircle" size={25} color="green" />
+        </TouchableOpacity>
+        <Box visible={box1} control={setBox1} select={select1} setSelect={setSelect1} option={['Norte', 'Sur', 'Oeste', 'Via la costa']}/>
+        <Text>--a--</Text>
+        <Box visible={box2} control={setBox2} select={select2} setSelect={setSelect2} option={['Norte', 'Sur', 'Oeste', 'Via la costa']}/>
+      </View>
       {/* <View style={styles.subContainer}> */}
         <FlatList
           data={data}
@@ -155,9 +172,9 @@ const ScrollRefresh = () => {
               tintColor={theme.primary}
             />
           }
-          ItemSeparatorComponent={() => (
-            <View style={{ height: 0, backgroundColor: 'transparent' }} />
-          )}
+          // ItemSeparatorComponent={() => (
+          //   <View style={{ height: 0, backgroundColor: 'transparent' }} />
+          // )}
         />
       </View>
     // </View>
@@ -181,7 +198,17 @@ const styles = StyleSheet.create({
   },
   subContainer: {
     flex: 1,
+  },
+  containerBox: {
+    backgroundColor: 'white', 
+    height: 40, 
+    width: '100%', 
+    flexDirection: 'row', 
+    justifyContent: 'space-around', 
+    alignItems: 'center',
+    gap: 5
   }
+
 });
 
 export default ScrollRefresh;

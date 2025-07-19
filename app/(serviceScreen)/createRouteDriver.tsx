@@ -6,6 +6,8 @@ import Desplegable from "@/components/driver/ZonaSelector";
 import { View , Text, TextInput , StyleSheet, ScrollView, Alert , Image, Button , Dimensions , useColorScheme, Platform, TouchableOpacity  } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useApi } from "@/hooks/useApi";
+import useStorage from "@/hooks/useStorage";
 
 const {width} = Dimensions.get('window')
 
@@ -15,17 +17,35 @@ final: string;
 [key: string]: string;
 }
 
+interface DataViaje {
+	msg: string,
+	data: {
+		viaje: {
+			message: string,
+			id: string
+		},
+		puntos: number
+  }
+}
+
 export default function CreateRoutesDriver() {
   const router = useRouter();
   const [ horaSalida, setHoraSalida ] = useState<Date>();
-  const [ horaEntrada, setHoraEntrada ] = useState<Date>();
+  const [ horaLlegada, setHoraLlegada ] = useState<Date>();
   const [ zonaInicial, setZonaInicial ] = useState<string>();
   const [ zonaFinal, setZonaFinal ] = useState<string>();
-  const [ precio, setPrecio ] = useState<any>(0);
-  const [ asientos, setAcientos ] = useState<any>(0);
+  const [ precio, setPrecio ] = useState<number>(0);
+  const [ asientos, setAcientos ] = useState<number>(0);
   const [ rutas, setRutas ] = useState<RouteData>();
+  const { data, loading, error, post } = useApi<DataViaje>();
 
-  console.log(zonaInicial, zonaFinal, precio, asientos, horaEntrada, horaSalida, rutas)
+  const {
+    storedValue: userId,
+    setItem: setId,
+    removeItem: removeId
+  } = useStorage('userId');
+
+  console.log('zonaInicial: ',zonaInicial,'zonaFinal:', zonaFinal,'precio:', precio,'asientos:', asientos,'horaEntrada',horaLlegada,'horaSalida',horaSalida,'listadepuntos:', rutas)
   const handleZonaSelect = (zona: string) => {
     console.log("Zona seleccionada:", zona);
     // Aquí puedes guardar la zona seleccionada en tu estado o base de datos
@@ -33,7 +53,24 @@ export default function CreateRoutesDriver() {
 
   const send = () => {
     // logica para publicar ruta
-    
+    if (!zonaInicial || !zonaFinal || !precio || !asientos || !horaSalida || !horaLlegada || !rutas) {
+      Alert.alert(
+        "error",
+        "porfavor complete todos los campos.",
+        [{ text: "Entendido" }]
+      )
+      return;
+    }
+    post('/api/viajes/crear', {
+      id_driver: userId,
+      zonaInicial: zonaInicial,
+      zonaFinal: zonaFinal,
+      precio: precio,
+      asientos: asientos,
+      horaSalida: horaSalida,
+      horaLlegada: horaLlegada,
+      Listapuntos: rutas
+    })
     router.push("/send");
   };
 
@@ -55,7 +92,7 @@ export default function CreateRoutesDriver() {
               backColor="#fab1a0"
               SalEnt="Salida"/>
               <TimeInput
-              save={setHoraEntrada}
+              save={setHoraLlegada}
               backColor="#81ecec"
               SalEnt="Llegada"/>
             </View>

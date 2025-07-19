@@ -195,7 +195,7 @@ export default function Vehiculo () {
             </View>
             :
             <>
-                <Text style={{fontSize: 20}}>Carros registrados</Text>
+                <Text style={{fontSize: 20, marginTop: 10}}>Carros registrados</Text>
                 <View style={{marginTop: 20, width: '95%', alignItems: 'center'}}>
                     {data2? (
                         data2.data?.map((obj, index)=> (
@@ -292,6 +292,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         fontSize: 16,
         color: '#000',
+        padding: 10
     },
     inputContainer: {
         padding: 5,
