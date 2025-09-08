@@ -4,6 +4,8 @@ import { useTheme } from '@/components/Themed/ContextTheme';
 import UserCard from './TEST/UserCard';
 import Box from './TEST/Box';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import Input from './Input';
+import InputSeach from './InputSearch';
 
 
 interface Item {
@@ -23,6 +25,8 @@ const ScrollRefresh = () => {
   const [ box2 , setBox2 ] = useState(false);
   const [ select1 , setSelect1 ] = useState<string>();
   const [ select2 , setSelect2 ] = useState<string>();
+  const [ search , setSearch ] = useState<string>('');
+  const [ action , setAction ] = useState<boolean>(true);
   console.log(select1);
   console.log(select2);
   const [data, setData] = useState<Item[]>([
@@ -148,12 +152,24 @@ const ScrollRefresh = () => {
       }
     ]}>
       <View style={styles.containerBox}>
-        <TouchableOpacity>
-          <AntDesign name="checkcircle" size={25} color="green" />
-        </TouchableOpacity>
-        <Box visible={box1} control={setBox1} select={select1} setSelect={setSelect1} option={['Norte', 'Sur', 'Oeste', 'Via la costa']}/>
-        <Text>--a--</Text>
-        <Box visible={box2} control={setBox2} select={select2} setSelect={setSelect2} option={['Norte', 'Sur', 'Oeste', 'Via la costa']}/>
+        {action ? 
+          <>
+            <Box visible={box1} control={setBox1} select={select1} setSelect={setSelect1} option={['Norte', 'Sur', 'Oeste', 'Via la costa']}/>
+              <Text>--a--</Text>
+            <Box visible={box2} control={setBox2} select={select2} setSelect={setSelect2} option={['Norte', 'Sur', 'Oeste', 'Via la costa']}/>
+            <TouchableOpacity onPress={() => {setAction(!action); console.log("hola", action)}}>
+              <AntDesign name="search1" size={25} color="green" />
+            </TouchableOpacity>
+          </> :
+          <>
+            <View style={{height: '100%', width: '80%', justifyContent: 'center'}}>
+              <InputSeach value={search} onChangeText={setSearch} label={''} placeholder='Busca tu punto'></InputSeach>
+            </View> 
+            <TouchableOpacity onPress={() => {setAction(!action); console.log("hola", action)}}>
+              <AntDesign name="filter" size={25} color="green" />
+            </TouchableOpacity>
+          </>
+        }
       </View>
       {/* <View style={styles.subContainer}> */}
         <FlatList
@@ -190,7 +206,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   listContent: {
-    paddingVertical: 1,
+    paddingTop: 6,
   },
   cardContainer: {
     overflow: 'hidden',
@@ -204,9 +220,8 @@ const styles = StyleSheet.create({
     height: 40, 
     width: '100%', 
     flexDirection: 'row', 
-    justifyContent: 'space-around', 
+    justifyContent: 'space-evenly', 
     alignItems: 'center',
-    gap: 5
   }
 
 });

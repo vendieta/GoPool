@@ -37,14 +37,15 @@ const styles = StyleSheet.create({
     filter: {
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100%'
+        height: '100%',
     },
     button: {
         borderWidth: .5,
         borderRadius: 10,
         padding: 5,
         borderColor: 'green',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        backgroundColor: 'white'
     },
     bandeja: {
         position: 'absolute',
