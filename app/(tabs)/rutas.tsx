@@ -6,11 +6,14 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
 import UserCard from '@/components/TEST/UserCard';
 import { useRoleContext } from '@/hooks/useRoleContext';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+
 
 const { width } = Dimensions.get('window');
 
 export default function TabTwoScreen() {
-  const { isDriver } = useRoleContext();
+  // const { isDriver } = useRoleContext();
+  const { isDriver } = false;
   const { theme } = useTheme();
   const isLightTheme = theme.name === 'light';
 
@@ -49,7 +52,7 @@ export default function TabTwoScreen() {
           <Text style={[styles.sectionTitle, { color: textColor }]}>
             <MaterialIcons name="directions" size={20} color={accentColor} /> { isDriver ? 'Opciones de Ruta' : 'Rutas por tomar' }
           </Text>
-          <Text style={[styles.sectionTitle, { color: textColor }]}>{isDriver ? 'Selecciona una opción: ' : null }</Text>
+          <Text style={[styles.sectionTitle, { color: textColor }]}>{isDriver ? 'Selecciona una opción: ' : 'hola' }</Text>
           <View style={styles.optionsContainer}>
             { isDriver ? 
               <Opcion
@@ -100,14 +103,16 @@ export default function TabTwoScreen() {
                     />
                     <View style={styles.extraInfo}>
                       <Text>cupos comprados: {5}</Text>
-                      <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                      <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingTop: 15, alignItems: 'center'}}>
                         <TouchableOpacity style={{width: '50%', alignItems: 'center'}}>
-                          <Text>img</Text>
-                          <Text>informacion del vehiculo</Text>
+                          <FontAwesome5 name="car-side" size={30} color="black" />
+                          <Text>Foto Vehiculo</Text>
+                          <Text>Informacion del carro</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={{width: '50%', alignItems: 'center'}}>
+                          <FontAwesome5 name="whatsapp" size={30} color="black" />
                           <Text>whatssap</Text>
-                          <Text>Contactar al conductor</Text>
+                          <Text>Contacta al conductor</Text>
                         </TouchableOpacity>
                       </View>
                     </View>
@@ -166,17 +171,18 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    padding: 20,
+    padding: 10,
   },
   optionsCard: {
     borderRadius: 15,
-    padding: 20,
+    padding: 15,
     marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 3,
+    width: '100%'
   },
   sectionTitle: {
     fontSize: 18,
@@ -184,9 +190,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     flexDirection: 'row',
     alignItems: 'center',
+    color: 'white'
   },
   optionsContainer: {
-
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',

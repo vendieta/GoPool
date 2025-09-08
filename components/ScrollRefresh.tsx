@@ -180,6 +180,7 @@ const ScrollRefresh = () => {
           // columnWrapperStyle={{ justifyContent: 'space-around', paddingBottom: 10, gap: 10 }}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator= {false}
+          keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -193,7 +194,6 @@ const ScrollRefresh = () => {
           // )}
         />
       </View>
-    // </View>
   );
 };
 

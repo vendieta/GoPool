@@ -28,9 +28,10 @@ export default function InputSeach({
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      
       style={styles.container}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <TouchableWithoutFeedback onPress={Platform.OS === "web" ? undefined : Keyboard.dismiss}>
         <View style={styles.innerContainer}>
           <TextInput
             style={styles.input}
@@ -71,8 +72,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     // paddingTop: 15,
     textAlignVertical: "center",
-    paddingVertical: 0, 
+    paddingVertical: 5, 
     margin: 0,
+    
     
   },
   label: {

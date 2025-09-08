@@ -10,15 +10,15 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 interface Props {
     x?: number;
-    save: (x: any) => void
+    // save: (x: any) => void
 }
 
-export default function SeatInput ({x, save}: Props) {
+export default function SeatInput ({x}: Props) {
 const [seats, setSeats] = useState(0);
 
 const updateSeats = (delta: number) => {
     setSeats((prev) => Math.min(x || Infinity, Math.max(0, prev + delta)));
-    save((prev) => Math.min(x || Infinity, Math.max(0, prev + delta)));
+    // save((prev) => Math.min(x || Infinity, Math.max(0, prev + delta)));
 };
 
 return (
