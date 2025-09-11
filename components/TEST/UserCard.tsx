@@ -24,6 +24,7 @@ date: string;
 zoneInit: string;
 zoneEnd: string;
 horizontal?: boolean;
+id: string;
 }
 
 const UserCard: React.FC<TripCardProps> = ({
@@ -37,6 +38,7 @@ date,
 horizontal = false,
 zoneInit,
 zoneEnd,
+id,
 }) => {
 
       // Validación rápida
@@ -62,7 +64,8 @@ zoneEnd,
         routePoints,
         date,
         zoneEnd,
-        zoneInit
+        zoneInit,
+        id
     })
     );
 

@@ -11,10 +11,9 @@ import useStorage from "@/hooks/useStorage";
 
 const {width} = Dimensions.get('window')
 
-interface RouteData {
-inicio: string;
-final: string;
-[key: string]: string;
+interface FormattedPoint {
+    orden: string | number;
+    descripcion: string;
 }
 
 interface DataViaje {
@@ -36,7 +35,7 @@ export default function CreateRoutesDriver() {
   const [ zonaFinal, setZonaFinal ] = useState<string>();
   const [ precio, setPrecio ] = useState<number>(0);
   const [ asientos, setAcientos ] = useState<number>(0);
-  const [ rutas, setRutas ] = useState<RouteData>();
+  const [ rutas, setRutas ] = useState<FormattedPoint[]>();
   const { data, loading, error, post } = useApi<DataViaje>();
 
   const {

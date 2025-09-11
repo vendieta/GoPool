@@ -1,8 +1,8 @@
-import { StyleSheet, Image, View, Text, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, View, Text, Dimensions, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { useTheme } from '@/components/Themed/ContextTheme';
 import Opcion from '@/components/TEST/Opcion';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
 import UserCard from '@/components/TEST/UserCard';
 import { useRoleContext } from '@/hooks/useRoleContext';
@@ -13,7 +13,8 @@ const { width } = Dimensions.get('window');
 
 export default function TabTwoScreen() {
   // const { isDriver } = useRoleContext();
-  const { isDriver } = false;
+  const isDriver  = true;
+  const data  = true;
   const { theme } = useTheme();
   const isLightTheme = theme.name === 'light';
 
@@ -52,7 +53,18 @@ export default function TabTwoScreen() {
           <Text style={[styles.sectionTitle, { color: textColor }]}>
             <MaterialIcons name="directions" size={20} color={accentColor} /> { isDriver ? 'Opciones de Ruta' : 'Rutas por tomar' }
           </Text>
-          <Text style={[styles.sectionTitle, { color: textColor }]}>{isDriver ? 'Selecciona una opción: ' : 'hola' }</Text>
+          {/* {isDriver? 
+            <Text style={[styles.sectionTitle, { color: textColor }]}>Selecciona una opción:</Text>
+            : 
+            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <TouchableOpacity>
+                <AntDesign name="questioncircleo" size={25} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <MaterialIcons name="report-problem" size={29} color="red" />
+              </TouchableOpacity>
+            </View>
+          } */}
           <View style={styles.optionsContainer}>
             { isDriver ? 
               <Opcion
@@ -72,51 +84,62 @@ export default function TabTwoScreen() {
                 }}
               />
             :
-                  <View style={{flexDirection: 'column'}}>
-                    <UserCard 
-                      user= {'pepe'}
-                      price= {5}
-                      routePoints= {['Mucho Lote 2 (todas las urbanizaciones)',
-                        'Horizonte Dorado',
-                        'Jardines del Río' ,
-                        'La Romareda',
-                        'La Perla',
-                        'Oasis',
-                        '...',
-                        'Urb. Veranda',
-                        'Ciudad del Río 1 y 2' ,
-                        '🔺Metrópolis 1 y 2',
-                        '🔺Guamote',
-                        '🔺Mall El Fortin',
-                        '🔺Tía Lomas de la Florida',
-                        '🔺Metrópolis 1 (solo en retorno paso)',
-                        '🔺Ciudad del Río 1 (solo en retorno paso)',
-                        'espol'
-                        ]
-                      }
-                      arrivalTime= {'09:00'}
-                      departureTime= '07:00'
-                      seats= {5}
-                      date='6/5/25'
-                      zoneInit= 'Norte'
-                      zoneEnd='Espol'
-                    />
-                    <View style={styles.extraInfo}>
-                      <Text>cupos comprados: {5}</Text>
-                      <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingTop: 15, alignItems: 'center'}}>
-                        <TouchableOpacity style={{width: '50%', alignItems: 'center'}}>
-                          <FontAwesome5 name="car-side" size={30} color="black" />
-                          <Text>Foto Vehiculo</Text>
-                          <Text>Informacion del carro</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{width: '50%', alignItems: 'center'}}>
-                          <FontAwesome5 name="whatsapp" size={30} color="black" />
-                          <Text>whatssap</Text>
-                          <Text>Contacta al conductor</Text>
-                        </TouchableOpacity>
-                      </View>
+              <View style={styles.containerScroll}>
+                {data ? <>
+                  <View style={[styles.containerHeader, { backgroundColor: theme.cardBackground }]}>
+                    <View style={styles.lateral}>
+                      <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Precio</Text>
+                      <Text style={[styles.lateralValue, { color: theme.text }]}>$ {10}</Text>
                     </View>
-                  </View> 
+                    <View style={styles.profileHeader}>
+                      <Image borderRadius={30} width={60} height={60} source={{uri:'https://gopool-img-2025.s3.us-east-2.amazonaws.com/3bc859a6-5c4f-42a3-b06d-0cd30b8325e6-21385a45-bf15-49b9-a2ad-ac7dfde3adb9.jpeg'}}/>
+                      <Text style={[styles.userName, { color: theme.text }]}>{'pepe'}</Text>
+                      {/* <Text style={[styles.userName, { color: theme.text }]}>Max Atahualpa taguantisuyo Paquisha goku</Text> */}
+                      <Text style={[styles.userStatus, { color: theme.labelText }]}>
+                        {10 > 0 ? `${10} cupos disponibles` : 'Sin cupos'}
+                      </Text>
+                    </View>
+                    <View style={styles.lateral}>
+                      <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Fecha</Text>
+                      <Text style={[styles.lateralValue, { color: theme.text }]}>{10}</Text>
+                    </View>
+                  </View>
+                  
+                  <View style={[styles.section, {flexDirection: 'row', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center'}]}>
+                    <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{'noter'}</Text><Text style={{color: theme.text}}>{8}</Text></View>
+                      <FontAwesome name="long-arrow-right" size={25} color="#fff" />
+                    <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{'espol'}</Text><Text  style={{color: theme.text}}>{10}</Text></View>
+                    {/* <View style={{alignItems: 'center'}}><Text style={{color: theme.text}}>{data.date}</Text></View>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}><Text style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.zoneEnd}</Text></View> */}
+                  </View>
+                  <View style={[styles.placa,{ backgroundColor: theme.cardBackground }]}>
+                    <Text style={styles.textPlaca}>Placa: {'abe-323'}</Text>
+                  </View>
+                  <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingTop: 15, alignItems: 'center'}}>
+                    <TouchableOpacity style={{width: '50%', alignItems: 'center'}}>
+                      <FontAwesome5 name="car-side" size={30} color="yellow" />
+                      <Text style={styles.text}>Foto Vehiculo</Text>
+                      <Text style={styles.text}>Informacion del carro</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => Linking.openURL('https://wa.me/0959112942')} style={{width: '50%', alignItems: 'center'}}>
+                      <FontAwesome5 name="whatsapp" size={30} color="green" />
+                      <Text style={styles.text} >whatssap</Text>
+                      <Text style={styles.text} >Contacta al conductor</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.containerCancelar}>
+                    <TouchableOpacity style={styles.cancelar}>
+                      <Text style={styles.textCancelar} >Cancelar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{padding: 5}}>
+                      <MaterialIcons name="report-problem" size={29} color="red" />
+                    </TouchableOpacity>
+                  </View>
+                </> :
+                <>
+                
+                </>}
+              </View>
             }
           </View>
         </View>
@@ -218,8 +241,90 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   extraInfo:{
-    backgroundColor: 'white',
+    backgroundColor: '#F5F5F5',
     borderRadius: 20,
     padding: 10
+  },
+  containerHeader: {
+    padding: 16,
+
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  lateral: {
+    justifyContent: 'center'
+  },
+  lateralTitle: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 10
+  },
+  lateralValue: {
+    fontSize: 16,
+    textAlign: 'center'
+  },
+  profileHeader: {
+    alignItems: 'center',
+    width: '60%'
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  avatarText: {
+    fontSize: 28,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  userName: {
+    fontSize: 20,
+    fontWeight: '600',
+    textAlign: 'center'
+  },
+  userStatus: {
+    fontSize: 14,
+  },
+  section: {
+    borderRadius: 10,
+  },
+  containerScroll: {
+    flexDirection: 'column',
+    width: '100%',
+    gap: 10
+  },
+  text: {
+    fontSize: 14,
+    color: 'white',
+  },
+  textPlaca: {
+    color: 'white',
+    fontSize: 17
+  },
+  placa: {
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center'
+  },
+  containerCancelar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    marginTop: 10,
+    gap: 20,
+
+  },
+  cancelar: {
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 20,
+    alignItems: 'center',
+    width: '80%'
+  },
+  textCancelar: {
+    fontSize: 20
   }
 });

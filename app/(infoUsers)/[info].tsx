@@ -17,6 +17,7 @@ interface Producto {
   routePoints: string[];
   zoneInit: string;
   zoneEnd: string;
+  id: string;
 }
 
 export default function Info() {
@@ -157,8 +158,6 @@ const styles = StyleSheet.create({
   },
   section: {
     borderRadius: 10,
-    
-
   },
   infoCard: {
     padding: 12,

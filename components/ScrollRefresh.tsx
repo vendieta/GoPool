@@ -6,6 +6,7 @@ import Box from './TEST/Box';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Input from './Input';
 import InputSeach from './InputSearch';
+import { useApi } from '@/hooks/useApi';
 
 
 interface Item {
@@ -17,7 +18,45 @@ interface Item {
   free: number;
   startZone: string;
   endZone: string;
-}
+};
+
+interface data {
+  msg: string;
+  data: obj[];
+};
+
+interface DriverInfo {
+  users: UserInfo;
+  fotodriver: string | null;
+};
+
+interface UserInfo {
+  nombre: string;
+  lastname: string;
+};
+
+interface obj {
+  id: string;
+  cuposdisponibles: number;
+  horaestimacionllegada: string; // ISO date string
+  bloqueopasajeros: boolean;
+  ZonaInicial: string;
+  ZonaFinal: string;
+  precio: number;
+  horasalida: string; // ISO date string
+  puntosruta: PuntoRuta[];
+  driver: DriverInfo
+};
+
+interface PuntoRuta {
+  id: string;
+  orden: string; // Podría ser number si se convierte
+  latitud: number | null;
+  longitud: number | null;
+  descripcion: string;
+  idrutadriver: string;
+};
+
 
 const ScrollRefresh = () => {
   const { theme } = useTheme();
@@ -27,75 +66,16 @@ const ScrollRefresh = () => {
   const [ select2 , setSelect2 ] = useState<string>();
   const [ search , setSearch ] = useState<string>('');
   const [ action , setAction ] = useState<boolean>(true);
-  console.log(select1);
-  console.log(select2);
-  const [data, setData] = useState<Item[]>([
-    {
-      id: '1',
-      userName: 'Juan Pérez',
-      price: 5,
-      date: '2023-05-15',
-      time: '08:30',
-      free: 3,
-      startZone: 'Centro',
-      endZone: 'Norte'
-    },
-    {
-      id: '2',
-      userName: 'María García',
-      price: 16,
-      date: '2023-05-16',
-      time: '14:15',
-      free: 2,
-      startZone: 'Sur',
-      endZone: 'Este'
-    },
-    {
-      id: '3',
-      userName: 'Carlos López',
-      price: 2,
-      date: '2023-05-17',
-      time: '10:45',
-      free: 4,
-      startZone: 'Oeste',
-      endZone: 'Centro'
-    },
-    {
-      id: '4',
-      userName: 'Ana Martínez',
-      price: 17,
-      date: '2023-05-18',
-      time: '16:20',
-      free: 1,
-      startZone: 'Norte',
-      endZone: 'Sur'
-    },
-    {
-      id: '5',
-      userName: 'Carlos López',
-      price: 2,
-      date: '2023-05-17',
-      time: '10:45',
-      free: 4,
-      startZone: 'Oeste',
-      endZone: 'Centro'
-    },
-    {
-      id: '6',
-      userName: 'Carlos López',
-      price: 2,
-      date: '2023-05-17',
-      time: '10:45',
-      free: 4,
-      startZone: 'Oeste',
-      endZone: 'Centro'
-    },
-  ]);
+  const { data, loading, error, get } = useApi<data>();
   const [refreshing, setRefreshing] = useState(false);
+  // console.log('esta es la data',data?.data[4]);
+  // console.log('esta es la data',data?.data[4].puntosruta.sort((a, b) => parseInt(a.orden) - parseInt(b.orden)).map(punto => punto.descripcion));
 
   const fetchData = async () => {
     try {
+      get(`/api/rutas/`)
       setRefreshing(false);
+      console.log('datos actualizados')
     } catch (err) {
       console.error('Error fetching data:', err);
       setRefreshing(false);
@@ -113,34 +93,71 @@ const ScrollRefresh = () => {
     }, 1500);
   };
 
-  const renderItem = ({ item }: { item: Item }) => (
+interface FiltroRutas {
+  zonaInicial?: string;
+  zonaFinal?: string;
+  puntoRuta?: string;
+  conductor?: string;
+}
+
+const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
+  return rutas.filter(ruta => {
+    let coincide = true;  // Empieza asumiendo que coincide
+    
+    // Filtro por Zona Inicial
+    if (filtros.zonaInicial) {
+      coincide &&= ruta.ZonaInicial.toLowerCase().includes(filtros.zonaInicial.toLowerCase());
+    }
+    
+    // Filtro por Zona Final  
+    if (filtros.zonaFinal) {
+      coincide &&= ruta.ZonaFinal.toLowerCase().includes(filtros.zonaFinal.toLowerCase());
+    }
+    
+    // Filtro por Punto de Ruta
+    if (filtros.puntoRuta) {
+      coincide &&= ruta.puntosruta.some(punto => 
+        punto.descripcion.toLowerCase().includes(filtros.puntoRuta!.toLowerCase())
+      );
+    }
+    
+    // Filtro por Conductor
+    if (filtros.conductor) {
+      const nombreCompleto = `${ruta.driver.users.nombre} ${ruta.driver.users.lastname}`.toLowerCase();
+      coincide &&= nombreCompleto.includes(filtros.conductor.toLowerCase());
+    }
+    
+    return coincide;
+  });
+};
+//   const filtrarRutas = (rutas: obj[], busqueda: string) => {
+//   return rutas.filter(ruta => 
+//     ruta.ZonaInicial.toLowerCase().includes(busqueda.toLowerCase()) ||
+//     ruta.ZonaFinal.toLowerCase().includes(busqueda.toLowerCase()) ||
+//     ruta.puntosruta.some(punto => 
+//       punto.descripcion.toLowerCase().includes(busqueda.toLowerCase())
+//     )
+//   );
+// };
+
+  const renderItem = ({ item }: { item: obj }) => (
     <UserCard 
-      user= {item.userName}
-      price= {item.price}
-      routePoints= {['Mucho Lote 2 (todas las urbanizaciones)',
-        'Horizonte Dorado',
-        'Jardines del Río' ,
-        'La Romareda',
-        'La Perla',
-        'Oasis',
-        '...',
-        'Urb. Veranda',
-        'Ciudad del Río 1 y 2' ,
-        '🔺Metrópolis 1 y 2',
-        '🔺Guamote',
-        '🔺Mall El Fortin',
-        '🔺Tía Lomas de la Florida',
-        '🔺Metrópolis 1 (solo en retorno paso)',
-        '🔺Ciudad del Río 1 (solo en retorno paso)',
-        'espol'
-        ]
+      id = {item.id}
+      user= {item?.driver?.users?.nombre}
+      price= {item.precio}
+      routePoints= {item.puntosruta.sort((a, b) => 
+        (+a.orden || (a.orden === 'inicio' ? 0 : 999)) - (+b.orden || (b.orden === 'inicio' ? 0 : 999))
+        ).map(p => p.descripcion )|| []
       }
-      arrivalTime= {item.time}
-      departureTime= '07:00'
-      seats= {item.free}
-      date='6/5/25'
-      zoneInit= 'Norte'
-      zoneEnd='Espols'
+      // routePoints= {item.puntosruta.sort((a, b) => parseInt(a.orden) - parseInt(b.orden)).map(punto => punto.descripcion) || []} 
+      arrivalTime= {item.horaestimacionllegada.split('T')[1].substring(0, 5)}
+      departureTime= {item.horasalida.split('T')[1].substring(0, 5)}
+      seats= {item.cuposdisponibles}
+      date= {item.horasalida.split('T')[0].replace(/-/g, '/') 
+        
+      }
+      zoneInit= {item.ZonaInicial}
+      zoneEnd= {item.ZonaFinal}
     />
   );
 
@@ -152,12 +169,12 @@ const ScrollRefresh = () => {
       }
     ]}>
       <View style={styles.containerBox}>
-        {action ? 
+        {!action ? 
           <>
-            <Box visible={box1} control={setBox1} select={select1} setSelect={setSelect1} option={['Norte', 'Sur', 'Oeste', 'Via la costa']}/>
+            <Box visible={box1} control={setBox1} select={select1} setSelect={setSelect1} option={['Norte', 'Sur', 'Este','Oeste', 'Via la costa', 'Espol']}/>
               <Text>--a--</Text>
-            <Box visible={box2} control={setBox2} select={select2} setSelect={setSelect2} option={['Norte', 'Sur', 'Oeste', 'Via la costa']}/>
-            <TouchableOpacity onPress={() => {setAction(!action); console.log("hola", action)}}>
+            <Box visible={box2} control={setBox2} select={select2} setSelect={setSelect2} option={['Norte', 'Sur', 'Este', 'Oeste', 'Via la costa', 'Espol']}/>
+            <TouchableOpacity onPress={() => {setAction(!action); setSelect1('');setSelect2('') }}>
               <AntDesign name="search1" size={25} color="green" />
             </TouchableOpacity>
           </> :
@@ -165,7 +182,7 @@ const ScrollRefresh = () => {
             <View style={{height: '100%', width: '80%', justifyContent: 'center'}}>
               <InputSeach value={search} onChangeText={setSearch} label={''} placeholder='Busca tu punto'></InputSeach>
             </View> 
-            <TouchableOpacity onPress={() => {setAction(!action); console.log("hola", action)}}>
+            <TouchableOpacity onPress={() => {setAction(!action); setSearch('')}}>
               <AntDesign name="filter" size={25} color="green" />
             </TouchableOpacity>
           </>
@@ -173,7 +190,11 @@ const ScrollRefresh = () => {
       </View>
       {/* <View style={styles.subContainer}> */}
         <FlatList
-          data={data}
+          data={filtrarRutas(data?.data || [], {
+            zonaInicial: select1,
+            zonaFinal: select2,
+            puntoRuta: search,
+          })}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
           // numColumns={2}
