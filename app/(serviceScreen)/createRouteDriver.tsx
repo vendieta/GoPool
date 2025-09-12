@@ -114,12 +114,14 @@ export default function CreateRoutesDriver() {
               save={setPrecio}
               />
             </View>
-            <View style={{width: '100%'}}><SeatsInput save={setAcientos}/></View>
+            <View style={{width: '100%'}}>
+              <SeatsInput save={setAcientos}/>
+            </View>
             <View style={{width: '100%'}}>
               <RoutePointsInput save={setRutas}/>
             </View>
             <TouchableOpacity style={styles.button} onPress={send}>
-              <Text>Publicar ruta</Text>
+              <Text style={{fontWeight: '700', fontSize: 18}}>Publicar ruta</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -164,7 +166,7 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 10,
-    backgroundColor: 'orange',
+    backgroundColor: '#4caf50',
     borderRadius: 8,
     marginTop: 10,
     marginBottom: 5,

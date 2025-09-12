@@ -144,7 +144,7 @@ container: {
     alignItems: 'stretch',
 },
 title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '700',
     color: '#2d3436',
     marginBottom: 12,

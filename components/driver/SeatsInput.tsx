@@ -28,7 +28,7 @@ return (
     <Text style={styles.label}>Asientos disponibles</Text>
     <View style={styles.buttonsRow}>
         <TouchableOpacity
-        style={[styles.button, { backgroundColor: '#fab1a0' }]}
+        style={[styles.button, { backgroundColor: '#ff8b8bff' }]}
         onPress={() => updateSeats(-1)}
         >
         <Text style={styles.buttonText}>-</Text>
@@ -40,7 +40,7 @@ return (
         </View>
         
         <TouchableOpacity
-        style={[styles.button, { backgroundColor: '#81ecec' }]}
+        style={[styles.button, { backgroundColor: '#b4e9bfff' }]}
         onPress={() => updateSeats(1)}
         >
         <Text style={styles.buttonText}>+</Text>
@@ -58,8 +58,8 @@ container: {
 },
 label: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#636e72',
+    fontWeight: '700',
+    color: 'black',
     marginBottom: 8,
 },
 seatBox: {
