@@ -1,4 +1,4 @@
-import { StyleSheet, Image, View, Text, Dimensions, ScrollView, TouchableOpacity, Linking } from 'react-native';
+import { StyleSheet, Image, View, Text, Dimensions, ScrollView, TouchableOpacity, Linking, Modal } from 'react-native';
 import { useTheme } from '@/components/Themed/ContextTheme';
 import Opcion from '@/components/TEST/Opcion';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -13,11 +13,11 @@ const { width } = Dimensions.get('window');
 
 export default function TabTwoScreen() {
   // const { isDriver } = useRoleContext();
-  const isDriver  = true;
+  const isDriver  = false;
   const data  = true;
   const { theme } = useTheme();
   const isLightTheme = theme.name === 'light';
-
+  const [modalVisible, setModalVisible] = useState(false);
   // Colores basados en el tema
   const backgroundColor = isLightTheme ? '#f5f5f5' : '#121212';
   const textColor = isLightTheme ? '#333' : '#fff';
@@ -116,7 +116,7 @@ export default function TabTwoScreen() {
                     <Text style={styles.textPlaca}>Placa: {'abe-323'}</Text>
                   </View>
                   <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingTop: 15, alignItems: 'center'}}>
-                    <TouchableOpacity style={{width: '50%', alignItems: 'center'}}>
+                    <TouchableOpacity style={{width: '50%', alignItems: 'center'}} onPress={() => setModalVisible(true)}>
                       <FontAwesome5 name="car-side" size={30} color="yellow" />
                       <Text style={styles.text}>Foto Vehiculo</Text>
                       <Text style={styles.text}>Informacion del carro</Text>
@@ -157,6 +157,28 @@ export default function TabTwoScreen() {
           </View>
         }
       </View>
+
+      <Modal
+        transparent={true}
+        visible={modalVisible}
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)} // Android back button
+      >
+        {/* Fondo semi-transparente clickeable */}
+        <TouchableOpacity 
+          style={styles.modalBackground} 
+          activeOpacity={1} 
+          onPressOut={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContent}>
+            <Image 
+              source={{ uri: 'https://gopool-img-2025.s3.us-east-2.amazonaws.com/3bc859a6-5c4f-42a3-b06d-0cd30b8325e6-21385a45-bf15-49b9-a2ad-ac7dfde3adb9.jpeg' }} 
+              style={styles.modalImage} 
+              resizeMode="contain"
+            />
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </ScrollView>
   );
 }
@@ -326,5 +348,22 @@ const styles = StyleSheet.create({
   },
   textCancelar: {
     fontSize: 20
+  },
+    modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  modalContent: {
+    width: '90%',
+    height: '70%',
+    borderRadius: 10,
+    overflow: 'hidden',
+    backgroundColor: '#000'
+  },
+  modalImage: {
+    width: '100%',
+    height: '100%'
   }
 });

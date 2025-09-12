@@ -141,7 +141,7 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
 // };
 
   const renderItem = ({ item }: { item: obj }) => (
-    <UserCard 
+    (item.cuposdisponibles != 0) ? <UserCard 
       id = {item.id}
       user= {item?.driver?.users?.nombre}
       price= {item.precio}
@@ -153,12 +153,11 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
       arrivalTime= {item.horaestimacionllegada.split('T')[1].substring(0, 5)}
       departureTime= {item.horasalida.split('T')[1].substring(0, 5)}
       seats= {item.cuposdisponibles}
-      date= {item.horasalida.split('T')[0].replace(/-/g, '/') 
-        
-      }
+      date= {item.horasalida.split('T')[0].replace(/-/g, '/') }
       zoneInit= {item.ZonaInicial}
       zoneEnd= {item.ZonaFinal}
     />
+    : null
   );
 
   return (
