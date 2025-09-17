@@ -3,11 +3,12 @@ import RoutePointsInput from "@/components/driver/RoutePointsInput";
 import SeatsInput from "@/components/driver/SeatsInput";
 import TimeInput from "@/components/driver/TimeInput";
 import Desplegable from "@/components/driver/ZonaSelector";
-import { View , Text, TextInput , StyleSheet, ScrollView, Alert , Image, Button , Dimensions , useColorScheme, Platform, TouchableOpacity  } from "react-native";
+import { View , Text, TextInput , StyleSheet, ScrollView, Alert , Image, Button , Dimensions , useColorScheme, Platform, TouchableOpacity, Modal, ActivityIndicator  } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useApi } from "@/hooks/useApi";
 import useStorage from "@/hooks/useStorage";
+import CarCard from "@/components/driver/RenderItems";
 
 const {width} = Dimensions.get('window')
 
@@ -52,7 +53,11 @@ export default function CreateRoutesDriver() {
   const [ rutas, setRutas ] = useState<FormattedPoint[]>();
   const { data, loading, error, post } = useApi<DataViaje>();
   const { data: data2, loading: loading2, error: error2, get } = useApi<req>();
-  const [ visible, setVisible ] = useState<boolean>(false)
+  const [ visible, setVisible ] = useState<boolean>(false);
+  const [ idCar, setIdCar ] = useState<string>();
+  const [ imgCar, setImgCar ] = useState<string>();
+  const [ model, setModel ] = useState<string>();
+  const [ placa, setPlaca ] = useState<string>();
 
   const {
     storedValue: userId,
@@ -69,7 +74,9 @@ export default function CreateRoutesDriver() {
   const dataCar = () => {
     setVisible(true)
     console.log(`/api/vehiculo/listar/${userId}`)
-    get(`/api/vehiculo/listar/${userId}`)
+    if (!data2) {
+      get(`/api/vehiculo/listar/${userId}`)
+    }
     console.log('el get de la lista vehiculo',data2)
   }
   
@@ -94,6 +101,14 @@ export default function CreateRoutesDriver() {
       Listapuntos: rutas
     })
     router.push("/send");
+  };
+
+  const save =(idCar: string,img: string, model: string, placa: string) => {
+    setImgCar(img);
+    setModel(model);
+    setPlaca(placa);
+    setIdCar(idCar);
+    setVisible(false);
   };
 
   return(
@@ -143,14 +158,23 @@ export default function CreateRoutesDriver() {
             <View style={{width: '100%'}}>
               <RoutePointsInput save={setRutas}/>
             </View>
-            <TouchableOpacity onPress={dataCar}>
-              <View>
-                <Image/>
-                <View>
-                  <Text>Modelo</Text>
-                  <Text>Placa</Text>
+            <TouchableOpacity style={{marginVertical: 5, width: '80%', borderRadius: 10, borderColor: 'black', borderWidth: 1, padding: 5, justifyContent: 'center'}} onPress={dataCar}>
+              {imgCar && model && placa ? 
+              <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                <Image height={50} width={50} borderRadius={5} source={{uri:imgCar}}/>
+                <View style={{justifyContent: 'center'}}>
+                  <Text>Modelo:</Text>
+                  <Text>{model}</Text>
                 </View>
+                <View style={{justifyContent: 'center'}}>
+                  <Text>Placa:</Text>
+                  <Text>{placa}</Text>
+                </View>
+              </View> :
+              <View style={{alignItems: 'center', padding: 5}}>
+                <Text>Seleccione el vehiculo</Text>
               </View>
+              }
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={send}>
               <Text style={{fontWeight: '700', fontSize: 18}}>Publicar ruta</Text>
@@ -158,6 +182,32 @@ export default function CreateRoutesDriver() {
           </View>
         </View>
       </ScrollView>
+      <Modal visible={visible}
+        transparent
+        animationType='fade'
+        onRequestClose={() => setVisible(false)}
+        >
+        <View style={styles.modalContainer}>
+          <View style={{width: '95%', alignItems:'center', backgroundColor: 'white', paddingTop: 15, borderRadius: 10}}>
+            {data2? (
+              data2.data?.map((obj, index)=> (
+              <TouchableOpacity key={index} onPress={() => save(obj.id,obj.fotovehiculo,obj.modelocar,obj.placa)}>
+                <CarCard
+                key={index}
+                brand={obj.marca}
+                model= {obj.modelocar}
+                color={obj.color}
+                capacity= {obj.capacidadmax}
+                plate= {obj.placa}
+                // imageUrl="https://th.bing.com/th/id/OIP.rStTi56qv85qFlP-5LAZaAHaEK?r=0&rs=1&pid=ImgDetMain"
+                imageUrl= {obj.fotovehiculo}
+                />
+              </TouchableOpacity>
+            )) ): <ActivityIndicator size="large" color="#00ff00" />
+}
+          </View>
+        </View>
+      </Modal>
     </View>
   )
 }
@@ -204,6 +254,12 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     width: '100%',
     alignItems: 'center'
+  },
+  modalContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   }
 
   
