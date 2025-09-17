@@ -96,7 +96,7 @@ export default function Info() {
             </View>
 
             <View style={[styles.section, {backgroundColor: theme.cardBackground, padding: 10}]}>
-              <SeatsInput x={data.seats} />
+              <SeatsInput color="white" x={data.seats} />
             </View>
 
             <View style={[styles.contactButton, { backgroundColor: theme.accent }]}>

@@ -19,7 +19,7 @@ export default function Layout() {
         />
         <Stack.Screen
           name="rutaUser"
-          options={{headerShown: false}}
+          options={{headerShown: true, title: 'Viajes'}}
         />
         <Stack.Screen
           name="send"

@@ -9,11 +9,9 @@ import { useRoleContext } from '@/hooks/useRoleContext';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 
-const { width } = Dimensions.get('window');
-
 export default function TabTwoScreen() {
   // const { isDriver } = useRoleContext();
-  const isDriver  = false;
+  const isDriver  = true;
   const data  = true;
   const { theme } = useTheme();
   const isLightTheme = theme.name === 'light';
@@ -24,7 +22,18 @@ export default function TabTwoScreen() {
   const cardBackground = isLightTheme ? '#fff' : '#1e1e1e';
   const headerBgColor = isLightTheme ? '#1D3D47' : '#0d232a';
   const accentColor = '#4a90e2';
+  const [ cancelModal, setCancelModal ] = useState(false)
 
+
+    const handleCancel = () => {
+    setCancelModal(false);
+    console.log("Servicio cancelado");
+  };
+
+  const handleContinue = () => {
+    setCancelModal(false);
+    console.log("El usuario sigue con el servicio");
+  };
   return (
     <ScrollView style={[styles.container, { backgroundColor }]}>
       {/* Header con gradiente */}
@@ -70,15 +79,15 @@ export default function TabTwoScreen() {
               <Opcion
                 element={{
                   link: '/(serviceScreen)/rutaUser',
-                  title: 'Ver tus ruta como pasajero',
-                  icon: 'person',
-                  description: 'Mira los viajes que contrataste',
+                  title: 'Ver tus registro de rutas',
+                  icon: 'history',
+                  description: 'Mira los viajes que has realizado',
                   color: '#4CAF50'
                 }}
                 element1={{
                   link: '/(serviceScreen)/createRouteDriver',
                   title: 'Crear ruta conductor',
-                  icon: 'directions-car',
+                  icon: 'car',
                   description: 'Ofrece tus cupos disponibles',
                   color: '#2196F3'
                 }}
@@ -115,7 +124,7 @@ export default function TabTwoScreen() {
                   <View style={[styles.placa,{ backgroundColor: theme.cardBackground }]}>
                     <Text style={styles.textPlaca}>Placa: {'abe-323'}</Text>
                   </View>
-                  <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingTop: 15, alignItems: 'center'}}>
+                  <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingVertical: 15, alignItems: 'center'}}>
                     <TouchableOpacity style={{width: '50%', alignItems: 'center'}} onPress={() => setModalVisible(true)}>
                       <FontAwesome5 name="car-side" size={30} color="yellow" />
                       <Text style={styles.text}>Foto Vehiculo</Text>
@@ -128,7 +137,7 @@ export default function TabTwoScreen() {
                     </TouchableOpacity>
                   </View>
                   <View style={styles.containerCancelar}>
-                    <TouchableOpacity style={styles.cancelar}>
+                    <TouchableOpacity style={styles.cancelar} onPress={() => setCancelModal(true)}>
                       <Text style={styles.textCancelar} >Cancelar</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{padding: 5}}>
@@ -178,6 +187,26 @@ export default function TabTwoScreen() {
             />
           </View>
         </TouchableOpacity>
+      </Modal>
+      <Modal
+        transparent
+        visible={cancelModal}
+        animationType="fade"
+        onRequestClose={() => setCancelModal(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalText}>¿Esta seguro que deseas cancelar el servicio?</Text>
+            <View style={styles.buttonRow}>
+              <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+                <Text style={styles.buttonText}>No</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
+                <Text style={styles.buttonText}>Si</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </Modal>
     </ScrollView>
   );
@@ -335,7 +364,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    marginTop: 10,
+    marginTop: 15,
     gap: 20,
 
   },
@@ -347,7 +376,8 @@ const styles = StyleSheet.create({
     width: '80%'
   },
   textCancelar: {
-    fontSize: 20
+    fontSize: 20,
+    color: 'white'
   },
     modalBackground: {
     flex: 1,
@@ -365,5 +395,48 @@ const styles = StyleSheet.create({
   modalImage: {
     width: '100%',
     height: '100%'
-  }
+  },
+  // modalBackground: {
+  //   flex: 1,
+  //   backgroundColor: "rgba(0,0,0,0.5)",
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  // },
+  modalBox: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 20,
+    width: "80%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
+  },
+  modalText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  cancelButton: {
+    backgroundColor: "#dc2626", // rojo
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+  },
+  continueButton: {
+    backgroundColor: "#16a34a", // verde
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
 });

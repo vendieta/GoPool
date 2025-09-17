@@ -7,6 +7,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Input from './Input';
 import InputSeach from './InputSearch';
 import { useApi } from '@/hooks/useApi';
+import LoadingOverlay from './loading/LoadingOverlay';
 
 
 interface Item {
@@ -188,7 +189,7 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
         }
       </View>
       {/* <View style={styles.subContainer}> */}
-        <FlatList
+        {!loading? <FlatList
           data={filtrarRutas(data?.data || [], {
             zonaInicial: select1,
             zonaFinal: select2,
@@ -212,7 +213,8 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
           // ItemSeparatorComponent={() => (
           //   <View style={{ height: 0, backgroundColor: 'transparent' }} />
           // )}
-        />
+        /> : 
+        <LoadingOverlay visible={loading}/>}
       </View>
   );
 };

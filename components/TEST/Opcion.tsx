@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '@/components/Themed/ContextTheme';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 interface OptionCardProps {
   link: any;
@@ -30,7 +31,7 @@ const OptionCard = ({
           backgroundColor: `${color}15`,
           borderColor: color
         }}>
-          <MaterialIcons name={icon as any} size={26} color={color} />
+          <FontAwesome5 name={icon as any} size={26} color={color} />
         </View>
         
         <View style={styles.textContent}>
@@ -57,7 +58,7 @@ export default function Opcion({ element, element1 }: any) {
       <OptionCard
         {...element}
         isLightTheme={isLightTheme}
-        actionText="Ver viaje"
+        actionText="Ver viajes"
       />
       
       <View style={[styles.separator, { 

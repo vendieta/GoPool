@@ -1,15 +1,23 @@
 import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 
 export default function userRoute(){
-    
+    const controler = true
     return(
-        // <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{flex: 1}}>
             <View style={styles.cotainer}>
-                <View style={styles.subContainer}>
-                    <Text style={styles.text}>Viajes </Text>
-                </View>
+                {controler ? 
+                <>
+                    <Text style={styles.text}>martes</Text>
+                    <View style={styles.subContainer}>
+                        
+                    </View>
+                </> :
+                <Text style={styles.text}>
+                    No hay viajes registrados por ahora.
+                </Text>
+                }
             </View>
-        // </SafeAreaView>
+        </SafeAreaView>
     )
 }
 
@@ -19,15 +27,18 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor:  '#2A2A2C'
     },
     subContainer: {
         width: '96%',
-        backgroundColor: 'gray',
+        backgroundColor: '#1C1C1E',
         borderRadius: 8,
         padding: 10,
     },
     text: {
         textAlign: 'center',
-    }
+        color: 'white'
+    },
+
 
 })
