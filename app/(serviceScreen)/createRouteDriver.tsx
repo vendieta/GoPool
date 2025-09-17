@@ -27,6 +27,20 @@ interface DataViaje {
   }
 }
 
+interface req {
+    data: obj []
+}
+
+interface obj {
+    id: string,
+    marca: string,
+    placa: string,
+    capacidadmax: number,
+    fotovehiculo: string,
+    modelocar: string,
+    color: string
+}
+
 export default function CreateRoutesDriver() {
   const router = useRouter();
   const [ horaSalida, setHoraSalida ] = useState<Date>();
@@ -37,6 +51,8 @@ export default function CreateRoutesDriver() {
   const [ asientos, setAcientos ] = useState<number>(0);
   const [ rutas, setRutas ] = useState<FormattedPoint[]>();
   const { data, loading, error, post } = useApi<DataViaje>();
+  const { data: data2, loading: loading2, error: error2, get } = useApi<req>();
+  const [ visible, setVisible ] = useState<boolean>(false)
 
   const {
     storedValue: userId,
@@ -50,6 +66,13 @@ export default function CreateRoutesDriver() {
     // Aquí puedes guardar la zona seleccionada en tu estado o base de datos
   };
 
+  const dataCar = () => {
+    setVisible(true)
+    console.log(`/api/vehiculo/listar/${userId}`)
+    get(`/api/vehiculo/listar/${userId}`)
+    console.log('el get de la lista vehiculo',data2)
+  }
+  
   const send = () => {
     // logica para publicar ruta
     if (!zonaInicial || !zonaFinal || !precio || !asientos || !horaSalida || !horaLlegada || !rutas) {
@@ -120,6 +143,15 @@ export default function CreateRoutesDriver() {
             <View style={{width: '100%'}}>
               <RoutePointsInput save={setRutas}/>
             </View>
+            <TouchableOpacity onPress={dataCar}>
+              <View>
+                <Image/>
+                <View>
+                  <Text>Modelo</Text>
+                  <Text>Placa</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={send}>
               <Text style={{fontWeight: '700', fontSize: 18}}>Publicar ruta</Text>
             </TouchableOpacity>
