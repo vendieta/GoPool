@@ -7,6 +7,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Input from './Input';
 import InputSeach from './InputSearch';
 import { useApi } from '@/hooks/useApi';
+import LoadingOverlay from './loading/LoadingOverlay';
 
 
 interface Item {
@@ -141,7 +142,7 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
 // };
 
   const renderItem = ({ item }: { item: obj }) => (
-    <UserCard 
+    (item.cuposdisponibles != 0) ? <UserCard 
       id = {item.id}
       user= {item?.driver?.users?.nombre}
       price= {item.precio}
@@ -153,12 +154,11 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
       arrivalTime= {item.horaestimacionllegada.split('T')[1].substring(0, 5)}
       departureTime= {item.horasalida.split('T')[1].substring(0, 5)}
       seats= {item.cuposdisponibles}
-      date= {item.horasalida.split('T')[0].replace(/-/g, '/') 
-        
-      }
+      date= {item.horasalida.split('T')[0].replace(/-/g, '/') }
       zoneInit= {item.ZonaInicial}
       zoneEnd= {item.ZonaFinal}
     />
+    : null
   );
 
   return (
@@ -189,7 +189,7 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
         }
       </View>
       {/* <View style={styles.subContainer}> */}
-        <FlatList
+        {!loading? <FlatList
           data={filtrarRutas(data?.data || [], {
             zonaInicial: select1,
             zonaFinal: select2,
@@ -213,7 +213,8 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
           // ItemSeparatorComponent={() => (
           //   <View style={{ height: 0, backgroundColor: 'transparent' }} />
           // )}
-        />
+        /> : 
+        <LoadingOverlay visible={loading}/>}
       </View>
   );
 };

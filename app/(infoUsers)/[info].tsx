@@ -1,11 +1,14 @@
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { useEffect } from "react";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from "react-native";
+import { useEffect, useState } from "react";
 import { useTheme } from "@/components/Themed/ContextTheme";
 import { MaterialIcons } from "@expo/vector-icons";
 import SeatsInput from "@/components/driver/SeatsInput";
 import RoutesPannel from "@/components/user/RoutesPannel";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useApi } from "@/hooks/useApi";
+import useStorage from "@/hooks/useStorage";
+import LoadingOverlay from "@/components/loading/LoadingOverlay";
 
 interface Producto {
   user: string;
@@ -18,12 +21,25 @@ interface Producto {
   zoneInit: string;
   zoneEnd: string;
   id: string;
+};
+
+interface data {
+  msg: string,
+  viaje: boolean,
+  registro: {
+    message: string
+  }
 }
 
 export default function Info() {
   const { info } = useLocalSearchParams();
   const { theme } = useTheme();
   const navigation = useNavigation();
+  const { data: data2, loading, error, post } = useApi<data>();
+  const [seats, setSeats] = useState<number>(0);
+  const {
+    storedValue: userId,
+  } = useStorage('userId');
 
   const data: Producto = typeof info === "string"
     ? JSON.parse(decodeURIComponent(info))
@@ -42,19 +58,42 @@ export default function Info() {
     }
   }, [navigation, data, theme]);
 
-  const InfoCard = ({ title, value }: { title: string; value: string | number }) => (
-    <View style={[styles.infoCard, { backgroundColor: theme.cardBackground }]}>
-      <Text style={[styles.cardTitle, { color: theme.labelText }]}>{title}</Text>
-      <Text style={[styles.cardValue, { color: theme.text }]}>{value}</Text>
-    </View>
-  );
 
-  const InfoCard2 = ({ title, value }: { title: string; value: string | number }) => (
-    <View style={[styles.infoCard, { backgroundColor: theme.cardBackground }]}>
-      <Text style={[styles.cardTitle, { color: theme.labelText }]}>{title}</Text>
-      <Text style={[styles.cardValue, { color: theme.text }]}>{value}</Text>
-    </View>
-  );
+  const aceptar = async (idViaje: string, userId: string, cupos: number) => {
+    if (data.seats <= 0) {
+      Alert.alert(
+      "Atención", // título
+      "Este viaje no tiene asientos disponibles", // mensaje
+      [
+        { text: "OK", onPress: () => console.log("Usuario presionó OK") }
+      ],
+      { cancelable: true }
+    );
+
+      return
+    }
+
+    console.log(cupos)
+    console.log(!idViaje || !userId || cupos <= 0 || !cupos)
+    if (!idViaje || !userId || cupos <= 0 || !cupos) {
+      Alert.alert(
+      "Atención", // título
+      "Indique el número de asientos, por favor", // mensaje
+      [
+        { text: "OK", onPress: () => console.log("Usuario presionó OK") }
+      ],
+      { cancelable: true }
+    );
+      return
+    }
+    
+    await post('/api/viajes/unirse', {
+      id_viaje : idViaje,
+      userid: userId,
+      cantidad_cupos: cupos 
+    });
+    
+  }
 
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}} style={[styles.container, { backgroundColor: theme.subtleBackground }]}>
@@ -96,12 +135,12 @@ export default function Info() {
             </View>
 
             <View style={[styles.section, {backgroundColor: theme.cardBackground, padding: 10}]}>
-              <SeatsInput x={data.seats} />
+              <SeatsInput color="white" x={data.seats} save={setSeats} />
             </View>
 
-            <View style={[styles.contactButton, { backgroundColor: theme.accent }]}>
+            <TouchableOpacity style={[styles.contactButton, { backgroundColor: theme.accent }]} onPress={() => aceptar(data.id, userId, seats)}>
               <Text style={styles.contactButtonText}>Contactar a {data.user}</Text>
-            </View>
+            </TouchableOpacity>
           </View>
         ) : (
           <View style={styles.emptyState}>
@@ -110,6 +149,7 @@ export default function Info() {
           </View>
         )}
       </View>
+      <LoadingOverlay visible={loading}/>
     </ScrollView>
   );
 }

@@ -42,7 +42,7 @@ return (
             onPress={() => updatePrice(val)}
             style={[
             styles.button,
-            { backgroundColor: val > 0 ? '#81ecec' : '#fab1a0' },
+            { backgroundColor: val > 0 ? '#b4e9bfff' : '#ff8b8bff' },
             ]}
         >
             <Text style={styles.buttonText}>
@@ -64,8 +64,8 @@ container: {
 },
 label: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#636e72',
+    fontWeight: '700',
+    color: 'black',
     marginBottom: 10,
 },
 priceBox: {
