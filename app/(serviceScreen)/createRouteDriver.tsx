@@ -5,10 +5,11 @@ import TimeInput from "@/components/driver/TimeInput";
 import Desplegable from "@/components/driver/ZonaSelector";
 import { View , Text, TextInput , StyleSheet, ScrollView, Alert , Image, Button , Dimensions , useColorScheme, Platform, TouchableOpacity, Modal, ActivityIndicator  } from "react-native";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useApi } from "@/hooks/useApi";
 import useStorage from "@/hooks/useStorage";
 import CarCard from "@/components/driver/RenderItems";
+import AddCar from "@/components/driver/AddCar";
 
 const {width} = Dimensions.get('window')
 
@@ -111,6 +112,9 @@ export default function CreateRoutesDriver() {
     setIdCar(idCar);
     setVisible(false);
   };
+      useEffect(() => {
+        console.log(loading)
+      }, [loading])
 
   return(
     <View style={styles.container}>
@@ -186,11 +190,13 @@ export default function CreateRoutesDriver() {
       <Modal visible={visible}
         transparent
         animationType='fade'
-        onRequestClose={() => setVisible(false)}
+        onRequestClose={() => {setVisible(false); setControler(false)}}
         >
         <View style={styles.modalContainer}>
           <View style={{width: '95%', alignItems:'center', backgroundColor: 'white', paddingVertical: 15, borderRadius: 10}}>
-            {data2? (
+            {loading2?
+            <ActivityIndicator size="large" color="#00ff00" /> :
+            data2? (
               data2.data?.map((obj, index)=> (
               <TouchableOpacity key={index} onPress={() => save(obj.id,obj.fotovehiculo,obj.modelocar,obj.placa)}>
                 <CarCard
@@ -204,16 +210,16 @@ export default function CreateRoutesDriver() {
                 imageUrl= {obj.fotovehiculo}
                 />
               </TouchableOpacity>
-            )) ): !loading?
-            <ActivityIndicator size="large" color="#00ff00" /> : controler ? 
-            <>
-              
-            </>:
+            )) ):
+            controler ? 
+            <AddCar/>:
             <View>
-              <Text>Usted no tiene vehiculos registrados.</Text>
-              <TouchableOpacity onPress={() => setControler(!controler)} ><Text>Registra vehiculo</Text></TouchableOpacity>
+              <Text style={{fontSize: 18, marginBottom: 10}}>Usted no tiene vehiculos registrados.</Text>
+              <TouchableOpacity style={{justifyContent: 'center', alignItems: 'center', padding: 5, borderWidth: .3, borderRadius: 5, backgroundColor: '#58c05bff'}} onPress={() => setControler(!controler)} >
+                <Text style={{fontSize: 15}}>Registra vehiculo</Text>
+              </TouchableOpacity>
             </View>
-}
+            }
           </View>
         </View>
       </Modal>

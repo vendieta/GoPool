@@ -2,6 +2,7 @@ import { TouchableOpacity, View, StyleSheet, Text, TextInput, Alert } from "reac
 import GalleryFt from "../imgs/GalleryFt";
 import { useState } from "react";
 import useStorage from "@/hooks/useStorage";
+import { useApi } from "@/hooks/useApi";
 
 
 interface img {
@@ -11,14 +12,24 @@ interface img {
     type?: string
 };
 
+interface url {
+    success: string,
+	uploadUrl: string,
+	publicUrl: string
+}
+
 
 export default function AddCar () {
     const [ marca, setMarca ] = useState<string>();
     const [ placa, setPlaca ] = useState<string>();
     const [ capMax, setCapMax ] = useState<string>();
+    const { data, loading, error, post } = useApi();
+    const { data: dataUrl, loading: loadingUrl, error: errorUrl, post : postUrl } = useApi<url>();
     const [ modeloCar, setModeloCar] = useState<string>();
     const [ color, setColor] = useState<string>();
     const [ ftMatricula, setFtMatricula ] = useState<img>();
+    const [ modal, setModal ] = useState(false);
+
     const {
         storedValue: userId,
         setItem: setId,
@@ -38,7 +49,6 @@ export default function AddCar () {
             setModal(true)
         }
     return(
-        <>
             <View style={styles.inputContainer}>
                 <Text style={styles.title}>Agrega un nuevo Vehiculo</Text>
                 <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
@@ -108,7 +118,6 @@ export default function AddCar () {
                 
                 <TouchableOpacity onPress={add} style={styles.agg}><Text>Agregar</Text></TouchableOpacity>
             </View>
-        </>
     )
 }
 

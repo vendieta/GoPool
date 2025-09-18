@@ -6,6 +6,7 @@ import { StyleSheet, View, Text, TouchableOpacity, TextInput, Alert, Modal, Touc
 import CarCard from "@/components/driver/RenderItems";
 import LoadingOverlay from "@/components/loading/LoadingOverlay";
 import * as FileSystem from 'expo-file-system';
+import AddCar from "@/components/driver/AddCar";
 
 interface req {
     data: obj []
@@ -122,75 +123,7 @@ export default function Vehiculo () {
             {!loading2?
             <View style={styles.subContainer}>
             {controler ? 
-            <View style={styles.inputContainer}>
-                <Text style={styles.title}>Agrega un nuevo Vehiculo</Text>
-                <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
-                    <View style={{width: '40%'}}>
-                        <Text style={styles.subTitle}>Marca del carro</Text>
-                        <TextInput
-                            value={marca}
-                            onChangeText={setMarca}
-                            placeholder="marca"
-                            style={styles.input}
-                            />
-                    </View>
-                    <View style={{width: '40%'}}>
-                        <Text style={styles.subTitle}>Modelo</Text>
-                        <TextInput
-                            value={modeloCar}
-                            onChangeText={setModeloCar}
-                            placeholder="model"
-                            style={styles.input}
-                            />
-                    </View>
-                </View>
-                <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
-                    <View style={{width: '40%'}}>
-                        <Text style={styles.subTitle}>Color</Text>
-                        <TextInput
-                            value={color}
-                            onChangeText={setColor}
-                            placeholder="color"
-                            style={styles.input}
-                            />
-                    </View>
-                    <View style={{width: '40%'}}>
-                        <Text style={styles.subTitle}>Capacidad max</Text>
-                        <TextInput
-                            value={capMax}
-                            onChangeText={setCapMax}
-                            placeholder="0"
-                            keyboardType= 'phone-pad'
-                            style={styles.input}
-                            />
-                    </View>
-                </View>
-                <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
-                    <View style={{width: '40%'}}>
-                        <Text style={styles.subTitle}>Placa</Text>
-                        <TextInput
-                            value={placa}
-                            onChangeText={setPlaca}
-                            placeholder="xyz-1234"
-                            style={styles.input}
-                            autoCapitalize= 'none'
-                            />
-                    </View>
-                    
-                    <View style={{width: '40%'}}>
-                        <Text style={styles.subTitle}>Foto del vehiculo</Text>
-                        <GalleryFt
-                            text='Foto del vehiculo'
-                            setImage={(x: img) => setFtMatricula(x)}
-                            image={ftMatricula}
-                            styleT={styles.inputFt}
-                        />
-                    </View>
-                    
-                </View>
-                
-                <TouchableOpacity onPress={add} style={styles.agg}><Text>Agregar</Text></TouchableOpacity>
-            </View>
+            <AddCar/>
             :
             <>
                 <Text style={{fontSize: 20, marginTop: 10}}>Carros registrados</Text>
