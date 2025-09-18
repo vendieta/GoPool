@@ -15,8 +15,8 @@ api.interceptors.response.use(
 (error) => {
     if (error.response) {
         console.error('Error de respuesta:', error.response.status, error.response.data);
-        error.response.data.msg?  Alert.alert("Error", error.response.data.msg) : null;
-        error.response.data.error.message ?  Alert.alert("Error", error.response.data.error.message) : null; 
+        error.response.data.msg?  Alert.alert("Error", error.response.data.msg) : 
+        error.response.data.error.message ?  Alert.alert("Error", error.response.data.error.message) :
         error.response.data ?  Alert.alert("Error", error.response.data.error) : null; 
     } else if (error.request) {
         console.error('Error de conexión:', error.request);
