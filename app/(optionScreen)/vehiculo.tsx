@@ -61,16 +61,14 @@ export default function Vehiculo () {
     }, [userId, data])
 
     console.log(ftMatricula?.uri)
-    const add = async () => {
 
+    const add = async () => {
         console.log('add car        ',userId)
         if (!userId || !placa || !capMax || !ftMatricula || !modeloCar || !color || !marca || !ftMatricula.uri) {
             Alert.alert("Error", "Por favor complete todos los campos.");
         return;
         }
-
         console.log(data,error);
-
         await postUrl('/api/s3/upload-url', {
             fileName: `${userId}-${ftMatricula?.name}`,
             fileType: ftMatricula?.type

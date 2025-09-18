@@ -58,6 +58,7 @@ export default function CreateRoutesDriver() {
   const [ imgCar, setImgCar ] = useState<string>();
   const [ model, setModel ] = useState<string>();
   const [ placa, setPlaca ] = useState<string>();
+  const [ controler, setControler ] = useState<boolean>()
 
   const {
     storedValue: userId,
@@ -188,7 +189,7 @@ export default function CreateRoutesDriver() {
         onRequestClose={() => setVisible(false)}
         >
         <View style={styles.modalContainer}>
-          <View style={{width: '95%', alignItems:'center', backgroundColor: 'white', paddingTop: 15, borderRadius: 10}}>
+          <View style={{width: '95%', alignItems:'center', backgroundColor: 'white', paddingVertical: 15, borderRadius: 10}}>
             {data2? (
               data2.data?.map((obj, index)=> (
               <TouchableOpacity key={index} onPress={() => save(obj.id,obj.fotovehiculo,obj.modelocar,obj.placa)}>
@@ -203,7 +204,15 @@ export default function CreateRoutesDriver() {
                 imageUrl= {obj.fotovehiculo}
                 />
               </TouchableOpacity>
-            )) ): <ActivityIndicator size="large" color="#00ff00" />
+            )) ): !loading?
+            <ActivityIndicator size="large" color="#00ff00" /> : controler ? 
+            <>
+              
+            </>:
+            <View>
+              <Text>Usted no tiene vehiculos registrados.</Text>
+              <TouchableOpacity onPress={() => setControler(!controler)} ><Text>Registra vehiculo</Text></TouchableOpacity>
+            </View>
 }
           </View>
         </View>

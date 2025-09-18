@@ -10,8 +10,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 
 export default function TabTwoScreen() {
-  // const { isDriver } = useRoleContext();
-  const isDriver  = true;
+  const { isDriver } = useRoleContext();
+  // const isDriver  = true;
   const data  = true;
   const { theme } = useTheme();
   const isLightTheme = theme.name === 'light';
