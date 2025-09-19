@@ -19,7 +19,7 @@ interface url {
 }
 
 interface Prop {
-    setControler: (x: boolean) => void
+    setControler?: (x: boolean) => void
 }
 
 export default function AddCar ({setControler}: Prop) {
@@ -48,7 +48,8 @@ export default function AddCar ({setControler}: Prop) {
         }
         console.log(data,error);
         await postUrl('/api/s3/upload-url', {
-            fileName: `/${userId}${ftMatricula?.name?.slice(ftMatricula?.name?.lastIndexOf('.'))}`,
+            fileName: `/${userId}-${ftMatricula?.name}`,
+            // fileName: `/${userId}${ftMatricula?.name?.slice(ftMatricula?.name?.lastIndexOf('.'))}`,
             fileType: ftMatricula?.type
         })
         console.log('URL 😶‍🌫️😶‍🌫️😶‍🌫️😶‍🌫️',dataUrl)
@@ -93,7 +94,9 @@ export default function AddCar ({setControler}: Prop) {
             color: color?.trim(),
             marca: marca?.trim()
         });
-        setControler(false)
+
+        setControler ? setControler(false) : null;
+
         console.log('url: ', data)
         setModal(false);
         // borrar los datos una ves se suba los datos
