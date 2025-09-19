@@ -60,6 +60,7 @@ export default function CreateRoutesDriver() {
   const [ model, setModel ] = useState<string>();
   const [ placa, setPlaca ] = useState<string>();
   const [ controler, setControler ] = useState<boolean>()
+  const [ refresh , setRefresh ] = useState(true)
 
   const {
     storedValue: userId,
@@ -68,10 +69,13 @@ export default function CreateRoutesDriver() {
   } = useStorage('userId');
 
   console.log('zonaInicial: ',zonaInicial,'zonaFinal:', zonaFinal,'precio:', precio,'asientos:', asientos,'horaEntrada',horaLlegada,'horaSalida',horaSalida,'listadepuntos:', rutas)
-  const handleZonaSelect = (zona: string) => {
-    console.log("Zona seleccionada:", zona);
-    // Aquí puedes guardar la zona seleccionada en tu estado o base de datos
-  };
+
+  useEffect(() => {
+    if(userId) {
+      get(`/api/vehiculo/listar/${userId}`)
+      console.log('el get de la lista vehiculo',data2)
+    }
+  }, [refresh])
 
   const dataCar = () => {
     setVisible(true)
@@ -114,7 +118,10 @@ export default function CreateRoutesDriver() {
   };
       useEffect(() => {
         console.log(loading)
-      }, [loading])
+        console.log(data2)   
+        console.log(data2?.data[0])   
+      }, [loading, data2])
+
 
   return(
     <View style={styles.container}>
@@ -196,7 +203,7 @@ export default function CreateRoutesDriver() {
           <View style={{width: '95%', alignItems:'center', backgroundColor: 'white', paddingVertical: 15, borderRadius: 10}}>
             {loading2?
             <ActivityIndicator size="large" color="#00ff00" /> :
-            data2? (
+            data2?.data[0]? (
               data2.data?.map((obj, index)=> (
               <TouchableOpacity key={index} onPress={() => save(obj.id,obj.fotovehiculo,obj.modelocar,obj.placa)}>
                 <CarCard
@@ -212,7 +219,7 @@ export default function CreateRoutesDriver() {
               </TouchableOpacity>
             )) ):
             controler ? 
-            <AddCar/>:
+            <AddCar setControler={setRefresh}/>:
             <View>
               <Text style={{fontSize: 18, marginBottom: 10}}>Usted no tiene vehiculos registrados.</Text>
               <TouchableOpacity style={{justifyContent: 'center', alignItems: 'center', padding: 5, borderWidth: .3, borderRadius: 5, backgroundColor: '#58c05bff'}} onPress={() => setControler(!controler)} >

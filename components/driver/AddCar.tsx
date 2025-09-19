@@ -3,6 +3,7 @@ import GalleryFt from "../imgs/GalleryFt";
 import { useState } from "react";
 import useStorage from "@/hooks/useStorage";
 import { useApi } from "@/hooks/useApi";
+import LoadingOverlay from "../loading/LoadingOverlay";
 
 
 interface img {
@@ -32,11 +33,20 @@ export default function AddCar ({setControler}: Prop) {
     const [ color, setColor] = useState<string>();
     const [ ftMatricula, setFtMatricula ] = useState<img>();
     const [ modal, setModal ] = useState(false);
+    const [ wait, setWait ] = useState<boolean>(false)  
 
     const {
         storedValue: userId,
         setItem: setId,
     } = useStorage('userId');
+    const {
+    storedValue: name,
+    setItem: setNombre,
+    } = useStorage('name');
+    const {
+        storedValue: lastName,
+        setItem: setLastName,
+    } = useStorage('lastName');
 
 
 
@@ -48,7 +58,7 @@ export default function AddCar ({setControler}: Prop) {
         }
         console.log(data,error);
         await postUrl('/api/s3/upload-url', {
-            fileName: `/${userId}-${ftMatricula?.name}`,
+            fileName: `VEHICULOS/${name}_${lastName}-${userId}-${ftMatricula?.name}`,
             // fileName: `/${userId}${ftMatricula?.name?.slice(ftMatricula?.name?.lastIndexOf('.'))}`,
             fileType: ftMatricula?.type
         })
@@ -57,51 +67,47 @@ export default function AddCar ({setControler}: Prop) {
     }
 
     const ok = async () => {
+        if (wait) return; // evita múltiples ejecuciones
+        setWait(true);
         if (!dataUrl?.publicUrl || !dataUrl.uploadUrl ) {
-        console.log('error en pedir urls: ', errorUrl);
-        Alert.alert("Error", "No se pudo obtener la URL de carga.");
-        return;
-        }
+    console.log('error en pedir urls: ', errorUrl);
+    Alert.alert("Error", "No se pudo obtener la URL de carga.");
+    setWait(false);
+    return;
+    }
 
+    try {
         console.log( 'fileName: ',`${userId}-${ftMatricula?.name?.slice(ftMatricula?.name?.lastIndexOf('.'))}`,'fileType:', ftMatricula?.type)
-        console.log('error en pedir urls: ',errorUrl)
-        console.log('error en pedir urls: ',dataUrl)
-        console.log('urls: ', dataUrl)
         const fileUri = ftMatricula?.uri
         const response = await fetch(fileUri);
-        const blob = await response.blob(); // 👈 convertimos a blob binario
-        await fetch(`${dataUrl?.uploadUrl}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'image/jpeg', // o el tipo correcto según tu archivo
-            },
-            body: blob, // 👈 se manda el binario directamente
-            });
+        const blob = await response.blob();
 
-            console.log('🙏🙏🙏🙏🙏',userId?.trim(),
-            placa?.trim(),
-            capMax,
-            dataUrl?.publicUrl,
-            modeloCar?.trim(),
-            color?.trim(),
-            marca?.trim())
+        await fetch(`${dataUrl?.uploadUrl}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'image/jpeg',
+        },
+        body: blob,
+        });
+
         await post('/api/vehiculo/crear', {
-            id_driver: userId?.trim(),
-            placa: placa?.trim(),
-            capacidadmax: capMax,
-            fotovehiculo: dataUrl?.publicUrl,
-            modelocar: modeloCar?.trim(),
-            color: color?.trim(),
-            marca: marca?.trim()
+        id_driver: userId?.trim(),
+        placa: placa?.trim(),
+        capacidadmax: capMax,
+        fotovehiculo: dataUrl?.publicUrl,
+        modelocar: modeloCar?.trim(),
+        color: color?.trim(),
+        marca: marca?.trim()
         });
 
         setControler ? setControler(false) : null;
-
-        console.log('url: ', data)
         setModal(false);
-        // borrar los datos una ves se suba los datos
-        // setPlaca('')
-        // setCapMax('')
+    } catch (err) {
+        console.log("Error creando vehículo:", err);
+        Alert.alert("Error", "No se pudo registrar el vehículo.");
+    } finally {
+        setWait(false);
+    }
     }
 
 
@@ -173,7 +179,9 @@ export default function AddCar ({setControler}: Prop) {
                 
             </View>
             
-            <TouchableOpacity onPress={add} style={styles.agg}><Text>Agregar</Text></TouchableOpacity>
+            <TouchableOpacity onPress={add} disabled={wait} style={styles.agg}>
+                <Text>Agregar</Text>
+            </TouchableOpacity>
 
             <Modal
                 transparent
@@ -192,8 +200,8 @@ export default function AddCar ({setControler}: Prop) {
                             <Text style={styles.buttonText}>Cancelar</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={ok} style={styles.acceptButton}>
-                            <Text style={styles.buttonText}>Aceptar</Text>
+                        <TouchableOpacity onPress={ok} style={[styles.acceptButton, wait && { opacity: 0.6 }]}>
+                            <Text style={styles.buttonText}>{wait ? "agregando..." : "Aceptar"}</Text>
                         </TouchableOpacity>
                         </View>
                     </View>
@@ -201,6 +209,7 @@ export default function AddCar ({setControler}: Prop) {
                 </View>
                 </TouchableWithoutFeedback>
             </Modal>
+            <LoadingOverlay visible={loading || wait} />
         </View>
     )
 }
