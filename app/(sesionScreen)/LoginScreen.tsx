@@ -51,6 +51,10 @@ export default function LoginScreen() {
     storedValue: role,
     setItem: setRole,
   } = useStorage('role');
+  const {
+    storedValue: nombre,
+    setItem: setNombre,
+  } = useStorage('nombre');
 
 
   // Definimos el objeto con el título y la ruta para el botón

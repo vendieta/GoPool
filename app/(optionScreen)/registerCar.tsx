@@ -20,6 +20,8 @@ export default function RegisterCar() {
     const [ ftCar, setFtCar ] = useState<string | null | undefined>();
     const { data, loading, error, post } = useApi<response>();
     
+
+    console.log('pantalla del registro de carro 🤖')
     const {
         storedValue: userId,
         setItem: setId,

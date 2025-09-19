@@ -43,6 +43,11 @@ export default function Perfil() {
     setItem: setRole,
     removeItem: removeRole
   } = useStorage('role');
+  const {
+    storedValue: nombre,
+    setItem: setNombre,
+    removeItem: removeNombre
+  } = useStorage('nombre');
   // const {
   //   storedValue: cars,
   //   setItem: setCars,
@@ -58,6 +63,7 @@ export default function Perfil() {
       await removeUserEmail('userEmail')
       await removeId('userId')
       await removeRole('role')
+      await removeNombre('nombre')
       // await removeCars('cars')
       toggleState()
       if (isDriver){toggleRole()}
