@@ -9,6 +9,18 @@ import * as FileSystem from "expo-file-system";
 
 const { width, height } = Dimensions.get('window');
 
+async function persistImage(uri: string) {
+  const fileName = uri.split("/").pop();
+  const newPath = `${FileSystem.documentDirectory}${fileName}`;
+
+  await FileSystem.copyAsync({
+    from: uri,
+    to: newPath,
+  });
+
+  return newPath; // usa esta ruta para subir
+}
+
 interface RegisterFrom {
   success: boolean,
   user: {
@@ -54,6 +66,16 @@ export default function CreateCountUser() {
   const { data: dataUrl, loading: loadingUrl, error: errorUrl, post : postUrl } = useApi<url>();
   const [ wait, setWait ] = useState<boolean>(false)  
   const [ modal, setModal ] = useState(false);
+  const [ localUri, setLocalUri ] = useState<string>();
+
+    useEffect(() => {
+      const save = (async() => {
+        const localUri = await persistImage(ftMatricula!.uri);
+        setLocalUri(localUri); 
+      });
+  
+      save()
+    },[ftMatricula])
 
 
 
@@ -77,7 +99,7 @@ export default function CreateCountUser() {
     if (wait) return; // evita múltiples ejecuciones
       setWait(true);
   // Validaciones previas
-    if (!userName || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula) {
+    if (!userName || !localUri || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula) {
       setWait(false);
       return Alert.alert("Error", "Por favor complete todos los campos.");
     }
@@ -109,7 +131,7 @@ export default function CreateCountUser() {
         // console.log('3')
 
         console.log(fileUri)
-        const response = await fetch(fileUri);
+        const response = await fetch(localUri);
         console.log('subir la img')
         const blob = await response.blob();
         await fetch(`${dataUrl?.uploadUrl}`, {

@@ -5,6 +5,7 @@ import DateInputSimple from '@/components/InputDate';
 import GalleryFt from '@/components/imgs/GalleryFt';
 import { useRouter } from 'expo-router';
 import LoadingOverlay from '@/components/loading/LoadingOverlay';
+import * as FileSystem from "expo-file-system";
 
 const { width, height } = Dimensions.get('window');
 
@@ -40,6 +41,17 @@ interface img {
     type?: string
 };
 
+async function persistImage(uri: string) {
+  const fileName = uri.split("/").pop();
+  const newPath = `${FileSystem.documentDirectory}${fileName}`;
+
+  await FileSystem.copyAsync({
+    from: uri,
+    to: newPath,
+  });
+
+  return newPath; // usa esta ruta para subir
+}
 
 export default function CreateCountUser() {
   const router = useRouter();
@@ -59,7 +71,19 @@ export default function CreateCountUser() {
   const [ confPassword, setConfPassword ] = useState<string | undefined>()
   const [ modal, setModal ] = useState<boolean>(false);
   const [ wait, setWait ] = useState<boolean>(false)  
-  
+  const [ localUri, setLocalUri ] = useState<string>();
+  const [ localUri2, setLocalUri2 ] = useState<string>();
+
+  useEffect(() => {
+    const save = (async() => {
+      const localUri = await persistImage(ftMatricula!.uri);
+      const localUri2 = await persistImage(ftLicencia!.uri);
+      setLocalUri(localUri); 
+      setLocalUri2(localUri2); 
+    });
+
+    save()
+  },[ftLicencia,ftMatricula])
 
   const add = async () => {
     if (!userName || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula || !ftLicencia || !numLicencia) {
@@ -68,11 +92,11 @@ export default function CreateCountUser() {
     console.log('😎😎😎😎😎😎se estan extrayendo las url');
     const dataUrl = await postUrl('/api/s3/upload-url', {
       fileName: `MATRICULAS/${name}_${lastName}-${numMatricula}-${ftMatricula?.name}`,
-      fileType: ftMatricula?.type
+      fileType: ftMatricula?.type 
     });
     const dataUrl2 = await postUrl2('/api/s3/upload-url', {
       fileName: `LICENCIAS/${name}_${lastName}-${numLicencia}-${ftLicencia?.name}`,
-      fileType: ftLicencia?.type
+      fileType: ftMatricula?.type
     });
       console.log('URL 😶‍🌫️😶‍🌫️😶‍🌫️😶‍🌫️', dataUrl);
       console.log('URL 😶‍🌫️😶‍🌫️', dataUrl2);
@@ -83,9 +107,8 @@ export default function CreateCountUser() {
   const send = async() => {
     if (wait) return; // evita múltiples ejecuciones
     setWait(true);
-    console.log(dataUrl,dataUrl2)
     // Validaciones previas
-    if (!userName || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula || !ftLicencia || !numLicencia) {
+    if (!userName || !localUri || !localUri2 || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula || !ftLicencia || !numLicencia) {
       setWait(false);
       return Alert.alert("Error", "Por favor complete todos los campos.");
     };
@@ -105,33 +128,30 @@ export default function CreateCountUser() {
     }
     try {
         const fileUri = ftMatricula?.uri
+        const fileUri2 = ftLicencia?.uri
         // console.log('1')
         // const base64 = await FileSystem.readAsStringAsync(fileUri, {
         //   encoding: FileSystem.EncodingType.Base64,
         // });
         // console.log('2')
         // const blob = new Blob([Uint8Array.from(atob(base64), c => c.charCodeAt(0))], {
-          //   type: ftMatricula?.type || "image/jpeg",
-          // });
-          // console.log('3')
-          
-          console.log(fileUri)
-          console.log('subir la img')
-          const response = await fetch(fileUri);
-          const blob = await response.blob();
-          await fetch(`${dataUrl?.uploadUrl}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'image/jpeg',
-            } ,
-            body: blob,
-          });
-          
-          
-        const fileUri2 = ftLicencia?.uri
-        console.log(fileUri2)
-        const response2 = await fetch(fileUri2);
+        //   type: ftMatricula?.type || "image/jpeg",
+        // });
+        // console.log('3')
+
+        console.log(fileUri,fileUri2)
+        const response = await fetch(localUri);
+        const response2 = await fetch(localUri2);
+        console.log('subir la img')
+        const blob = await response.blob();
         const blob2 = await response2.blob();
+        await fetch(`${dataUrl?.uploadUrl}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'image/jpeg',
+          } ,
+          body: blob,
+          });
         await fetch(`${dataUrl2?.uploadUrl}`, {
           method: 'PUT',
           headers: {
