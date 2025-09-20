@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, ImageBackground, ScrollView, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, ImageBackground, ScrollView, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, Alert, Modal, TouchableWithoutFeedback } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useApi } from '@/hooks/useApi';
 import DateInputSimple from '@/components/InputDate';
@@ -24,12 +24,28 @@ interface RegisterFrom {
       fotoLicencia: string | undefined,
       numeroLicencia: string | undefined
       }
-  }
-}
+  };
+};
+
+interface url {
+  success: string,
+	uploadUrl: string,
+	publicUrl: string
+};
+
+interface img {
+    img: string| null| undefined,
+    uri: string,
+    name: string | undefined | null ,
+    type?: string
+};
+
 
 export default function CreateCountUser() {
   const router = useRouter();
   const { data, loading, error, post } = useApi<RegisterFrom>();
+  const { data: dataUrl, loading: loadingUrl, error: errorUrl, post : postUrl } = useApi<url>();
+  const { data: dataUrl2, loading: loadingUrl2, error: errorUrl2, post : postUrl2 } = useApi<url>();
   const [ userName, setUserName ] = useState<string>()
   const [ name, setName ] = useState<string | undefined>()
   const [ lastName, setLastName ] = useState<string | undefined>()
@@ -37,66 +53,120 @@ export default function CreateCountUser() {
   const [ password, setPassword ] = useState<string | undefined>()
   const [ fechNa, setFechNa ] = useState<string | undefined>()
   const [ numMatricula, setNumMatricula ] = useState<string | undefined>()
-  const [ ftMatricula, setFtMatricula ] = useState<string | undefined |  null>()
-  const [ ftLicencia, setFtLicencia ] = useState<string | undefined |  null>()
+  const [ ftMatricula, setFtMatricula ] = useState<img>()
+  const [ ftLicencia, setFtLicencia ] = useState<img>()
   const [ numLicencia, setNumLicencia ] = useState<string | undefined>()
   const [ confPassword, setConfPassword ] = useState<string | undefined>()
+  const [ modal, setModal ] = useState<boolean>(false);
+  const [ wait, setWait ] = useState<boolean>(false)  
   
-  
-  const send = () => {
-  // Validaciones previas
-  if (!userName || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula) {
-    return Alert.alert("Error", "Por favor complete todos los campos.");
-  }
 
-  // Validar dominio del correo
-  if (!email.endsWith("@espol.edu.ec")) {
-    return Alert.alert("Correo inválido", "El correo debe pertenecer al dominio @espol.edu.ec");
-  }
-
-  // Validar coincidencia de contraseñas
-  if (password !== confPassword) {
-    return Alert.alert("Contraseña incorrecta", "Las contraseñas no coinciden.");
-  }
-
-// {
-//   "email": "ejempxlo@espol.edu.ec",
-//   "password": "Contraseña123",
-//   "metadata": {
-//     "nombre": "Juan",
-//     "usuario": "juancho99",
-//     "lastname": "Pérez",
-//     "nummatricula": "ABC12345",
-//     "fechanacimiento": "2000-01-15",
-//     "fotomatricula": "https://ruta-a-la-foto.com/fotoMatricula.jpg",
-//     "fotodriver": "https://ruta-a-la-foto.com/fotoDriver.jpg",
-//     "fotolicencia": "https://ruta-a-la-foto.com/fotoLicencia.jpg",
-//     "numeroLicencia": "LIC12345678"
-//   }
-// }
-
-
-
-
-  console.log(email, password, name, userName, lastName, numMatricula, fechNa,ftMatricula)
-  // Si todo está bien, enviamos los datos al backend
-  post('/api/auth/register-driverform', {
-    email: email.trim(),
-    password: password.trim(),
-    metadata: {
-      nombre: name.trim(),
-      usuario: userName.trim(),
-      lastname: lastName.trim(),
-      nummatricula: numMatricula.trim(),
-      fechanacimiento: fechNa.trim(),
-      fotomatricula: "https://ruta-a-la-foto.com/fotoDriver.jpg",
-      fotodriver: "https://ruta-a-la-foto.com/fotoDriver.jpg",
-      fotolicencia: "https://ruta-a-la-foto.com/fotoDriver.jpg",
-      numeroLicencia: numLicencia?.trim()
+  const add = async () => {
+    if (!userName || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula || !ftLicencia || !numLicencia) {
+      return Alert.alert("Error", "Por favor complete todos los campos.");
     }
-  });
-  console.log(error)
-  console.log('esta es la data que se guarda: ', data)
+    console.log('😎😎😎😎😎😎se estan extrayendo las url');
+    const dataUrl = await postUrl('/api/s3/upload-url', {
+      fileName: `MATRICULAS/${name}_${lastName}-${numMatricula}-${ftMatricula?.name}`,
+      fileType: ftMatricula?.type
+    });
+    const dataUrl2 = await postUrl2('/api/s3/upload-url', {
+      fileName: `LICENCIAS/${name}_${lastName}-${numLicencia}-${ftLicencia?.name}`,
+      fileType: ftLicencia?.type
+    });
+      console.log('URL 😶‍🌫️😶‍🌫️😶‍🌫️😶‍🌫️', dataUrl);
+      console.log('URL 😶‍🌫️😶‍🌫️', dataUrl2);
+      setModal(true);
+    };
+
+  
+  const send = async() => {
+    if (wait) return; // evita múltiples ejecuciones
+    setWait(true);
+    console.log(dataUrl,dataUrl2)
+    // Validaciones previas
+    if (!userName || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula || !ftLicencia || !numLicencia) {
+      setWait(false);
+      return Alert.alert("Error", "Por favor complete todos los campos.");
+    };
+    // Validar dominio del correo
+    if (!email.endsWith("@espol.edu.ec")) {
+      setWait(false);
+      return Alert.alert("Correo inválido", "El correo debe pertenecer al dominio @espol.edu.ec");
+    };
+    // Validar coincidencia de contraseñas
+    if (password !== confPassword) {
+      setWait(false);
+      return Alert.alert("Contraseña incorrecta", "Las contraseñas no coinciden.");
+    };
+    if (!dataUrl || !dataUrl2) {
+      setWait(false);
+      return Alert.alert("Estamos teniendo problemas porfavor intentelo mas tarde");
+    }
+    try {
+        const fileUri = ftMatricula?.uri
+        // console.log('1')
+        // const base64 = await FileSystem.readAsStringAsync(fileUri, {
+        //   encoding: FileSystem.EncodingType.Base64,
+        // });
+        // console.log('2')
+        // const blob = new Blob([Uint8Array.from(atob(base64), c => c.charCodeAt(0))], {
+          //   type: ftMatricula?.type || "image/jpeg",
+          // });
+          // console.log('3')
+          
+          console.log(fileUri)
+          console.log('subir la img')
+          const response = await fetch(fileUri);
+          const blob = await response.blob();
+          await fetch(`${dataUrl?.uploadUrl}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'image/jpeg',
+            } ,
+            body: blob,
+          });
+          
+          
+        const fileUri2 = ftLicencia?.uri
+        console.log(fileUri2)
+        const response2 = await fetch(fileUri2);
+        const blob2 = await response2.blob();
+        await fetch(`${dataUrl2?.uploadUrl}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'image/jpeg',
+          } ,
+          body: blob2,
+          });
+        console.log('se envio el dato biene')
+
+        post('/api/auth/register-driverform', {
+          email: email.trim(),
+          password: password.trim(),
+          metadata: {
+            nombre: name.trim(),
+            usuario: userName.trim(),
+            lastname: lastName.trim(),
+            nummatricula: numMatricula.trim(),
+            fechanacimiento: fechNa.trim(),
+            fotomatricula: dataUrl.publicUrl,
+            fotodriver: "null",
+            fotolicencia: dataUrl2.publicUrl,
+            numeroLicencia: numLicencia?.trim()
+        }
+    });
+
+    } catch (err) {
+        console.log("Error creando cuenta:", err);
+        console.log('error del post',error)
+        Alert.alert("Error", "No se pudo registrar la cuenta.");
+    } finally {
+      setWait(false);
+    };
+  
+    console.log(error)
+    console.log('esta es la data que se guarda: ', data)
 };
 
   useEffect(() => {
@@ -172,7 +242,7 @@ export default function CreateCountUser() {
                     />
                   <GalleryFt
                     text='foto del carnet estudiantil'
-                    setImage={(x: string | null | undefined) => setFtMatricula(x)}
+                    setImage={(x: img) => setFtMatricula(x)}
                     image={ftMatricula}
                     styleT={styles.inputFtMatricula}
                     />
@@ -189,7 +259,7 @@ export default function CreateCountUser() {
                     />
                   <GalleryFt
                     text='Foto de licencia'
-                    setImage={(x: string | null | undefined) => setFtLicencia(x)}
+                    setImage={(x: img) => setFtLicencia(x)}
                     image={ftLicencia}
                     styleT={styles.inputFtMatricula}
                     />
@@ -228,14 +298,40 @@ export default function CreateCountUser() {
                       />
             {/* Botón de registro */}
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.containerButton} onPress={send}>
+              <TouchableOpacity style={[styles.containerButton, wait && { opacity: 0.6 }]} onPress={add} disabled={wait}>
                 <Text style={styles.textButton}>REGISTRARSE</Text>
               </TouchableOpacity>
             </View>
               </View>
             </View>
           </ScrollView>
-          <LoadingOverlay visible={loading}/>
+          <Modal
+            transparent
+            animationType="fade"
+            visible={modal}
+            onRequestClose={ () => setModal(false)}
+          >
+            <TouchableWithoutFeedback onPress={() => setModal(false)}>
+            <View style={styles.modalOverlay}>
+              <TouchableWithoutFeedback>
+              <View style={styles.modalContent}>
+                <Text style={{marginBottom: 15,fontSize: 16, textAlign: 'center'}}>¿Estás seguro que los datos son correctos?</Text>
+
+                <View style={styles.buttonRow}>
+                <TouchableOpacity onPress={() => setModal(false)} style={styles.cancelButton}>
+                  <Text style={styles.buttonText}>Cancelar</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={send} disabled={wait} style={[styles.acceptButton, wait && { opacity: 0.6 }]}>
+                  <Text style={styles.buttonText}>Aceptar</Text>
+                </TouchableOpacity>
+                </View>
+              </View>
+              </TouchableWithoutFeedback>
+          </View>
+            </TouchableWithoutFeedback>
+          </Modal>
+          <LoadingOverlay visible={loading || wait}/>
         </View>
       </KeyboardAvoidingView>
     </ImageBackground>
@@ -368,5 +464,41 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     justifyContent: 'center'
     // paddingTop: 15,
-  }
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    elevation: 5,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  cancelButton: {
+    padding: 10,
+    backgroundColor: '#ccc',
+    borderRadius: 10,
+    flex: 1,
+    marginRight: 5,
+  },
+  acceptButton: {
+    padding: 10,
+    backgroundColor: '#4CAF50',
+    borderRadius: 10,
+    flex: 1,
+    marginLeft: 5,
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: 'white',
+    fontWeight: 'bold',
+  },
 });

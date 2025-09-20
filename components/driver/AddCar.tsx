@@ -70,44 +70,49 @@ export default function AddCar ({setControler}: Prop) {
         if (wait) return; // evita múltiples ejecuciones
         setWait(true);
         if (!dataUrl?.publicUrl || !dataUrl.uploadUrl ) {
-    console.log('error en pedir urls: ', errorUrl);
-    Alert.alert("Error", "No se pudo obtener la URL de carga.");
-    setWait(false);
-    return;
-    }
+            console.log('error en pedir urls: ', errorUrl);
+            Alert.alert("Error", "Estamos teniendo problemas intentelo mas tarde.");
+            setWait(false);
+            return;
+        }
+        if (!ftMatricula) {
+            Alert.alert("Error", "Estamos teniendo problemas intentelo mas tarde.");
+            setWait(false);
+            return;
+        }
 
-    try {
-        console.log( 'fileName: ',`${userId}-${ftMatricula?.name?.slice(ftMatricula?.name?.lastIndexOf('.'))}`,'fileType:', ftMatricula?.type)
-        const fileUri = ftMatricula?.uri
-        const response = await fetch(fileUri);
-        const blob = await response.blob();
+        try {
+            console.log( 'fileName: ',`${userId}-${ftMatricula?.name?.slice(ftMatricula?.name?.lastIndexOf('.'))}`,'fileType:', ftMatricula?.type)
+            const fileUri = ftMatricula?.uri
+            const response = await fetch(fileUri);
+            const blob = await response.blob();
 
-        await fetch(`${dataUrl?.uploadUrl}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'image/jpeg',
-        },
-        body: blob,
-        });
+            await fetch(`${dataUrl?.uploadUrl}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'image/jpeg',
+            } ,
+            body: blob,
+            });
 
-        await post('/api/vehiculo/crear', {
-        id_driver: userId?.trim(),
-        placa: placa?.trim(),
-        capacidadmax: capMax,
-        fotovehiculo: dataUrl?.publicUrl,
-        modelocar: modeloCar?.trim(),
-        color: color?.trim(),
-        marca: marca?.trim()
-        });
+            await post('/api/vehiculo/crear', {
+            id_driver: userId?.trim(),
+            placa: placa?.trim(),
+            capacidadmax: capMax,
+            fotovehiculo: dataUrl?.publicUrl,
+            modelocar: modeloCar?.trim(),
+            color: color?.trim(),
+            marca: marca?.trim()
+            });
 
-        setControler ? setControler(false) : null;
-        setModal(false);
-    } catch (err) {
-        console.log("Error creando vehículo:", err);
-        Alert.alert("Error", "No se pudo registrar el vehículo.");
-    } finally {
-        setWait(false);
-    }
+            setControler ? setControler(false) : null;
+            setModal(false);
+        } catch (err) {
+            console.log("Error creando vehículo:", err);
+            Alert.alert("Error", "No se pudo registrar el vehículo.");
+        } finally {
+            setWait(false);
+        }
     }
 
 
@@ -179,7 +184,7 @@ export default function AddCar ({setControler}: Prop) {
                 
             </View>
             
-            <TouchableOpacity onPress={add} disabled={wait} style={styles.agg}>
+            <TouchableOpacity onPress={add} style={styles.agg}>
                 <Text>Agregar</Text>
             </TouchableOpacity>
 
@@ -200,7 +205,7 @@ export default function AddCar ({setControler}: Prop) {
                             <Text style={styles.buttonText}>Cancelar</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={ok} style={[styles.acceptButton, wait && { opacity: 0.6 }]}>
+                        <TouchableOpacity onPress={ok} disabled={wait} style={[styles.acceptButton, wait && { opacity: 0.6 }]}>
                             <Text style={styles.buttonText}>{wait ? "agregando..." : "Aceptar"}</Text>
                         </TouchableOpacity>
                         </View>
