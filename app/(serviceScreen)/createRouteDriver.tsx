@@ -61,6 +61,7 @@ export default function CreateRoutesDriver() {
   const [ placa, setPlaca ] = useState<string>();
   const [ controler, setControler ] = useState<boolean>()
   const [ refresh , setRefresh ] = useState(true)
+  const [ wait, setWait ] = useState<boolean>(false)  
 
   const {
     storedValue: userId,
@@ -87,13 +88,16 @@ export default function CreateRoutesDriver() {
   }
   
   const send = () => {
+    if (wait) return; // evita múltiples ejecuciones
+    setWait(true);
     // logica para publicar ruta
-    if (!zonaInicial || !zonaFinal || !precio || !asientos || !horaSalida || !horaLlegada || !rutas) {
+    if (!zonaInicial || !zonaFinal || !precio || !asientos || !horaSalida || !horaLlegada || !rutas || !idCar) {
       Alert.alert(
         "error",
         "porfavor complete todos los campos.",
         [{ text: "Entendido" }]
       )
+      setWait(false);
       return;
     }
     post('/api/viajes/crear', {
@@ -104,9 +108,11 @@ export default function CreateRoutesDriver() {
       asientos: asientos,
       horaSalida: horaSalida,
       horaLlegada: horaLlegada,
-      Listapuntos: rutas
+      Listapuntos: rutas,
+      id_vehiculo: idCar
     })
-    router.push("/send");
+    
+    !error? router.push("/send") : setWait(false);
   };
 
   const save =(idCar: string,img: string, model: string, placa: string) => {
@@ -188,7 +194,7 @@ export default function CreateRoutesDriver() {
               </View>
               }
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={send}>
+            <TouchableOpacity style={[styles.button, wait && { opacity: 0.6 }]} onPress={send} disabled={wait}>
               <Text style={{fontWeight: '700', fontSize: 18}}>Publicar ruta</Text>
             </TouchableOpacity>
           </View>
