@@ -20,10 +20,11 @@ interface url {
 }
 
 interface Prop {
-    setControler?: (x: boolean) => void
+    setControler?: (x: boolean) => void;
+    refresh : (x:boolean) => void
 }
 
-export default function AddCar ({setControler}: Prop) {
+export default function AddCar ({setControler, refresh}: Prop) {
     const [ marca, setMarca ] = useState<string>();
     const [ placa, setPlaca ] = useState<string>();
     const [ capMax, setCapMax ] = useState<string>();
@@ -106,6 +107,7 @@ export default function AddCar ({setControler}: Prop) {
             });
 
             setControler ? setControler(false) : null;
+            refresh(false)
             setModal(false);
         } catch (err) {
             console.log("Error creando vehículo:", err);

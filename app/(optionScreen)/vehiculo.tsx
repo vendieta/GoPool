@@ -27,6 +27,8 @@ interface obj {
 export default function Vehiculo () {
     const [ controler, setControler ] = useState(false);
     const { data: data2, loading: loading2, error: error2, get } = useApi<req>();
+    const [ refresh , setRefresh ] = useState(true);
+
 
     const {
         storedValue: userId,
@@ -39,7 +41,7 @@ export default function Vehiculo () {
             get(`/api/vehiculo/listar/${userId}`)
             console.log('el get de la lista vehiculo',data2)
         }
-    }, [userId, controler === false])
+    }, [userId, refresh])
 
 
     
@@ -49,7 +51,7 @@ export default function Vehiculo () {
             {!loading2?
             <View style={styles.subContainer}>
             {controler ? 
-            <AddCar setControler={setControler} />
+            <AddCar setControler={setControler} refresh={setRefresh}/>
             :
             <>
                 <Text style={{fontSize: 20, marginTop: 10}}>Carros registrados</Text>
