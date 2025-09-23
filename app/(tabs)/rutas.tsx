@@ -3,16 +3,65 @@ import { useTheme } from '@/components/Themed/ContextTheme';
 import Opcion from '@/components/TEST/Opcion';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import UserCard from '@/components/TEST/UserCard';
 import { useRoleContext } from '@/hooks/useRoleContext';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useApi } from '@/hooks/useApi';
+import useStorage from '@/hooks/useStorage';
+
+
+export interface goodReq {
+  rutadriverid: string;
+  recogido: boolean;
+  saldo: number;
+  waltuserubicacionlongitud: number;
+  waltuserubicacionlatitud: number;
+  rutadriver: {
+    driver: {
+      users: {
+        id: string;
+        email: string;
+        nombre: string;
+        lastname: string;
+        disponible: boolean;
+        numeroTelefono: string;
+      };
+    };
+    precio: number;
+    vehiculo: {
+      color: string;
+      marca: string;
+      placa: string;
+      modelocar: string;
+      capacidadmax: number;
+    };
+    ZonaFinal: string;
+    finalizado: boolean;
+    horasalida: string; // formato ISO
+    puntosruta: {
+      orden: string;
+      latitud: number | null;
+      longitud: number | null;
+      descripcion: string;
+    }[];
+    ZonaInicial: string;
+    id_vehiculo: string;
+    bloqueopasajeros: boolean;
+    cuposdisponibles: number;
+    horaestimacionllegada: string; // formato ISO
+  };
+}
+
+interface badReq {
+  msg: string
+}
 
 
 export default function TabTwoScreen() {
   const { isDriver } = useRoleContext();
   // const isDriver  = false;
-  const data  = true;
+  // const data  = true;
   const { theme } = useTheme();
   const isLightTheme = theme.name === 'light';
   const [modalVisible, setModalVisible] = useState(false);
@@ -23,9 +72,25 @@ export default function TabTwoScreen() {
   const headerBgColor = isLightTheme ? '#1D3D47' : '#0d232a';
   const accentColor = '#4a90e2';
   const [ cancelModal, setCancelModal ] = useState(false)
+  const { data, loading, error, get } = useApi<goodReq | badReq>();
+  const {
+      storedValue: userId,
+      setItem: setId,
+  } = useStorage('userId');
+
+  console.log(`/api/user/me/viaje-actual/${userId}`)
+  useEffect(() => {
+    if (userId) {
+      const a = async() => {
+        await get(`/api/user/me/viaje-actual/${userId}`)
+      }
+      a()
+    }
+  }, [userId])
 
 
-    const handleCancel = () => {
+
+  const handleCancel = () => {
     setCancelModal(false);
     console.log("Servicio cancelado");
   };
