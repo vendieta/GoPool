@@ -6,6 +6,7 @@ import GalleryFt from '@/components/imgs/GalleryFt';
 import { useRouter } from 'expo-router';
 import LoadingOverlay from '@/components/loading/LoadingOverlay';
 import * as FileSystem from "expo-file-system";
+import { numberCheck } from '@/scripts/numberCheck';
 
 const { width, height } = Dimensions.get('window');
 
@@ -54,17 +55,18 @@ interface url {
 export default function CreateCountUser() {
   const router = useRouter();
   const { data, loading, error, post } = useApi<RegisterFrom>();
-  const [ userName, setUserName ] = useState<string>()
-  const [ name, setName ] = useState<string | undefined>()
-  const [ lastName, setLastName ] = useState<string | undefined>()
-  const [ email, setEmail ] = useState<string | undefined>()
-  const [ password, setPassword ] = useState<string | undefined>()
-  const [ fechNa, setFechNa ] = useState<string | undefined>()
-  const [ numMatricula, setNumMatricula ] = useState<string | undefined>()
-  const [ ftMatricula, setFtMatricula ] = useState<img>()
-  const [ confPassword, setConfPassword ] = useState<string | undefined>()
+  const [ userName, setUserName ] = useState<string>();
+  const [ name, setName ] = useState<string | undefined>();
+  const [ lastName, setLastName ] = useState<string | undefined>();
+  const [ number, setNumber ] = useState<string | undefined>();
+  const [ email, setEmail ] = useState<string | undefined>();
+  const [ password, setPassword ] = useState<string | undefined>();
+  const [ fechNa, setFechNa ] = useState<string | undefined>();
+  const [ numMatricula, setNumMatricula ] = useState<string | undefined>();
+  const [ ftMatricula, setFtMatricula ] = useState<img>();
+  const [ confPassword, setConfPassword ] = useState<string | undefined>();
   const { data: dataUrl, loading: loadingUrl, error: errorUrl, post : postUrl } = useApi<url>();
-  const [ wait, setWait ] = useState<boolean>(false)  
+  const [ wait, setWait ] = useState<boolean>(false);
   const [ modal, setModal ] = useState(false);
   const [ localUri, setLocalUri ] = useState<string>();
 
@@ -74,15 +76,15 @@ export default function CreateCountUser() {
         setLocalUri(localUri); 
       });
   
-      save()
-    },[ftMatricula])
+      save();
+    },[ftMatricula]);
 
 
 
 
 
   const add = async () => {
-    if (!userName || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula) {
+    if (!userName || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula || !number) {
       return Alert.alert("Error", "Por favor complete todos los campos.");
     }
     console.log('😎😎😎😎😎😎se estan extrayendo las url');
@@ -99,7 +101,7 @@ export default function CreateCountUser() {
     if (wait) return; // evita múltiples ejecuciones
       setWait(true);
   // Validaciones previas
-    if (!userName || !localUri || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula) {
+    if (!userName || !localUri || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula || !number) {
       setWait(false);
       return Alert.alert("Error", "Por favor complete todos los campos.");
     }
@@ -107,7 +109,11 @@ export default function CreateCountUser() {
     if (!email.endsWith("@espol.edu.ec")) {
       setWait(false);
       return Alert.alert("Correo inválido", "El correo debe pertenecer al dominio @espol.edu.ec");
-    }
+    };
+    if (!numberCheck(number)) {
+      setWait(false);
+      return Alert.alert("Ingrese un numero de telefono valido");
+    };
     // Validar coincidencia de contraseñas
     if (password !== confPassword) {
       setWait(false);
@@ -152,7 +158,8 @@ export default function CreateCountUser() {
             lastname: lastName.trim(),
             nummatricula: numMatricula.trim(),
             fechanacimiento: fechNa.trim(),
-            fotomatricula: dataUrl?.publicUrl
+            fotomatricula: dataUrl?.publicUrl,
+            numeroTelefono: numberCheck(number)
           }});
 
     } catch (err) {
@@ -237,6 +244,7 @@ export default function CreateCountUser() {
                     onChangeText={setNumMatricula}
                     placeholder="NUMERO DE MATRICULA"
                     placeholderTextColor="#999"
+                    keyboardType= 'phone-pad'
                     
                     // secureTextEntry={secureTextEntry}
                     autoCapitalize="none"
@@ -248,6 +256,16 @@ export default function CreateCountUser() {
                     styleT={styles.inputFtMatricula}
                     />
                 </View>
+                <TextInput
+                  style={styles.input}
+                  value={number}
+                  onChangeText={setNumber}
+                  placeholder="NUMERO DE WHATSAPP"
+                  placeholderTextColor="#999"
+                  keyboardType= 'phone-pad'
+                  // secureTextEntry={secureTextEntry}
+                  autoCapitalize="none"
+                  />
                 <TextInput
                   style={styles.input}
                   value={email}

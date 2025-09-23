@@ -6,6 +6,7 @@ import GalleryFt from '@/components/imgs/GalleryFt';
 import { useRouter } from 'expo-router';
 import LoadingOverlay from '@/components/loading/LoadingOverlay';
 import * as FileSystem from "expo-file-system";
+import { numberCheck } from '@/scripts/numberCheck';
 
 const { width, height } = Dimensions.get('window');
 
@@ -58,19 +59,20 @@ export default function CreateCountUser() {
   const { data, loading, error, post } = useApi<RegisterFrom>();
   const { data: dataUrl, loading: loadingUrl, error: errorUrl, post : postUrl } = useApi<url>();
   const { data: dataUrl2, loading: loadingUrl2, error: errorUrl2, post : postUrl2 } = useApi<url>();
-  const [ userName, setUserName ] = useState<string>()
-  const [ name, setName ] = useState<string | undefined>()
-  const [ lastName, setLastName ] = useState<string | undefined>()
-  const [ email, setEmail ] = useState<string | undefined>()
-  const [ password, setPassword ] = useState<string | undefined>()
-  const [ fechNa, setFechNa ] = useState<string | undefined>()
-  const [ numMatricula, setNumMatricula ] = useState<string | undefined>()
-  const [ ftMatricula, setFtMatricula ] = useState<img>()
-  const [ ftLicencia, setFtLicencia ] = useState<img>()
-  const [ numLicencia, setNumLicencia ] = useState<string | undefined>()
-  const [ confPassword, setConfPassword ] = useState<string | undefined>()
+  const [ userName, setUserName ] = useState<string>();
+  const [ name, setName ] = useState<string | undefined>();
+  const [ lastName, setLastName ] = useState<string | undefined>();
+  const [ email, setEmail ] = useState<string | undefined>();
+  const [ password, setPassword ] = useState<string | undefined>();
+  const [ fechNa, setFechNa ] = useState<string | undefined>();
+  const [ number, setNumber ] = useState<string | undefined>();
+  const [ numMatricula, setNumMatricula ] = useState<string | undefined>();
+  const [ ftMatricula, setFtMatricula ] = useState<img>();
+  const [ ftLicencia, setFtLicencia ] = useState<img>();
+  const [ numLicencia, setNumLicencia ] = useState<string | undefined>();
+  const [ confPassword, setConfPassword ] = useState<string | undefined>();
   const [ modal, setModal ] = useState<boolean>(false);
-  const [ wait, setWait ] = useState<boolean>(false)  
+  const [ wait, setWait ] = useState<boolean>(false);
   const [ localUri, setLocalUri ] = useState<string>();
   const [ localUri2, setLocalUri2 ] = useState<string>();
 
@@ -86,7 +88,7 @@ export default function CreateCountUser() {
   },[ftLicencia,ftMatricula])
 
   const add = async () => {
-    if (!userName || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula || !ftLicencia || !numLicencia) {
+    if (!userName || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula || !ftLicencia || !numLicencia || !number) {
       return Alert.alert("Error", "Por favor complete todos los campos.");
     }
     console.log('😎😎😎😎😎😎se estan extrayendo las url');
@@ -108,7 +110,7 @@ export default function CreateCountUser() {
     if (wait) return; // evita múltiples ejecuciones
     setWait(true);
     // Validaciones previas
-    if (!userName || !localUri || !localUri2 || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula || !ftLicencia || !numLicencia) {
+    if (!userName || !localUri || !localUri2 || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula || !ftLicencia || !numLicencia || !number) {
       setWait(false);
       return Alert.alert("Error", "Por favor complete todos los campos.");
     };
@@ -116,6 +118,10 @@ export default function CreateCountUser() {
     if (!email.endsWith("@espol.edu.ec")) {
       setWait(false);
       return Alert.alert("Correo inválido", "El correo debe pertenecer al dominio @espol.edu.ec");
+    };
+    if (!numberCheck(number)) {
+      setWait(false);
+      return Alert.alert("Ingrese un numero de telefono valido");
     };
     // Validar coincidencia de contraseñas
     if (password !== confPassword) {
@@ -125,7 +131,9 @@ export default function CreateCountUser() {
     if (!dataUrl || !dataUrl2) {
       setWait(false);
       return Alert.alert("Estamos teniendo problemas porfavor intentelo mas tarde");
-    }
+    };
+      
+
     try {
         const fileUri = ftMatricula?.uri
         const fileUri2 = ftLicencia?.uri
@@ -173,7 +181,8 @@ export default function CreateCountUser() {
             fotomatricula: dataUrl.publicUrl,
             fotodriver: "null",
             fotolicencia: dataUrl2.publicUrl,
-            numeroLicencia: numLicencia?.trim()
+            numeroLicencia: numLicencia?.trim(),
+            numeroTelefono: numberCheck(number)
         }
     });
 
@@ -254,6 +263,7 @@ export default function CreateCountUser() {
                   <TextInput
                     style={styles.inputMatricula}
                     value={numMatricula}
+                    keyboardType= 'phone-pad'
                     onChangeText={setNumMatricula}
                     placeholder="NUMERO DE MATRICULA"
                     placeholderTextColor="#999"
@@ -284,6 +294,16 @@ export default function CreateCountUser() {
                     styleT={styles.inputFtMatricula}
                     />
                 </View>
+                <TextInput
+                  style={styles.input}
+                  value={number}
+                  onChangeText={setNumber}
+                  placeholder="Numero de whatssap"
+                  keyboardType= 'phone-pad'
+                  placeholderTextColor="#999"
+                  // secureTextEntry={secureTextEntry}
+                  autoCapitalize="none"
+                  />
                 <TextInput
                   style={styles.input}
                   value={email}
