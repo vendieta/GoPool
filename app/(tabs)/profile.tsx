@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity, Linking, Platform } from "react-native";
+import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity, Linking, Platform, ActivityIndicator } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { Collapsible } from '@/components/Collapsible';
 import { FontAwesome5, MaterialIcons, Feather } from '@expo/vector-icons';
@@ -9,6 +9,8 @@ import { useEffect, useState } from 'react';
 import useStorage from "@/hooks/useStorage";
 import { useLoginContext } from "@/hooks/useLoginContext";
 import { useRoleContext } from "@/hooks/useRoleContext";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
 
 const { width, height } = Dimensions.get('window');
@@ -18,40 +20,48 @@ export default function Perfil() {
   const router = useRouter();
   const { theme } = useTheme();
   const { toggleState } = useLoginContext();
+  const [ready, setReady] = useState<boolean>();
   const {
     storedValue: access_token,
     setItem: setAccess_token,
-    removeItem: removeAccess_token
+    removeItem: removeAccess_token,
+    loadingStorage: loadingAccess_token
   } = useStorage('access_token');
   const {
     storedValue: refresh_token,
     setItem: setRefresh_token,
-    removeItem: removeRefresh_token
+    removeItem: removeRefresh_token,
+    loadingStorage: loadingRefresh_token
   } = useStorage('refresh_token');
   const {
     storedValue: userId,
     setItem: setId,
-    removeItem: removeId
+    removeItem: removeId,
+    loadingStorage: loadingId
   } = useStorage('userId');
   const {
     storedValue: userEmail,
     setItem: setUserEmail,
-    removeItem: removeUserEmail
+    removeItem: removeUserEmail,
+    loadingStorage: loadingUserEmail
   } = useStorage('userEmail');
   const {
     storedValue: role,
     setItem: setRole,
-    removeItem: removeRole
+    removeItem: removeRole,
+    loadingStorage: loadingRole
   } = useStorage('role');
   const {
     storedValue: name,
     setItem: setName,
-    removeItem: removeName
+    removeItem: removeName,
+    loadingStorage: loadingName
   } = useStorage('name');
   const {
     storedValue: lastName,
     setItem: setLastName,
-    removeItem: removeLastName
+    removeItem: removeLastName,
+    loadingStorage: loadingLastName,
   } = useStorage('lastName');
   // const {
   //   storedValue: cars,
@@ -59,8 +69,31 @@ export default function Perfil() {
   //   removeItem: removeCars
   // } = useStorage('cars');
 
+  console.log('loading del storage',loadingAccess_token)
+    // cada vez que entras al tab, vuelve a disparar la carga
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     // Si tu hook `useStorage` ya se encarga de leer el storage
+  //     // con solo llamarlo basta; si no, podrías agregarle un método refresh()
+  //     console.log("Refrescando datos desde storage...", access_token , userEmail , userId , lastName , name , refresh_token , role);
+  //     console.log("Refrescando datos desde storage...", loadingAccess_token || loadingUserEmail || loadingId || loadingLastName || loadingName || loadingRefresh_token || loadingRole || loadingId);
+      
+  //   }, [loadingAccess_token])
+  // );
+  // console.log("💕Refrescando datos desde storage...", access_token , userEmail , userId , lastName , name , refresh_token , role);
 
+  
+  // useEffect (() => {
+  //   setReady(loadingAccess_token || loadingUserEmail || loadingId || loadingLastName || loadingName || loadingRefresh_token || loadingRole || loadingId);
+  //   console.log('este es el valor de ready: ' ,ready)
+  //   console.log('este es el valor de lastname: ' ,lastName)
+    
+  // }, [lastName])
 
+  // if (ready) {
+  //   return <ActivityIndicator size="large" color="#0000ff" />;
+  // }
+  
   const outSession = async () => {
       console.log(access_token,refresh_token,userEmail,userId,role)
       await removeRefresh_token('refresh_token')
@@ -76,6 +109,8 @@ export default function Perfil() {
       console.log(access_token,refresh_token,userEmail,userId,role)
     router.replace('/')
   };
+
+  
 
   const sections = [ 
     isDriver? {
@@ -125,6 +160,11 @@ export default function Perfil() {
     }
   ];
 
+    
+
+
+
+
   return (
     <ParallaxScrollView
       headerImage={
@@ -138,7 +178,7 @@ export default function Perfil() {
       // headerHeight removed as it is not supported by ParallaxScrollView
     >
       <View style={[styles.contentContainer, { backgroundColor: theme.background }]}>
-        <Text style={[styles.userText, { color: theme.text }]}>hola</Text>
+        <Text style={[styles.userText, { color: theme.text }]}>{name}  {lastName}</Text>
         
         <View style={styles.scrollContent}>
           {sections.map((section, index) => (

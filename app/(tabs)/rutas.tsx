@@ -1,4 +1,4 @@
-import { StyleSheet, Image, View, Text, Dimensions, ScrollView, TouchableOpacity, Linking, Modal } from 'react-native';
+import { StyleSheet, Image, View, Text, Dimensions, ScrollView, TouchableOpacity, Linking, Modal, ActivityIndicator } from 'react-native';
 import { useTheme } from '@/components/Themed/ContextTheme';
 import Opcion from '@/components/TEST/Opcion';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -51,15 +51,17 @@ export interface goodReq {
     cuposdisponibles: number;
     horaestimacionllegada: string; // formato ISO
   };
-}
-
-interface badReq {
   msg: string
 }
 
 
+
 export default function TabTwoScreen() {
-  const { isDriver } = useRoleContext();
+  const [ isDriver, setIsDriver ] = useState<string | null>()
+  const {
+  storedValue: role,
+  setItem: setRole,
+} = useStorage('role');
   // const isDriver  = false;
   // const data  = true;
   const { theme } = useTheme();
@@ -71,8 +73,8 @@ export default function TabTwoScreen() {
   const cardBackground = isLightTheme ? '#fff' : '#1e1e1e';
   const headerBgColor = isLightTheme ? '#1D3D47' : '#0d232a';
   const accentColor = '#4a90e2';
-  const [ cancelModal, setCancelModal ] = useState(false)
-  const { data, loading, error, get } = useApi<goodReq | badReq>();
+  const [ cancelModal, setCancelModal ] = useState(false);
+  const { data, loading, error, get } = useApi<goodReq>();
   const {
       storedValue: userId,
       setItem: setId,
@@ -86,7 +88,11 @@ export default function TabTwoScreen() {
       }
       a()
     }
-  }, [userId])
+  }, [userId]);
+
+  useEffect(() => {
+    setIsDriver(role);
+  }, [role, userId,]);
 
 
 
@@ -94,6 +100,7 @@ export default function TabTwoScreen() {
     setCancelModal(false);
     console.log("Servicio cancelado");
   };
+  console.log('🙏🙏🙏🙏🙏este es el rol del usuario es driver',isDriver, role)
 
   const handleContinue = () => {
     setCancelModal(false);
@@ -124,98 +131,105 @@ export default function TabTwoScreen() {
       {/* Contenido principal */}
       <View style={styles.contentContainer}>
         <View style={[styles.optionsCard, { backgroundColor: cardBackground }]}>
-          <Text style={[styles.sectionTitle, { color: textColor }]}>
-            <MaterialIcons name="directions" size={20} color={accentColor} /> { isDriver ? 'Opciones de Ruta' : 'Rutas por tomar' }
-          </Text>
-          {/* {isDriver? 
-            <Text style={[styles.sectionTitle, { color: textColor }]}>Selecciona una opción:</Text>
-            : 
-            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <TouchableOpacity>
-                <AntDesign name="questioncircleo" size={25} color="white" />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <MaterialIcons name="report-problem" size={29} color="red" />
-              </TouchableOpacity>
-            </View>
-          } */}
-          <View style={styles.optionsContainer}>
-            { isDriver ? 
-              <Opcion
-                element={{
-                  link: '/(serviceScreen)/rutaUser',
-                  title: 'Ver tus registro de rutas',
-                  icon: 'history',
-                  description: 'Mira los viajes que has realizado',
-                  color: '#4CAF50'
-                }}
-                element1={{
-                  link: '/(serviceScreen)/createRouteDriver',
-                  title: 'Crear ruta conductor',
-                  icon: 'car',
-                  description: 'Ofrece tus cupos disponibles',
-                  color: '#2196F3'
-                }}
-              />
-            :
-              <View style={styles.containerScroll}>
-                {data ? <>
-                  <View style={[styles.containerHeader, { backgroundColor: theme.cardBackground }]}>
-                    <View style={styles.lateral}>
-                      <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Precio</Text>
-                      <Text style={[styles.lateralValue, { color: theme.text }]}>$ {10}</Text>
-                    </View>
-                    <View style={styles.profileHeader}>
-                      <Image borderRadius={30} width={60} height={60} source={{uri:'https://gopool-img-2025.s3.us-east-2.amazonaws.com/3bc859a6-5c4f-42a3-b06d-0cd30b8325e6-21385a45-bf15-49b9-a2ad-ac7dfde3adb9.jpeg'}}/>
-                      <Text style={[styles.userName, { color: theme.text }]}>{'pepe'}</Text>
-                      {/* <Text style={[styles.userName, { color: theme.text }]}>Max Atahualpa taguantisuyo Paquisha goku</Text> */}
-                      <Text style={[styles.userStatus, { color: theme.labelText }]}>
-                        {10 > 0 ? `${10} cupos disponibles` : 'Sin cupos'}
-                      </Text>
-                    </View>
-                    <View style={styles.lateral}>
-                      <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Fecha</Text>
-                      <Text style={[styles.lateralValue, { color: theme.text }]}>{10}</Text>
-                    </View>
-                  </View>
-                  
-                  <View style={[styles.section, {flexDirection: 'row', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center'}]}>
-                    <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{'noter'}</Text><Text style={{color: theme.text}}>{8}</Text></View>
-                      <FontAwesome name="long-arrow-right" size={25} color="#fff" />
-                    <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{'espol'}</Text><Text  style={{color: theme.text}}>{10}</Text></View>
-                    {/* <View style={{alignItems: 'center'}}><Text style={{color: theme.text}}>{data.date}</Text></View>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}><Text style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.zoneEnd}</Text></View> */}
-                  </View>
-                  <View style={[styles.placa,{ backgroundColor: theme.cardBackground }]}>
-                    <Text style={styles.textPlaca}>Placa: {'abe-323'}</Text>
-                  </View>
-                  <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingVertical: 15, alignItems: 'center'}}>
-                    <TouchableOpacity style={{width: '50%', alignItems: 'center'}} onPress={() => setModalVisible(true)}>
-                      <FontAwesome5 name="car-side" size={30} color="yellow" />
-                      <Text style={styles.text}>Foto Vehiculo</Text>
-                      <Text style={styles.text}>Informacion del carro</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => Linking.openURL('https://wa.me/0959112942')} style={{width: '50%', alignItems: 'center'}}>
-                      <FontAwesome5 name="whatsapp" size={30} color="green" />
-                      <Text style={styles.text} >whatssap</Text>
-                      <Text style={styles.text} >Contacta al conductor</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.containerCancelar}>
-                    <TouchableOpacity style={styles.cancelar} onPress={() => setCancelModal(true)}>
-                      <Text style={styles.textCancelar} >Cancelar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{padding: 5}}>
-                      <MaterialIcons name="report-problem" size={29} color="red" />
-                    </TouchableOpacity>
-                  </View>
-                </> :
-                <>
-                
-                </>}
+          {isDriver === 'true' ? 
+          <>
+            <Text style={[styles.sectionTitle, { color: textColor }]}>
+              <MaterialIcons name="directions" size={20} color={accentColor} /> { isDriver ? 'Opciones de Ruta' : 'Rutas por tomar' }
+            </Text>
+            {/* {isDriver? 
+              <Text style={[styles.sectionTitle, { color: textColor }]}>Selecciona una opción:</Text>
+              : 
+              <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <TouchableOpacity>
+                  <AntDesign name="questioncircleo" size={25} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <MaterialIcons name="report-problem" size={29} color="red" />
+                </TouchableOpacity>
               </View>
-            }
-          </View>
+            } */}
+            <View style={styles.optionsContainer}>
+              {/* { isDriver ?  */}
+                <Opcion
+                  element={{
+                    link: '/(serviceScreen)/rutaUser',
+                    title: 'Ver tus registro de rutas',
+                    icon: 'history',
+                    description: 'Mira los viajes que has realizado',
+                    color: '#4CAF50'
+                  }}
+                  element1={{
+                    link: '/(serviceScreen)/createRouteDriver',
+                    title: 'Crear ruta conductor',
+                    icon: 'car',
+                    description: 'Ofrece tus cupos disponibles',
+                    color: '#2196F3'
+                  }}
+                />
+              {/* : */}
+              
+            </View>  
+          </>
+          : isDriver === 'false' ?
+            <View style={styles.containerScroll}>
+                  {!data?.msg ? <>
+                    <View style={[styles.containerHeader, { backgroundColor: theme.cardBackground }]}>
+                      <View style={styles.lateral}>
+                        <Text style={[styles.lateralTitle, { color: theme.labelText }]}>precio</Text>
+                        <Text style={[styles.lateralValue, { color: theme.text }]}>$ {10}</Text>
+                      </View>
+                      <View style={styles.profileHeader}>
+                        <Image borderRadius={30} width={60} height={60} source={{uri:'https://gopool-img-2025.s3.us-east-2.amazonaws.com/3bc859a6-5c4f-42a3-b06d-0cd30b8325e6-21385a45-bf15-49b9-a2ad-ac7dfde3adb9.jpeg'}}/>
+                        <Text style={[styles.userName, { color: theme.text }]}>{}</Text>
+                        {/* <Text style={[styles.userName, { color: theme.text }]}>Max Atahualpa taguantisuyo Paquisha goku</Text> */}
+                        <Text style={[styles.userStatus, { color: theme.labelText }]}>
+                          {10 > 0 ? `${10} cupos disponibles` : 'Sin cupos'}
+                        </Text>
+                      </View>
+                      <View style={styles.lateral}>
+                        <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Fecha</Text>
+                        <Text style={[styles.lateralValue, { color: theme.text }]}>{10}</Text>
+                      </View>
+                    </View>
+                    
+                    <View style={[styles.section, {flexDirection: 'row', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center'}]}>
+                      <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{'noter'}</Text><Text style={{color: theme.text}}>{8}</Text></View>
+                        <FontAwesome name="long-arrow-right" size={25} color="#fff" />
+                      <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{'espol'}</Text><Text  style={{color: theme.text}}>{10}</Text></View>
+                      {/* <View style={{alignItems: 'center'}}><Text style={{color: theme.text}}>{data.date}</Text></View>
+                      <View style={{flexDirection: 'row', justifyContent: 'space-around'}}><Text style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.zoneEnd}</Text></View> */}
+                    </View>
+                    <View style={[styles.placa,{ backgroundColor: theme.cardBackground }]}>
+                      <Text style={styles.textPlaca}>Placa: {'abe-323'}</Text>
+                    </View>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingVertical: 15, alignItems: 'center'}}>
+                      <TouchableOpacity style={{width: '50%', alignItems: 'center'}} onPress={() => setModalVisible(true)}>
+                        <FontAwesome5 name="car-side" size={30} color="yellow" />
+                        <Text style={styles.text}>Foto Vehiculo</Text>
+                        <Text style={styles.text}>Informacion del carro</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => Linking.openURL('https://wa.me/0959112942')} style={{width: '50%', alignItems: 'center'}}>
+                        <FontAwesome5 name="whatsapp" size={30} color="green" />
+                        <Text style={styles.text} >whatssap</Text>
+                        <Text style={styles.text} >Contacta al conductor</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.containerCancelar}>
+                      <TouchableOpacity style={styles.cancelar} onPress={() => setCancelModal(true)}>
+                        <Text style={styles.textCancelar} >Cancelar</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={{padding: 5}}>
+                        <MaterialIcons name="report-problem" size={29} color="red" />
+                      </TouchableOpacity>
+                    </View>
+                  </> :
+                  <>
+                  </>}
+                </View> :
+                <View>
+                  <ActivityIndicator size="large" color="#00ff00" ></ActivityIndicator>
+                </View>
+          }
         </View>
 
         {/* Sección adicional (puedes agregar más contenido aquí) */}
