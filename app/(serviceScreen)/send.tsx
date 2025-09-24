@@ -50,7 +50,7 @@ export default function Sent() {
                     { transform: [{ translateX }] }
                 ]}
             >
-                <Image style={styles.img} source={require('@/assets/images/tortuCar.png')}/>
+                <Image style={styles.img} source={require('@/assets/images/tortuCarSinFondo.png')}/>
             </Animated.View>
             <Text style={styles.text}>Se buscara un driver para tu ruta</Text>
         </View>

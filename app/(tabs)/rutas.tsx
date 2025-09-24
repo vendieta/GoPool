@@ -15,6 +15,7 @@ export interface goodReq {
   rutadriverid: string;
   recogido: boolean;
   saldo: number;
+  cantidad_cupos: 1;
   waltuserubicacionlongitud: number;
   waltuserubicacionlatitud: number;
   rutadriver: {
@@ -35,6 +36,7 @@ export interface goodReq {
       placa: string;
       modelocar: string;
       capacidadmax: number;
+      fotovehiculo: string;
     };
     ZonaFinal: string;
     finalizado: boolean;
@@ -116,7 +118,7 @@ export default function TabTwoScreen() {
         end={{ x: 1, y: 0 }}
       >
         <Image
-          source={require('@/assets/images/tortuCar.png')}
+          source={require('@/assets/images/tortuCarSinFondo.png')}
           style={styles.headerImage}
           resizeMode="contain"
         />
@@ -176,31 +178,31 @@ export default function TabTwoScreen() {
                     <View style={[styles.containerHeader, { backgroundColor: theme.cardBackground }]}>
                       <View style={styles.lateral}>
                         <Text style={[styles.lateralTitle, { color: theme.labelText }]}>precio</Text>
-                        <Text style={[styles.lateralValue, { color: theme.text }]}>$ {10}</Text>
+                        <Text style={[styles.lateralValue, { color: theme.text }]}>$ {data?.rutadriver.precio}</Text>
                       </View>
                       <View style={styles.profileHeader}>
                         <Image borderRadius={30} width={60} height={60} source={{uri:'https://gopool-img-2025.s3.us-east-2.amazonaws.com/3bc859a6-5c4f-42a3-b06d-0cd30b8325e6-21385a45-bf15-49b9-a2ad-ac7dfde3adb9.jpeg'}}/>
-                        <Text style={[styles.userName, { color: theme.text }]}>{}</Text>
+                        <Text style={[styles.userName, { color: theme.text }]}>{data?.rutadriver.driver.users.nombre} {data?.rutadriver.driver.users.lastname}</Text>
                         {/* <Text style={[styles.userName, { color: theme.text }]}>Max Atahualpa taguantisuyo Paquisha goku</Text> */}
                         <Text style={[styles.userStatus, { color: theme.labelText }]}>
-                          {10 > 0 ? `${10} cupos disponibles` : 'Sin cupos'}
+                          {data?.cantidad_cupos} comprados
                         </Text>
                       </View>
                       <View style={styles.lateral}>
                         <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Fecha</Text>
-                        <Text style={[styles.lateralValue, { color: theme.text }]}>{10}</Text>
+                        <Text style={[styles.lateralValue, { color: theme.text }]}>{data?.rutadriver.horasalida.split('T')[0].replace(/-/g, '/')}</Text>
                       </View>
                     </View>
                     
                     <View style={[styles.section, {flexDirection: 'row', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center'}]}>
-                      <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{'noter'}</Text><Text style={{color: theme.text}}>{8}</Text></View>
+                      <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaInicial}</Text><Text style={{color: theme.text}}>{data?.rutadriver.horasalida.split('T')[1].substring(0, 5)}</Text></View>
                         <FontAwesome name="long-arrow-right" size={25} color="#fff" />
-                      <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{'espol'}</Text><Text  style={{color: theme.text}}>{10}</Text></View>
+                      <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaFinal}</Text><Text  style={{color: theme.text}}>{data?.rutadriver.horaestimacionllegada.split('T')[1].substring(0, 5)}</Text></View>
                       {/* <View style={{alignItems: 'center'}}><Text style={{color: theme.text}}>{data.date}</Text></View>
                       <View style={{flexDirection: 'row', justifyContent: 'space-around'}}><Text style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.zoneEnd}</Text></View> */}
                     </View>
                     <View style={[styles.placa,{ backgroundColor: theme.cardBackground }]}>
-                      <Text style={styles.textPlaca}>Placa: {'abe-323'}</Text>
+                      <Text style={styles.textPlaca}>Placa: {data?.rutadriver.vehiculo.placa}</Text>
                     </View>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingVertical: 15, alignItems: 'center'}}>
                       <TouchableOpacity style={{width: '50%', alignItems: 'center'}} onPress={() => setModalVisible(true)}>
@@ -208,7 +210,7 @@ export default function TabTwoScreen() {
                         <Text style={styles.text}>Foto Vehiculo</Text>
                         <Text style={styles.text}>Informacion del carro</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={() => Linking.openURL('https://wa.me/0959112942')} style={{width: '50%', alignItems: 'center'}}>
+                      <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${data?.rutadriver.driver.users.numeroTelefono}`)} style={{width: '50%', alignItems: 'center'}}>
                         <FontAwesome5 name="whatsapp" size={30} color="green" />
                         <Text style={styles.text} >whatssap</Text>
                         <Text style={styles.text} >Contacta al conductor</Text>
@@ -260,7 +262,7 @@ export default function TabTwoScreen() {
         >
           <View style={styles.modalContent}>
             <Image 
-              source={{ uri: 'https://gopool-img-2025.s3.us-east-2.amazonaws.com/3bc859a6-5c4f-42a3-b06d-0cd30b8325e6-21385a45-bf15-49b9-a2ad-ac7dfde3adb9.jpeg' }} 
+              source={{ uri: data?.rutadriver.vehiculo.fotovehiculo}} 
               style={styles.modalImage} 
               resizeMode="contain"
             />
@@ -411,7 +413,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   userName: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     textAlign: 'center'
   },

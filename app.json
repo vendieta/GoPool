@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "GOPOOL",
-    "slug": "",
+    "slug": "gopool",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/ico.png",
@@ -12,6 +12,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.gopool.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/ico.png",
         "backgroundColor": "#ffffff"
@@ -37,6 +38,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "dff43042-3a71-4235-9944-d8cb383265ac"
+      }
     }
   }
 }
