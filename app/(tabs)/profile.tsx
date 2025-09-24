@@ -113,7 +113,7 @@ export default function Perfil() {
   
 
   const sections = [ 
-    isDriver? {
+    role === 'true'? {
       title: "Configuración",
       items: [
         { icon: 'settings', Component: Feather, title: 'Ajustes', link: '/(optionScreen)/config' },
