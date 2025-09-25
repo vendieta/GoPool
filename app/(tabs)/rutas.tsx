@@ -1,4 +1,4 @@
-import { StyleSheet, Image, View, Text, Dimensions, ScrollView, TouchableOpacity, Linking, Modal, ActivityIndicator } from 'react-native';
+import { StyleSheet, Image, View, Text, Dimensions, ScrollView, TouchableOpacity, Linking, Modal, ActivityIndicator, Alert } from 'react-native';
 import { useTheme } from '@/components/Themed/ContextTheme';
 import Opcion from '@/components/TEST/Opcion';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -40,8 +40,25 @@ export interface RutaDriverBase {
   horaestimacionllegada: string; // ISO string
   id_vehiculo: string;
   finalizado: boolean;
+  cuposdisponibles: number;
   precio: number;
   vehiculo: Vehiculo;
+}
+
+interface Usuarios {
+  nombre: string;
+  lastname: string;
+  nummatricula: string;
+  fotomatricula: string;
+  numeroTelefono: string;
+}
+
+// Interface para el objeto principal
+interface ViajeUsuario {
+  user: Usuarios;
+  userid: string;
+  recogido: boolean;
+  cantidad_cupos: number;
 }
 
 // ----------------------
@@ -61,7 +78,7 @@ export interface RutaDriverResponseA {
 // ----------------------
 export interface RutaDriverResponseB extends RutaDriverBase {
   driver: Driver;
-  pasajeros: any[]; // puedes tipar mejor si sabes la forma de cada pasajero
+  pasajeros: ViajeUsuario[]; // puedes tipar mejor si sabes la forma de cada pasajero
 }
 
 
@@ -85,6 +102,7 @@ export default function TabTwoScreen() {
   const accentColor = '#4a90e2';
   const [ cancelModal, setCancelModal ] = useState(false);
   const { data, loading, error, get } = useApi<RutaDriverResponseA | RutaDriverResponseB |null >();
+  const { data: dataCancel, loading: loadingCancel, error: errorCancel, delete: cancelViaje } = useApi();
   const {
       storedValue: userId,
       setItem: setId,
@@ -105,7 +123,7 @@ export default function TabTwoScreen() {
     }
       // Si tu hook `useStorage` ya se encarga de leer el storage
       // con solo llamarlo basta; si no, podrías agregarle un método refresh()
-    }, [userId])
+    }, [userId, dataCancel])
   )
 
   // 
@@ -117,13 +135,26 @@ export default function TabTwoScreen() {
 
   const handleCancel = () => {
     setCancelModal(false);
-    console.log("Servicio cancelado");
+    console.log("El usuario sigue con el servicio");
   };
   console.log('🙏🙏🙏🙏🙏este es la daata',data)
-
-  const handleContinue = () => {
+  
+  const handleContinue = async() => {
+    if (data && !("rutadriver" in data)) {
+      return
+    }
+    if (data && "rutadriver" in data) {
+      console.log('🤷‍♀️user ')
+      try {
+        await cancelViaje(`/api/viajes/salir/${data.rutadriverid}/${userId}`)
+        Alert.alert('Su viaje a sido cancelado correctamanete')
+      } catch {
+        Alert.alert('No se pudo cancelar su viaje')
+      }
+      
+    }
     setCancelModal(false);
-    console.log("El usuario sigue con el servicio");
+    console.log("Servicio cancelado");
   };
 
   if (data) {
@@ -135,6 +166,7 @@ export default function TabTwoScreen() {
     console.log("Driver B:", data.driver.users.nombre);
   }
 }
+
 
   console.log(loading)
   return (
@@ -198,17 +230,64 @@ export default function TabTwoScreen() {
                       color: '#2196F3'
                     }}
                   /> 
-                  :
+                  : (data && !("rutadriver" in data)) ?
                   <>
-                  <View>
-
-                  </View>
-                  </>}
-              </View>  
-            </>
-            : isDriver === 'false' ?
-              <View style={styles.containerScroll}>
-                    {(data && "rutadriver" in data) ? <>
+                  <View style={[styles.containerHeader, { backgroundColor: theme.cardBackground, width: '100%'}]}>
+                        <View style={styles.lateral}>
+                          <Text style={[styles.lateralTitle, { color: theme.labelText }]}>precio</Text>
+                          <Text style={[styles.lateralValue, { color: theme.text }]}>$ {data?.precio}</Text>
+                        </View>
+                        <View style={styles.profileHeader}>
+                          <Image borderRadius={30} width={60} height={60} source={{uri: data.vehiculo.fotovehiculo}}/>
+                          <Text style={[styles.userName, { color: theme.text }]}>{data.driver.users.nombre} {data.driver.users.lastname}</Text>
+                          {/* <Text style={[styles.userName, { color: theme.text }]}>Max Atahualpa taguantisuyo Paquisha goku</Text> */}
+                          <Text style={[styles.userStatus, { color: theme.labelText }]}>
+                            {data.cuposdisponibles} Cupos disponibles
+                          </Text>
+                        </View>
+                        <View style={styles.lateral}>
+                          <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Fecha</Text>
+                          <Text style={[styles.lateralValue, { color: theme.text }]}>{data.horasalida.split('T')[0].replace(/-/g, '/')}</Text>
+                        </View>
+                      </View>
+                      <View style={[styles.section, {flexDirection: 'row', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center', width: '100%'}]}>
+                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data.ZonaInicial}</Text><Text style={{color: theme.text}}>{data.horasalida.split('T')[1].substring(0, 5)}</Text></View>
+                          <FontAwesome name="long-arrow-right" size={25} color={theme.text} />
+                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data.ZonaFinal}</Text><Text  style={{color: theme.text}}>{data.horaestimacionllegada.split('T')[1].substring(0, 5)}</Text></View>
+                        {/* <View style={{alignItems: 'center'}}><Text style={{color: theme.text}}>{data.date}</Text></View>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}><Text style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.zoneEnd}</Text></View> */}
+                      </View>
+                      <View style={{ width: '100%', paddingVertical: 15, alignItems: 'center'}}>
+                        <TouchableOpacity style={{width: '50%', alignItems: 'center'}} onPress={() => setModalVisible(true)}>
+                          <FontAwesome5 name="car-side" size={30} color="yellow" />
+                          <Text style={[styles.text, {color: theme.text}]}>Foto Vehiculo</Text>
+                          <Text style={[styles.text, {color: theme.text}]}>Informacion del carro</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <Text style={{color: theme.text}}>Pasajeros</Text>
+                      {data.pasajeros.map((user, index) => (
+                        <View key={index} style={[styles.section, {flexDirection: 'row', justifyContent: 'space-between', backgroundColor: theme.cardBackground, paddingHorizontal: 15, paddingVertical: 5, alignItems: 'center', width: '90%', marginVertical: 15, borderColor: theme.text, borderWidth: 1}]}>
+                        <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${user.user.numeroTelefono}`)} style={{alignItems: 'center'}}>
+                          <FontAwesome5 name="whatsapp" size={40} color="green" />
+                          {/* <Text style={{color: theme.text, fontSize: 15}} >whatssap</Text> */}
+                        </TouchableOpacity>
+                          <Text style={{color: theme.text}}>{user.user.nombre} {user.user.lastname}</Text>
+                          <Text style={{color: theme.text}}>cupos: {user.cantidad_cupos}</Text>
+                          <TouchableOpacity>
+                            <MaterialIcons name="cancel" size={30} color={theme.text} />
+                          </TouchableOpacity>
+                        </View>
+                      ))
+                      }
+                      <View style={styles.containerCancelar}>
+                        <TouchableOpacity style={styles.cancelar} onPress={() => setCancelModal(true)}>
+                          <Text style={styles.textCancelar} >Cancelar</Text>
+                        </TouchableOpacity>
+                        {/* <TouchableOpacity style={{padding: 5}}>
+                          <MaterialIcons name="report-problem" size={29} color="red" />
+                        </TouchableOpacity> */}
+                      </View>
+                  </> : (data && "rutadriver" in data) ? <>
                       <View style={[styles.containerHeader, { backgroundColor: theme.cardBackground }]}>
                         <View style={styles.lateral}>
                           <Text style={[styles.lateralTitle, { color: theme.labelText }]}>precio</Text>
@@ -230,24 +309,24 @@ export default function TabTwoScreen() {
                       
                       <View style={[styles.section, {flexDirection: 'row', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center'}]}>
                         <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaInicial}</Text><Text style={{color: theme.text}}>{data?.rutadriver.horasalida.split('T')[1].substring(0, 5)}</Text></View>
-                          <FontAwesome name="long-arrow-right" size={25} color="#fff" />
+                          <FontAwesome name="long-arrow-right" size={25} color={theme.text} />
                         <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaFinal}</Text><Text  style={{color: theme.text}}>{data?.rutadriver.horaestimacionllegada.split('T')[1].substring(0, 5)}</Text></View>
                         {/* <View style={{alignItems: 'center'}}><Text style={{color: theme.text}}>{data.date}</Text></View>
                         <View style={{flexDirection: 'row', justifyContent: 'space-around'}}><Text style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.zoneEnd}</Text></View> */}
                       </View>
                       <View style={[styles.placa,{ backgroundColor: theme.cardBackground }]}>
-                        <Text style={styles.textPlaca}>Placa: {data?.rutadriver.vehiculo.placa}</Text>
+                        <Text style={[styles.textPlaca, {color: theme.text}]}>Placa: {data?.rutadriver.vehiculo.placa}</Text>
                       </View>
                       <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingVertical: 15, alignItems: 'center'}}>
                         <TouchableOpacity style={{width: '50%', alignItems: 'center'}} onPress={() => setModalVisible(true)}>
                           <FontAwesome5 name="car-side" size={30} color="yellow" />
-                          <Text style={styles.text}>Foto Vehiculo</Text>
-                          <Text style={styles.text}>Informacion del carro</Text>
+                          <Text style={[styles.text, {color: theme.text}]}>Foto Vehiculo</Text>
+                          <Text style={[styles.text, {color: theme.text}]}>Informacion del carro</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${data?.rutadriver.driver.users.numeroTelefono}`)} style={{width: '50%', alignItems: 'center'}}>
                           <FontAwesome5 name="whatsapp" size={30} color="green" />
-                          <Text style={styles.text} >whatssap</Text>
-                          <Text style={styles.text} >Contacta al conductor</Text>
+                          <Text style={[styles.text, {color: theme.text}]} >whatssap</Text>
+                          <Text style={[styles.text, {color: theme.text}]} >Contacta al conductor</Text>
                         </TouchableOpacity>
                       </View>
                       <View style={styles.containerCancelar}>
@@ -258,16 +337,70 @@ export default function TabTwoScreen() {
                           <MaterialIcons name="report-problem" size={29} color="red" />
                         </TouchableOpacity>
                       </View>
-                    </> :
+                    </> :  <ActivityIndicator size="large" color="#00ff00" ></ActivityIndicator> }
+              </View>  
+            </>
+            : (isDriver === 'false' ) ?
+              <View style={styles.containerScroll}>
+                    {(data && "rutadriver" in data && !loading) ? 
+                    <>
+                      <View style={[styles.containerHeader, { backgroundColor: theme.cardBackground }]}>
+                        <View style={styles.lateral}>
+                          <Text style={[styles.lateralTitle, { color: theme.labelText }]}>precio</Text>
+                          <Text style={[styles.lateralValue, { color: theme.text }]}>$ {data?.rutadriver.precio}</Text>
+                        </View>
+                        <View style={styles.profileHeader}>
+                          <Image borderRadius={30} width={60} height={60} source={{uri:'https://gopool-img-2025.s3.us-east-2.amazonaws.com/3bc859a6-5c4f-42a3-b06d-0cd30b8325e6-21385a45-bf15-49b9-a2ad-ac7dfde3adb9.jpeg'}}/>
+                          <Text style={[styles.userName, { color: theme.text }]}>{data?.rutadriver.driver.users.nombre} {data?.rutadriver.driver.users.lastname}</Text>
+                          {/* <Text style={[styles.userName, { color: theme.text }]}>Max Atahualpa taguantisuyo Paquisha goku</Text> */}
+                          <Text style={[styles.userStatus, { color: theme.labelText }]}>
+                            {data?.cantidad_cupos} comprados
+                          </Text>
+                        </View>
+                        <View style={styles.lateral}>
+                          <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Fecha</Text>
+                          <Text style={[styles.lateralValue, { color: theme.text }]}>{data?.rutadriver.horasalida.split('T')[0].replace(/-/g, '/')}</Text>
+                        </View>
+                      </View>
+                      
+                      <View style={[styles.section, {flexDirection: 'row', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center'}]}>
+                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaInicial}</Text><Text style={{color: theme.text}}>{data?.rutadriver.horasalida.split('T')[1].substring(0, 5)}</Text></View>
+                          <FontAwesome name="long-arrow-right" size={25} color={theme.text} />
+                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaFinal}</Text><Text  style={{color: theme.text}}>{data?.rutadriver.horaestimacionllegada.split('T')[1].substring(0, 5)}</Text></View>
+                        {/* <View style={{alignItems: 'center'}}><Text style={{color: theme.text}}>{data.date}</Text></View>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}><Text style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.zoneEnd}</Text></View> */}
+                      </View>
+                      <View style={[styles.placa,{ backgroundColor: theme.cardBackground }]}>
+                        <Text style={[styles.textPlaca, {color: theme.text}]}>Placa: {data?.rutadriver.vehiculo.placa}</Text>
+                      </View>
+                      <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingVertical: 15, alignItems: 'center'}}>
+                        <TouchableOpacity style={{width: '50%', alignItems: 'center'}} onPress={() => setModalVisible(true)}>
+                          <FontAwesome5 name="car-side" size={30} color="yellow" />
+                          <Text style={[styles.text, {color: theme.text}]}>Foto Vehiculo</Text>
+                          <Text style={[styles.text, {color: theme.text}]}>Informacion del carro</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${data?.rutadriver.driver.users.numeroTelefono}`)} style={{width: '50%', alignItems: 'center'}}>
+                          <FontAwesome5 name="whatsapp" size={30} color="green" />
+                          <Text style={[styles.text, {color: theme.text}]} >whatssap</Text>
+                          <Text style={[styles.text, {color: theme.text}]} >Contacta al conductor</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.containerCancelar}>
+                        <TouchableOpacity style={styles.cancelar} onPress={() => setCancelModal(true)}>
+                          <Text style={styles.textCancelar} >Cancelar</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{padding: 5}}>
+                          <MaterialIcons name="report-problem" size={29} color="red" />
+                        </TouchableOpacity>
+                      </View>
+                    </> : (!data && !loading) ?
                     <>
                     <View style={{padding: 20}}>
-                      <Text style={{color: 'white'}}>Querido usuario le recomendame que busque en la un viaje a su destino...</Text>
+                      <Text style={{color: theme.text, textAlign: 'center', fontSize: 16, lineHeight: 25}}>Querido usuario le recomendamos que busque un viaje que lo lleve a su destino a su destino...</Text>
                     </View>
-                    </>}
+                    </> : <ActivityIndicator size="large" color="#00ff00" ></ActivityIndicator>}
                   </View> :
-                  <View>
                     <ActivityIndicator size="large" color="#00ff00" ></ActivityIndicator>
-                  </View>
             }
           </View>
       
@@ -299,7 +432,7 @@ export default function TabTwoScreen() {
           >
             <View style={styles.modalContent}>
               <Image 
-                source={{ uri: (data && "rutadriver" in data) ? data?.rutadriver.vehiculo.fotovehiculo : 'https://bucket.s3.amazonaws.com/matriculas/matricula123.jpg' }} 
+                source={{ uri: (data && "rutadriver" in data) ? data?.rutadriver.vehiculo.fotovehiculo : data?.vehiculo.fotovehiculo }} 
                 style={styles.modalImage} 
                 resizeMode="contain"
               /> 
