@@ -9,6 +9,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useApi } from "@/hooks/useApi";
 import useStorage from "@/hooks/useStorage";
 import LoadingOverlay from "@/components/loading/LoadingOverlay";
+import { useRouter } from "expo-router";
 
 interface Producto {
   user: string;
@@ -32,10 +33,11 @@ interface data {
 }
 
 export default function Info() {
+  const router = useRouter();
   const { info } = useLocalSearchParams();
   const { theme } = useTheme();
   const navigation = useNavigation();
-  const { data: data2, loading, error, post } = useApi<data>();
+  const { data: data2, loading, error: error2, post } = useApi<data>();
   const [seats, setSeats] = useState<number>(0);
   const {
     storedValue: userId,
@@ -45,6 +47,11 @@ export default function Info() {
     ? JSON.parse(decodeURIComponent(info))
     : ({} as Producto);
   
+    useEffect(() => {
+      if (data2) {
+        router.push({ pathname: "/send", params: { steps: 2 } });
+      }
+    },[data2])
     
     useEffect(() => {
     console.log(data)
@@ -59,7 +66,7 @@ export default function Info() {
   }, [navigation, data, theme]);
 
 
-  const aceptar = async (idViaje: string, userId: string, cupos: number) => {
+  const aceptar = async (idViaje: string, userId: string | null, cupos: number) => {
     if (data.seats <= 0) {
       Alert.alert(
       "Atención", // título
@@ -86,15 +93,19 @@ export default function Info() {
     );
       return
     }
-    
-    await post('/api/viajes/unirse', {
-      id_viaje : idViaje,
-      userid: userId,
-      cantidad_cupos: cupos 
-    });
+    try {
+      await post('/api/viajes/unirse', {
+        id_viaje : idViaje,
+        userid: userId,
+        cantidad_cupos: cupos 
+      });
+    } catch (error) {
+      console.error(error2);
+      Alert.alert('Algo salio mal intentelo otra vez')
+    }
     
   }
-
+  console.log('🤬🤬🤬🤬🤬🤬🤬🤬🤬🤬🤬', error2)
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}} style={[styles.container, { backgroundColor: theme.subtleBackground }]}>
       <View style={styles.center}>
