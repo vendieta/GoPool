@@ -20,6 +20,10 @@ interface LoginForm {
   user: {
     id: string;
     email: string;
+    email_verified: string,
+		nombre: string,
+		username: string,
+		apellido: string
   };
   isDriver: boolean;
 }
@@ -51,6 +55,14 @@ export default function LoginScreen() {
     storedValue: role,
     setItem: setRole,
   } = useStorage('role');
+  const {
+    storedValue: name,
+    setItem: setNombre,
+  } = useStorage('name');
+  const {
+    storedValue: lastName,
+    setItem: setLastName,
+  } = useStorage('lastName');
 
 
   // Definimos el objeto con el título y la ruta para el botón
@@ -83,6 +95,8 @@ export default function LoginScreen() {
         await setAccess_token('access_token', data.access_token);
         await setRefresh_token('refresh_token', data.refresh_token);
         await setRole('role', data.isDriver.toString());
+        await setNombre('name', data.user.nombre)
+        await setLastName('lastName', data.user.apellido)
         if (data.isDriver){toggleRole()}
         console.log('este es el state del login:  ', state)
         console.log('este es el state del login:  ', state);
