@@ -49,7 +49,7 @@ export default function Info() {
   
     useEffect(() => {
       if (data2) {
-        router.push({ pathname: "/send", params: { steps: 2 } });
+        router.push({ pathname: "/send", params: { steps: 2 , direction: 'true' } });
       }
     },[data2])
     

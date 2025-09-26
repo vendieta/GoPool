@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 export default function Sent() {
     const router = useRouter();
-    const { steps } = useLocalSearchParams<{ steps?: string }>(); // recibes steps como string
+    const { steps, direction } = useLocalSearchParams<{ steps?: string, direction?: string }>(); // recibes steps como string
     const backSteps = parseInt(steps ?? "1", 10); // default = 1
 
     const position = useRef(new Animated.Value(0)).current;
@@ -28,6 +28,9 @@ export default function Sent() {
         const timer = setTimeout(() => {
             for (let i = 0; i < backSteps; i++) {
                 router.back();
+            };
+            if (direction === 'true') {
+                router.replace('/(tabs)/rutas');
             }
         }, 3000);
 

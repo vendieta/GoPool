@@ -112,7 +112,7 @@ export default function CreateRoutesDriver() {
       id_vehiculo: idCar
     })
     
-    !error? router.push("/send") : setWait(false);
+    !error? router.push({ pathname: "/send", params: { steps: 2 } }): setWait(false);
   };
 
   const save =(idCar: string,img: string, model: string, placa: string) => {

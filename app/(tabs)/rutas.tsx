@@ -77,6 +77,7 @@ export interface RutaDriverResponseA {
 // SEGUNDA RESPUESTA
 // ----------------------
 export interface RutaDriverResponseB extends RutaDriverBase {
+  id: string;
   driver: Driver;
   pasajeros: ViajeUsuario[]; // puedes tipar mejor si sabes la forma de cada pasajero
 }
@@ -141,15 +142,20 @@ export default function TabTwoScreen() {
   
   const handleContinue = async() => {
     if (data && !("rutadriver" in data)) {
-      return
+      try {
+        await cancelViaje(`/api/viajes/eliminar/${data.id}`)
+        console.log('RUTA CANCELADA')
+      } catch (error) {
+        console.log(error);
+        Alert.alert('Algo salio mal intentalo de nuevo')
+      }
     }
     if (data && "rutadriver" in data) {
       console.log('🤷‍♀️user ')
       try {
         await cancelViaje(`/api/viajes/salir/${data.rutadriverid}/${userId}`)
-        Alert.alert('Su viaje a sido cancelado correctamanete')
       } catch {
-        Alert.alert('No se pudo cancelar su viaje')
+        Alert.alert('No se pudo cancelar su viaje, intentalo de nuevo')
       }
       
     }
@@ -288,7 +294,7 @@ export default function TabTwoScreen() {
                         </TouchableOpacity> */}
                       </View>
                   </> : (data && "rutadriver" in data) ? <>
-                      <View style={[styles.containerHeader, { backgroundColor: theme.cardBackground }]}>
+                      <View style={[styles.containerHeader, { backgroundColor: theme.cardBackground, width: '100%' }]}>
                         <View style={styles.lateral}>
                           <Text style={[styles.lateralTitle, { color: theme.labelText }]}>precio</Text>
                           <Text style={[styles.lateralValue, { color: theme.text }]}>$ {data?.rutadriver.precio}</Text>
@@ -307,14 +313,14 @@ export default function TabTwoScreen() {
                         </View>
                       </View>
                       
-                      <View style={[styles.section, {flexDirection: 'row', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center'}]}>
+                      <View style={[styles.section, {flexDirection: 'row', width: '100%', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center'}]}>
                         <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaInicial}</Text><Text style={{color: theme.text}}>{data?.rutadriver.horasalida.split('T')[1].substring(0, 5)}</Text></View>
                           <FontAwesome name="long-arrow-right" size={25} color={theme.text} />
                         <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaFinal}</Text><Text  style={{color: theme.text}}>{data?.rutadriver.horaestimacionllegada.split('T')[1].substring(0, 5)}</Text></View>
                         {/* <View style={{alignItems: 'center'}}><Text style={{color: theme.text}}>{data.date}</Text></View>
                         <View style={{flexDirection: 'row', justifyContent: 'space-around'}}><Text style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.zoneEnd}</Text></View> */}
                       </View>
-                      <View style={[styles.placa,{ backgroundColor: theme.cardBackground }]}>
+                      <View style={[styles.placa,{ backgroundColor: theme.cardBackground, width: '100%' }]}>
                         <Text style={[styles.textPlaca, {color: theme.text}]}>Placa: {data?.rutadriver.vehiculo.placa}</Text>
                       </View>
                       <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingVertical: 15, alignItems: 'center'}}>
