@@ -67,7 +67,7 @@ export default function LoginScreen() {
 
   // Definimos el objeto con el título y la ruta para el botón
   const loginButtonData: { title: string; link: Route, onPress: () => void } = {
-    title: 'LOG IN',
+    title: 'Iniciar sesión',
     link: '/', // Cambia la ruta según tu estructura de navegación	
     onPress: () => createTrip(email, password)
   };
@@ -122,7 +122,7 @@ export default function LoginScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Bienvenido a GoPool comenzemos tu viaje!</Text>
       <Text style={styles.subtitle}>Te ayudaré a contactar con otras personas con las que compartes una ruta</Text>
-      <Text style={styles.subtitle}>Sign In to your account</Text>
+      <Text style={styles.subtitle}>Inica sesion en tu cuenta</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -143,7 +143,7 @@ export default function LoginScreen() {
           onChangeText={setPassword}
         />
         <TouchableOpacity>
-          <Text style={styles.forgotPassword}>Forgot your password?</Text>
+          <Text style={styles.forgotPassword}>Recuperar contraseña</Text>
         </TouchableOpacity>
       </View>
 
