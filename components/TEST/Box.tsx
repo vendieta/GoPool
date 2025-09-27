@@ -1,5 +1,6 @@
 import { View, Text, Touchable, TouchableOpacity, StyleSheet } from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useTheme } from '@/components/Themed/ContextTheme';
 
 
 interface Prop {
@@ -11,10 +12,11 @@ interface Prop {
 }
 
 export default function Box ({ visible , option, select, setSelect, control } : Prop) {
+    const { theme } = useTheme();
 
     return(
-        <View style={styles.filter}>
-            <TouchableOpacity style={styles.button} onPress={() => control(!visible)}>
+        <View style={[styles.filter]}>
+            <TouchableOpacity style={[styles.button,{borderColor: theme.border}]} onPress={() => control(!visible)}>
                 <Text style={{fontSize: 16}}>{select ? select : 'zona'}</Text>
                 <MaterialIcons name="arrow-drop-down" size={20} color="black" />
             </TouchableOpacity>
@@ -40,7 +42,7 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     button: {
-        borderWidth: .5,
+        borderWidth: 1,
         borderRadius: 10,
         padding: 5,
         borderColor: 'green',

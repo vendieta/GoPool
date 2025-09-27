@@ -168,22 +168,22 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
         backgroundColor: theme.background,
       }
     ]}>
-      <View style={styles.containerBox}>
+      <View style={[styles.containerBox, {backgroundColor: theme.cardBackground}]}>
         {!action ? 
           <>
             <Box visible={box1} control={setBox1} select={select1} setSelect={setSelect1} option={['Norte', 'Sur', 'Este','Oeste', 'Via la costa', 'Espol']}/>
-              <Text>--a--</Text>
+              <Text style={{color: theme.text}}>--a--</Text>
             <Box visible={box2} control={setBox2} select={select2} setSelect={setSelect2} option={['Norte', 'Sur', 'Este', 'Oeste', 'Via la costa', 'Espol']}/>
             <TouchableOpacity onPress={() => {setAction(!action); setSelect1('');setSelect2('') }}>
-              <AntDesign name="search1" size={25} color="green" />
+              <AntDesign name="search1" size={25} color={theme.text} />
             </TouchableOpacity>
           </> :
           <>
-            <View style={{height: '100%', width: '80%', justifyContent: 'center'}}>
+            <View style={{height: '100%', width: '85%', justifyContent: 'center'}}>
               <InputSeach value={search} onChangeText={setSearch} label={''} placeholder='Busca tu punto'></InputSeach>
             </View> 
             <TouchableOpacity onPress={() => {setAction(!action); setSearch('')}}>
-              <AntDesign name="filter" size={25} color="green" />
+              <AntDesign name="filter" size={25} color={theme.text} />
             </TouchableOpacity>
           </>
         }
@@ -238,12 +238,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   containerBox: {
-    backgroundColor: 'white', 
-    height: 40, 
+    height: 50, 
     width: '100%', 
     flexDirection: 'row', 
-    justifyContent: 'space-evenly', 
+    justifyContent: 'space-between', 
     alignItems: 'center',
+    borderRadius: 10,
+    paddingTop: 5,
+    paddingHorizontal: 15,
   }
 
 });

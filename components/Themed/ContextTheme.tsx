@@ -53,7 +53,7 @@ export const darkTheme: Theme = {
   danger: "#E57373",               // Rojo suave
   info: "#64B5F6",                 // Azul suave informativo
   cardBackground: '#1C1C1E',
-  text: '#E5E5E7',
+  text: '#f1f1f1',
   subtleBackground: '#2A2A2C',
   accent: '#4D9EFF',
   labelText: '#AAAAAA',
