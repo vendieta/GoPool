@@ -4,7 +4,7 @@ import { View, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
-import LoginScreen from '../(sesionScreen)/homeLogin';
+import LoginScreen from '../(sesionScreen)/LoginScreen';
 import { useLoginContext } from '@/hooks/useLoginContext';
 import useStorage from '@/hooks/useStorage';
 import { useRoleContext } from '@/hooks/useRoleContext';
