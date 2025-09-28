@@ -1,48 +1,41 @@
-import React from 'react';
-import {
-View,
-Text,
-StyleSheet,
-ScrollView,
-Platform,
-ViewStyle,
-Dimensions
-} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, Platform, ViewStyle, Dimensions, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 
-const { height, width } = Dimensions.get('window')
+const { height, width } = Dimensions.get('window');
 
 interface TripCardProps {
-user: string;
-departureTime: string;
-arrivalTime: string;
-seats: number;
-price: number;
-routePoints: string[]; // Max 7
-date: string;
-zoneInit: string;
-zoneEnd: string;
-horizontal?: boolean;
-id: string;
+  user: string;
+  departureTime: string;
+  arrivalTime: string;
+  seats: number;
+  price: number;
+  routePoints: string[];
+  date: string;
+  zoneInit: string;
+  zoneEnd: string;
+  horizontal?: boolean;
+  id: string;
 }
 
 const UserCard: React.FC<TripCardProps> = ({
-user,
-departureTime,
-arrivalTime,
-seats,
-price,
-routePoints,
-date,
-horizontal = false,
-zoneInit,
-zoneEnd,
-id,
+  user,
+  departureTime,
+  arrivalTime,
+  seats,
+  price,
+  routePoints,
+  date,
+  horizontal = false,
+  zoneInit,
+  zoneEnd,
+  id,
 }) => {
+  const router = useRouter();
+  const [disabled, setDisabled] = useState(false);
 
-      // Validación rápida
-    const isValid =
+  const isValid =
     user &&
     departureTime &&
     arrivalTime &&
@@ -50,81 +43,92 @@ id,
     typeof price === 'number' &&
     Array.isArray(routePoints);
 
-    if (!isValid) {
-    return null; // O podrías mostrar un error en pantalla
-    }
+  if (!isValid) return null;
 
-    const jsonData = encodeURIComponent(
+  const jsonData = encodeURIComponent(
     JSON.stringify({
-        user,
-        departureTime,
-        arrivalTime,
-        seats,
-        price,
-        routePoints,
-        date,
-        zoneEnd,
-        zoneInit,
-        id
+      user,
+      departureTime,
+      arrivalTime,
+      seats,
+      price,
+      routePoints,
+      date,
+      zoneEnd,
+      zoneInit,
+      id,
     })
-    );
+  );
 
+  const handlePress = () => {
+    if (disabled) return; // Evita doble click
+    setDisabled(true);
 
-    return (
-        <Link href={{pathname: "../[info]", params: { info: jsonData} }}>
-            <View
-            style={[
-                styles.card,
-                horizontal ? styles.horizontalCard : styles.verticalCard,
-            ]}
-            >
-            <View style={styles.header}>
-                <Text style={styles.user}>{user}</Text>
-                <Text style={styles.price}>${price.toFixed(2)}</Text>
+    router.push({ pathname: '../[info]', params: { info: jsonData } });
+
+    // Reactiva después de un tiempo (ej: 1s)
+    setTimeout(() => setDisabled(false), 1000);
+  };
+
+  return (
+    <Pressable onPress={handlePress} disabled={disabled}>
+      <View
+        style={[
+          styles.card,
+          horizontal ? styles.horizontalCard : styles.verticalCard,
+        ]}
+      >
+        <View style={styles.header}>
+          <Text style={styles.user}>{user}</Text>
+          <Text style={styles.price}>${price.toFixed(2)}</Text>
+        </View>
+
+        <View style={styles.times}>
+          <View style={styles.timeBlock}>
+            <Ionicons name="time-outline" size={16} color="#0984e3" />
+            <Text style={styles.timeText}>Salida: {departureTime}</Text>
+          </View>
+          <View style={styles.timeBlock}>
+            <Ionicons name="time-outline" size={16} color="#00b894" />
+            <Text style={styles.timeText}>Llegada: {arrivalTime}</Text>
+          </View>
+        </View>
+
+        <ScrollView
+          horizontal
+          contentContainerStyle={styles.routeScroll}
+          showsHorizontalScrollIndicator={false}
+        >
+          {routePoints.map((point, index) => (
+            <View key={index} style={styles.routePointContainer}>
+              {index > 0 && <View style={styles.routeLine} />}
+              <View style={styles.routePoint}>
+                <Ionicons name="location-sharp" size={12} color="#fff" />
+                <Text style={styles.routePointText} numberOfLines={1}>
+                  {point}
+                </Text>
+              </View>
             </View>
+          ))}
+        </ScrollView>
 
-            <View style={styles.times}>
-                <View style={styles.timeBlock}>
-                <Ionicons name="time-outline" size={16} color="#0984e3" />
-                <Text style={styles.timeText}>Salida: {departureTime}</Text>
-                </View>
-                <View style={styles.timeBlock}>
-                <Ionicons name="time-outline" size={16} color="#00b894" />
-                <Text style={styles.timeText}>Llegada: {arrivalTime}</Text>
-                </View>
-            </View>
+        <View style={styles.footer}>
+          <View style={{ flexDirection: 'row', gap: 5 }}>
+            <Ionicons name="people-outline" size={16} color="#636e72" />
+            <Text style={styles.seatsText}>Cupos: {seats}</Text>
+          </View>
+          <View>
+            <Text style={styles.seatsText}>
+              {zoneInit} --- {zoneEnd}
+            </Text>
+          </View>
+        </View>
+      </View>
+    </Pressable>
+  );
+};
 
-            <ScrollView
-                horizontal
-                contentContainerStyle={styles.routeScroll}
-                showsHorizontalScrollIndicator={false}
-            >
-                {routePoints.map((point, index) => (
-                <View key={index} style={styles.routePointContainer}>
-                    {index > 0 && <View style={styles.routeLine} />}
-                    <View style={styles.routePoint}>
-                        <Ionicons name="location-sharp" size={12} color="#fff" />
-                        <Text style={styles.routePointText} numberOfLines={1}>
-                            {point}
-                        </Text>
-                    </View>
-                </View>
-                ))}
-            </ScrollView>
-
-            <View style={styles.footer}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                    <Ionicons name="people-outline" size={16} color="#636e72" />
-                    <Text style={styles.seatsText}>Cupos: {seats}</Text>
-                </View>
-                <View>
-                    <Text style={styles.seatsText}>{zoneInit}  ---  {zoneEnd}</Text>
-                </View>
-            </View>
-            </View>
-        </Link>
-    );
-    };
+// estilos (los tuyos)...
 
     export default UserCard;
 

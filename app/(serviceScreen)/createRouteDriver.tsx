@@ -10,6 +10,7 @@ import { useApi } from "@/hooks/useApi";
 import useStorage from "@/hooks/useStorage";
 import CarCard from "@/components/driver/RenderItems";
 import AddCar from "@/components/driver/AddCar";
+import LoadingOverlay from "@/components/loading/LoadingOverlay";
 
 const {width} = Dimensions.get('window')
 
@@ -76,7 +77,17 @@ export default function CreateRoutesDriver() {
       get(`/api/vehiculo/listar/${userId}`)
       console.log('el get de la lista vehiculo',data2)
     }
-  }, [refresh])
+  }, [refresh]);
+
+  useEffect(() => {
+
+    console.log(!error && data?.data)
+    if (!error && data?.data) {
+      router.push({ pathname: "/send", params: { steps: 2 } })
+    }
+  },[data])
+
+
 
   const dataCar = () => {
     setVisible(true)
@@ -111,8 +122,7 @@ export default function CreateRoutesDriver() {
       Listapuntos: rutas,
       id_vehiculo: idCar
     })
-    
-    !error? router.push({ pathname: "/send", params: { steps: 2 } }): setWait(false);
+    setWait(false); 
   };
 
   const save =(idCar: string,img: string, model: string, placa: string) => {
@@ -236,6 +246,7 @@ export default function CreateRoutesDriver() {
           </View>
         </View>
       </Modal>
+      <LoadingOverlay visible={loading || wait}/>
     </View>
   )
 }

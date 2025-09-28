@@ -47,12 +47,12 @@ export default function Info() {
     ? JSON.parse(decodeURIComponent(info))
     : ({} as Producto);
   
-    useEffect(() => {
-      if (data2) {
-        router.push({ pathname: "/send", params: { steps: 2 , direction: 'true' } });
-      }
-    },[data2])
-    
+  useEffect(() => {
+    if (data2?.registro && !error2) {
+      router.push({ pathname: "/send", params: { steps: 2 , direction: 'true' } });
+    }
+  },[data2])
+  
     useEffect(() => {
     console.log(data)
     if (Object.keys(data).length > 0) {

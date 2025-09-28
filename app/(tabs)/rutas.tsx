@@ -109,6 +109,10 @@ export default function TabTwoScreen() {
       setItem: setId,
   } = useStorage('userId');
 
+  const deleteUser = async (userId : string) => {
+    
+  }
+
 
 
   useFocusEffect(
@@ -279,7 +283,7 @@ export default function TabTwoScreen() {
                         </TouchableOpacity>
                           <Text style={{color: theme.text}}>{user.user.nombre} {user.user.lastname}</Text>
                           <Text style={{color: theme.text}}>cupos: {user.cantidad_cupos}</Text>
-                          <TouchableOpacity>
+                          <TouchableOpacity >
                             <MaterialIcons name="cancel" size={30} color={theme.text} />
                           </TouchableOpacity>
                         </View>

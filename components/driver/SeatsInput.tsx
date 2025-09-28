@@ -7,6 +7,7 @@ TouchableOpacity,
 Platform,
 } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useTheme } from "@/components/Themed/ContextTheme";
 
 interface Props {
     x?: number;
@@ -15,18 +16,18 @@ interface Props {
 }
 
 export default function SeatInput ({x, save, color}: Props) {
-const [seats, setSeats] = useState(0);
-
-const updateSeats = (delta: number) => {
-    setSeats((prev) => Math.min(x || Infinity, Math.max(0, prev + delta)));
-    if (save){
-        save((prev) => Math.min(x || Infinity, Math.max(0, prev + delta)));
-    }
-};
+    const [seats, setSeats] = useState(0);
+    const { theme } = useTheme();
+    const updateSeats = (delta: number) => {
+        setSeats((prev) => Math.min(x || Infinity, Math.max(0, prev + delta)));
+        if (save){
+            save((prev) => Math.min(x || Infinity, Math.max(0, prev + delta)));
+        }
+    };
 
 return (
     <View style={styles.container}>
-    <Text style={[styles.label, color? {color: color} : {}]}>Asientos disponibles</Text>
+    <Text style={[styles.label, {color: theme.text}]}>Asientos disponibles</Text>
     <View style={styles.buttonsRow}>
         <TouchableOpacity
         style={[styles.button, { backgroundColor: '#ff8b8bff' }]}

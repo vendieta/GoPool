@@ -154,7 +154,7 @@ export default function Perfil() {
     {
       title: "Privacidad",
       items: [
-        { icon: 'privacy-tip', Component: MaterialIcons, title: 'Políticas', link: '/(optionScreen)/privacyPolicy' },
+        { icon: 'privacy-tip', Component: MaterialIcons, title: 'Políticas', link: 'https://www.termsfeed.com/live/74b410ac-e6a5-408f-b926-f112b6af1160' },
         { icon: 'security', Component: MaterialIcons, title: 'Seguridad', link: '/(optionScreen)/privacySettings' }
       ]
     }

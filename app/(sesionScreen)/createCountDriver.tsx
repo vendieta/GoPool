@@ -112,23 +112,29 @@ export default function CreateCountUser() {
     // Validaciones previas
     if (!userName || !localUri || !localUri2 || !name || !lastName || !email || !password || !confPassword || !fechNa || !numMatricula || !ftMatricula || !ftLicencia || !numLicencia || !number) {
       setWait(false);
+      setModal(false);
       return Alert.alert("Error", "Por favor complete todos los campos.");
     };
     // Validar dominio del correo
-    if (!email.endsWith("@espol.edu.ec")) {
-      setWait(false);
-      return Alert.alert("Correo inválido", "El correo debe pertenecer al dominio @espol.edu.ec");
-    };
+    // if (!email.endsWith("@espol.edu.ec")) {
+    //   setWait(false);
+    // setModal(false);
+    //   return Alert.alert("Correo inválido", "El correo debe pertenecer al dominio @espol.edu.ec");
+    // };
     if (!numberCheck(number)) {
       setWait(false);
+      setModal(false);
       return Alert.alert("Ingrese un numero de telefono valido");
     };
     // Validar coincidencia de contraseñas
     if (password !== confPassword) {
       setWait(false);
+      setModal(false);
+
       return Alert.alert("Contraseña incorrecta", "Las contraseñas no coinciden.");
     };
     if (!dataUrl || !dataUrl2) {
+      setModal(false);
       setWait(false);
       return Alert.alert("Estamos teniendo problemas porfavor intentelo mas tarde");
     };
@@ -192,6 +198,7 @@ export default function CreateCountUser() {
         Alert.alert("Error", "No se pudo registrar la cuenta.");
     } finally {
       setWait(false);
+      setModal(false);
     };
   
     console.log(error)
