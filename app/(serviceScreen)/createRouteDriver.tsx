@@ -4,13 +4,16 @@ import SeatsInput from "@/components/driver/SeatsInput";
 import TimeInput from "@/components/driver/TimeInput";
 import Desplegable from "@/components/driver/ZonaSelector";
 import { View , Text, TextInput , StyleSheet, ScrollView, Alert , Image, Button , Dimensions , useColorScheme, Platform, TouchableOpacity, Modal, ActivityIndicator  } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { useApi } from "@/hooks/useApi";
 import useStorage from "@/hooks/useStorage";
 import CarCard from "@/components/driver/RenderItems";
 import AddCar from "@/components/driver/AddCar";
 import LoadingOverlay from "@/components/loading/LoadingOverlay";
+import WeekPicker from "@/components/driver/WeekPicker";
+import { combinarFechaYHora } from "@/scripts/compareTime";
+
 
 const {width} = Dimensions.get('window')
 
@@ -44,14 +47,34 @@ interface obj {
     color: string
 }
 
+interface HistoryData {
+  departureTime: Date;
+  arrivalTime: Date;
+  zoneInit: string;
+  zoneEnd: string;
+  price: number;
+  seats: number;
+  routePoints: FormattedPoint[];
+  routePointsObj: FormattedPoint[];
+}
+
+
+interface RouteData {
+inicio: string;
+final: string;
+[key: string]: string;
+}
+
 export default function CreateRoutesDriver() {
   const router = useRouter();
+  const { info } = useLocalSearchParams();
   const [ horaSalida, setHoraSalida ] = useState<Date>();
+  const [ selectDate, setSelectedDate ] = useState<Date>();
   const [ horaLlegada, setHoraLlegada ] = useState<Date>();
   const [ zonaInicial, setZonaInicial ] = useState<string>();
   const [ zonaFinal, setZonaFinal ] = useState<string>();
   const [ precio, setPrecio ] = useState<number>(0);
-  const [ asientos, setAcientos ] = useState<number>(0);
+  const [ asientos, setAsientos ] = useState<number>(0);
   const [ rutas, setRutas ] = useState<FormattedPoint[]>();
   const { data, loading, error, post } = useApi<DataViaje>();
   const { data: data2, loading: loading2, error: error2, get } = useApi<req>();
@@ -63,6 +86,25 @@ export default function CreateRoutesDriver() {
   const [ controler, setControler ] = useState<boolean>();
   const [ refresh , setRefresh ] = useState(true);
   const [ wait, setWait ] = useState<boolean>(false);
+
+  const historyData: HistoryData  = typeof info === "string"
+  ? JSON.parse(decodeURIComponent(info))
+  : ({} as HistoryData);
+
+  useEffect(() => {
+    console.log('info:', info);
+    console.log('historyData:', historyData);
+    if (historyData) {
+      setHoraSalida(historyData.departureTime);
+      setHoraLlegada(historyData.arrivalTime);
+      setZonaInicial(historyData.zoneInit);
+      setZonaFinal(historyData.zoneEnd);
+      setPrecio(historyData.price);
+      setAsientos(historyData.seats);
+      setRutas(historyData.routePoints);
+    };
+  }, []);
+  
 
   const {
     storedValue: userId,
@@ -82,8 +124,9 @@ export default function CreateRoutesDriver() {
   useEffect(() => {
 
     console.log(!error && data?.data)
+    const number : number = historyData? 3 : 2;
     if (!error && data?.data) {
-      router.push({ pathname: "/send", params: { steps: 2 } })
+      router.push({ pathname: "/send", params: { steps: number } })
     }
   },[data])
 
@@ -102,7 +145,7 @@ export default function CreateRoutesDriver() {
     if (wait) return; // evita múltiples ejecuciones
     setWait(true);
     // logica para publicar ruta
-    if (!zonaInicial || !zonaFinal || !precio || !asientos || !horaSalida || !horaLlegada || !rutas || !idCar) {
+    if (!zonaInicial || !zonaFinal || !precio || !asientos || !horaSalida || !horaLlegada || !rutas || !idCar || !selectDate) {
       Alert.alert(
         "error",
         "porfavor complete todos los campos.",
@@ -117,8 +160,8 @@ export default function CreateRoutesDriver() {
       zonaFinal: zonaFinal,
       precio: precio,
       asientos: asientos,
-      horaSalida: horaSalida,
-      horaLlegada: horaLlegada,
+      horaSalida: combinarFechaYHora(selectDate, horaSalida),
+      horaLlegada: combinarFechaYHora(selectDate, horaLlegada),
       Listapuntos: rutas,
       id_vehiculo: idCar
     })
@@ -151,12 +194,15 @@ export default function CreateRoutesDriver() {
       }}>
         <View style={[styles.subContainer, Platform.OS === 'web' ? { width: '100%',} : { width: '95%',}]}>
           <View style={styles.inputContainer}>
+             <WeekPicker setSelectedDate={setSelectedDate} />
             <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-around'}}>
               <TimeInput
+              initialValue={horaSalida}
               save={setHoraSalida}
               backColor="#fab1a0"
               SalEnt="Salida"/>
               <TimeInput
+              initialValue={horaLlegada}
               save={setHoraLlegada}
               backColor="#81ecec"
               SalEnt="Llegada"/>
@@ -165,26 +211,29 @@ export default function CreateRoutesDriver() {
               <View style={{width: '45%'}}>
                 <Text style={styles.zonaText}>De que zona partes?</Text>
                 <Desplegable 
+                initialValue={zonaInicial}
                 save={setZonaInicial}
                 backColor= '#fab1a0'/>
               </View>
               <View style={{width: '45%'}}>
                 <Text style={styles.zonaText}>A que zona vas?</Text>
-                <Desplegable 
+                <Desplegable
+                initialValue={zonaFinal}
                 save={setZonaFinal}
                 backColor= '#81ecec'/>
               </View>
             </View>
             <View style={{width: '100%'}}>
               <PriceInput
+              initialValue={precio}
               save={setPrecio}
               />
             </View>
             <View style={{width: '100%'}}>
-              <SeatsInput save={setAcientos}/>
+              <SeatsInput initialValue={asientos} save={setAsientos}/>
             </View>
             <View style={{width: '100%'}}>
-              <RoutePointsInput save={setRutas}/>
+              <RoutePointsInput initialValue={historyData.routePointsObj} save={setRutas}/>
             </View>
             <TouchableOpacity style={{marginVertical: 5, width: '80%', borderRadius: 10, borderColor: 'black', borderWidth: 1, padding: 5, justifyContent: 'center'}} onPress={dataCar}>
               {imgCar && model && placa ? 

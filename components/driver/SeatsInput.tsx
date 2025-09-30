@@ -1,57 +1,68 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-View,
-Text,
-StyleSheet,
-TouchableOpacity,
-Platform,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
 } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useTheme } from "@/components/Themed/ContextTheme";
 
 interface Props {
-    x?: number;
-    save?: (x: any) => void;
-    color?: string
+  x?: number; // límite máximo
+  save?: (x: number) => void;
+  color?: string;
+  initialValue?: number;
 }
 
-export default function SeatInput ({x, save, color}: Props) {
-    const [seats, setSeats] = useState(0);
-    const { theme } = useTheme();
-    const updateSeats = (delta: number) => {
-        setSeats((prev) => Math.min(x || Infinity, Math.max(0, prev + delta)));
-        if (save){
-            save((prev) => Math.min(x || Infinity, Math.max(0, prev + delta)));
-        }
-    };
+export default function SeatInput({ x, save, color, initialValue }: Props) {
+  const [seats, setSeats] = useState(
+    initialValue !== undefined ? Math.max(0, initialValue) : 0
+  );
+  const { theme } = useTheme();
 
-return (
+  const updateSeats = (delta: number) => {
+    setSeats((prev) => {
+      const newSeats = Math.min(x || Infinity, Math.max(0, prev + delta));
+      if (save) save(newSeats); // <-- pasar valor directo
+      return newSeats;
+    });
+  };
+
+  // sincronizar con el padre siempre al inicio o si cambia initialValue
+  useEffect(() => {
+    const init = initialValue !== undefined ? Math.max(0, initialValue) : 0;
+    setSeats(init);
+    if (save) save(init);
+  }, [initialValue]);
+
+  return (
     <View style={styles.container}>
-    <Text style={[styles.label, {color: theme.text}]}>Asientos disponibles</Text>
-    <View style={styles.buttonsRow}>
+      <Text style={[styles.label, { color: 'black' }]}>Asientos disponibles</Text>
+      <View style={styles.buttonsRow}>
         <TouchableOpacity
-        style={[styles.button, { backgroundColor: '#ff8b8bff' }]}
-        onPress={() => updateSeats(-1)}
+          style={[styles.button, { backgroundColor: '#ff8b8bff' }]}
+          onPress={() => updateSeats(-1)}
         >
-        <Text style={styles.buttonText}>-</Text>
+          <Text style={styles.buttonText}>-</Text>
         </TouchableOpacity>
-        
-        <View style={styles.seatBox}>
-        <MaterialIcons name="event-seat" size={35} color="#0984e3" />
-        <Text style={styles.seatNumber}>{seats}</Text>
-        </View>
-        
-        <TouchableOpacity
-        style={[styles.button, { backgroundColor: '#b4e9bfff' }]}
-        onPress={() => updateSeats(1)}
-        >
-        <Text style={styles.buttonText}>+</Text>
-        </TouchableOpacity>
-    </View>
-    </View>
-);
-};
 
+        <View style={styles.seatBox}>
+          <MaterialIcons name="event-seat" size={35} color={color || "#0984e3"} />
+          <Text style={styles.seatNumber}>{seats}</Text>
+        </View>
+
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: '#b4e9bfff' }]}
+          onPress={() => updateSeats(1)}
+        >
+          <Text style={styles.buttonText}>+</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
 container: {

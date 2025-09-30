@@ -1,61 +1,63 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-View,
-Text,
-StyleSheet,
-TouchableOpacity,
-Platform,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 
-const BUTTON_VALUES = [-1, -.5, -.25, .25, .5, 1];
-
+const BUTTON_VALUES = [-1, -0.5, -0.25, 0.25, 0.5, 1];
 
 interface Props {
-    save: (x: any) => void
+  save: (x: number) => void;
+  initialValue?: number;
 }
 
-export default function PriceInput ({save}: Props)  {
-const [price, setPrice] = useState(0);
+export default function PriceInput({ save, initialValue }: Props) {
+  const [price, setPrice] = useState(0);
 
-const updatePrice = (delta: number) => {
+  const updatePrice = (delta: number) => {
     setPrice((prev) => {
-    const newPrice = Math.max(0, parseFloat((prev + delta).toFixed(2)));
-    return newPrice;
+      const newPrice = Math.max(0, parseFloat((prev + delta).toFixed(2)));
+      save(newPrice);
+      return newPrice;
     });
-    save((prev) => {
-    const newPrice2 = Math.max(0, parseFloat((prev + delta).toFixed(2)));
-    console.log(newPrice2)
-    return newPrice2;
-    });
-};
+  };
 
-return (
+  useEffect(() => {
+    if (initialValue !== undefined) {
+      const init = Math.max(0, parseFloat(initialValue.toFixed(2)));
+      setPrice(init);
+      save(init); // <- ahora también lo guarda
+    }
+  }, [initialValue]);
+
+  return (
     <View style={styles.container}>
-    <Text style={styles.label}>Precio del servicio</Text>
-    <View style={styles.priceBox}>
+      <Text style={styles.label}>Precio del servicio</Text>
+      <View style={styles.priceBox}>
         <Text style={styles.priceText}>${price.toFixed(2)}</Text>
-    </View>
-    <View style={styles.buttonsRow}>
+      </View>
+      <View style={styles.buttonsRow}>
         {BUTTON_VALUES.map((val, index) => (
-        <TouchableOpacity
+          <TouchableOpacity
             key={index}
             onPress={() => updatePrice(val)}
             style={[
-            styles.button,
-            { backgroundColor: val > 0 ? '#b4e9bfff' : '#ff8b8bff' },
+              styles.button,
+              { backgroundColor: val > 0 ? '#b4e9bfff' : '#ff8b8bff' },
             ]}
-        >
+          >
             <Text style={styles.buttonText}>
-            {val > 0 ? '+' : ''}
-            {val}
+              {val > 0 ? '+' : ''}
+              {val}
             </Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
         ))}
+      </View>
     </View>
-    </View>
-);
-};
-
+  );
+}
 
 const styles = StyleSheet.create({
 container: {

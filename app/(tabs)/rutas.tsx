@@ -11,6 +11,7 @@ import { useApi } from '@/hooks/useApi';
 import useStorage from '@/hooks/useStorage';
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import { compareServiceTime } from '@/scripts/compareTime';
 
 export interface User {
   id: string;
@@ -82,6 +83,18 @@ export interface RutaDriverResponseB extends RutaDriverBase {
   pasajeros: ViajeUsuario[]; // puedes tipar mejor si sabes la forma de cada pasajero
 }
 
+function getTimeInGuayaquil() {
+  const now = new Date()
+  return new Intl.DateTimeFormat("es-EC", {
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: false,
+    timeZone: "America/Guayaquil",
+  }).format(now)
+}
+
+
 
 
 export default function TabTwoScreen() {
@@ -102,33 +115,46 @@ export default function TabTwoScreen() {
   const headerBgColor = isLightTheme ? '#1D3D47' : '#0d232a';
   const accentColor = '#4a90e2';
   const [ cancelModal, setCancelModal ] = useState(false);
-  const { data, loading, error, get } = useApi<RutaDriverResponseA | RutaDriverResponseB |null >();
+  const [ cancelUser, setCancelUser ] = useState(false);
+  const [ nameUser, setNameUser ] = useState<string>(''); 
+  const [ block, setBlock ] = useState<boolean>(false);
+  const [ finish, setFinish ] = useState<boolean>(false);
+  const [ idUserDelete, setIdUserDelete ] = useState<string>('');
+  const { data, loading, error, get } = useApi<RutaDriverResponseA | RutaDriverResponseB |null >(); 
+  const { data: finishDAta, loading: finishLoading, error: finishError, post } = useApi(); 
   const { data: dataCancel, loading: loadingCancel, error: errorCancel, delete: cancelViaje } = useApi();
   const {
       storedValue: userId,
       setItem: setId,
   } = useStorage('userId');
 
-  const deleteUser = async (userId : string) => {
-    
-  }
 
 
 
   useFocusEffect(
     useCallback(() => {
-    console.log(`/api/user/me/viaje-actual/${userId}`)
-        if (userId) {
-      const a = async() => {
-        await get(`/api/user/me/viaje-actual/${userId}`)
-      }
-
+      console.log(`/api/user/me/viaje-actual/${userId}`)
+      if (userId) {
+        const a = async() => {
+          await get(`/api/user/me/viaje-actual/${userId}`);
+          console.log('🤑🤑🤑🤑', compareServiceTime(data && "rutadriver" in data ? data.rutadriver.horasalida : data && !("rutadriver" in data) ? data.horasalida : ''));
+          if (compareServiceTime(data && "rutadriver" in data ? data.rutadriver.horasalida : data && !("rutadriver" in data) ? data.horasalida : '') === 'expired') {
+            console.log('El viaje ya no busca mas usuarios');
+            setBlock(true);
+          };
+          console.log('🤑🤑🤑🤑', compareServiceTime(data && "rutadriver" in data ? data.rutadriver.horaestimacionllegada : data && !("rutadriver" in data) ? data.horaestimacionllegada : ''));
+          if (compareServiceTime(data && "rutadriver" in data ? data.rutadriver.horaestimacionllegada : data && !("rutadriver" in data) ? data.horaestimacionllegada : '') === 'expired') {
+            console.log('👾👾👾👾👾👾👾El viaje a terminado');
+            setFinish(true);
+          };
+        }
+      
       a()
-      console.log('👾👾👾👾👾👾👾👾se actualizo la data')
+      console.log('👾se actualizo la data')
     }
       // Si tu hook `useStorage` ya se encarga de leer el storage
       // con solo llamarlo basta; si no, podrías agregarle un método refresh()
-    }, [userId, dataCancel])
+    }, [userId, dataCancel, finishDAta])
   )
 
   // 
@@ -136,10 +162,25 @@ export default function TabTwoScreen() {
     setIsDriver(role);
   }, [role, userId,]);
 
+  useEffect(() => {
+    console.log('🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶',data)
+    if (data && finish){
+      const x = async() => {
+        await post('/api/viajes/finalizar',{
+          idViaje: ("rutadriver" in data) ? data.rutadriverid : data?.id
+        });
+      }
+      x();
+      setFinish(false);
+    }
+    
+  },[finish,data])
 
+console.log('👿👿👿👿👿',finishDAta)
 
   const handleCancel = () => {
     setCancelModal(false);
+    setCancelUser(false);
     console.log("El usuario sigue con el servicio");
   };
   console.log('🙏🙏🙏🙏🙏este es la daata',data)
@@ -167,15 +208,32 @@ export default function TabTwoScreen() {
     console.log("Servicio cancelado");
   };
 
-  if (data) {
-  if ("rutadriver" in data) {
-    // Aquí TS ya sabe que es RutaDriverResponseA
-    console.log("Driver A:", data.rutadriver.driver.users.nombre);
-  } else {
-    // Aquí TS ya sabe que es RutaDriverResponseB
-    console.log("Driver B:", data.driver.users.nombre);
-  }
-}
+  const deleteUser = async(idUser: string) => {
+    if (data && !("rutadriver" in data)) {
+      try {
+        await cancelViaje(`/api/viajes/salir/${data.id}/${idUser}`)
+        console.log('🤪🤪🤪🤪🤪🤪🤪usuario eliminado')
+      } catch (error) {
+        console.log(error);
+        Alert.alert('Algo salio mal intentalo de nuevo')
+      }
+    }
+    setCancelModal(false);
+    setCancelUser(false);
+    console.log("Servicio cancelado");
+  };
+
+//   if (data) {
+//   if ("rutadriver" in data) {
+//     // Aquí TS ya sabe que es RutaDriverResponseA
+//     console.log("Driver A:", data.rutadriver.driver.users.nombre);
+//   } else {
+//     // Aquí TS ya sabe que es RutaDriverResponseB
+//     console.log("Driver B:", data.driver.users.nombre);
+//   }
+// }
+
+console.log('hora actual en guayaquil', compareServiceTime('2025-09-28T19:27:00'))
 
 
   console.log(loading)
@@ -223,10 +281,10 @@ export default function TabTwoScreen() {
                 </View>
               } */}
               <View style={styles.optionsContainer}>
-                {(!data && !loading) ? 
+                {(!data && !loading && !finishLoading) ? 
                   <Opcion
                     element={{
-                      link: '/(serviceScreen)/rutaUser',
+                      link: '/(serviceScreen)/viajes',
                       title: 'Ver tus registro de rutas',
                       icon: 'history',
                       description: 'Mira los viajes que has realizado',
@@ -240,7 +298,7 @@ export default function TabTwoScreen() {
                       color: '#2196F3'
                     }}
                   /> 
-                  : (data && !("rutadriver" in data)) ?
+                  : (data && !("rutadriver" in data) && !finishLoading) ?
                   <>
                   <View style={[styles.containerHeader, { backgroundColor: theme.cardBackground, width: '100%'}]}>
                         <View style={styles.lateral}>
@@ -283,7 +341,7 @@ export default function TabTwoScreen() {
                         </TouchableOpacity>
                           <Text style={{color: theme.text}}>{user.user.nombre} {user.user.lastname}</Text>
                           <Text style={{color: theme.text}}>cupos: {user.cantidad_cupos}</Text>
-                          <TouchableOpacity >
+                          <TouchableOpacity onPress={()=> {setCancelUser(true); setNameUser(`${user.user.nombre} ${user.user.lastname}`); setIdUserDelete(user.userid)}} >
                             <MaterialIcons name="cancel" size={30} color={theme.text} />
                           </TouchableOpacity>
                         </View>
@@ -297,7 +355,7 @@ export default function TabTwoScreen() {
                           <MaterialIcons name="report-problem" size={29} color="red" />
                         </TouchableOpacity> */}
                       </View>
-                  </> : (data && "rutadriver" in data) ? <>
+                  </> : (data && "rutadriver" in data && !finishLoading) ? <>
                       <View style={[styles.containerHeader, { backgroundColor: theme.cardBackground, width: '100%' }]}>
                         <View style={styles.lateral}>
                           <Text style={[styles.lateralTitle, { color: theme.labelText }]}>precio</Text>
@@ -340,9 +398,9 @@ export default function TabTwoScreen() {
                         </TouchableOpacity>
                       </View>
                       <View style={styles.containerCancelar}>
-                        <TouchableOpacity style={styles.cancelar} onPress={() => setCancelModal(true)}>
+                          {block? null: <TouchableOpacity style={styles.cancelar} onPress={() => setCancelModal(true)}>
                           <Text style={styles.textCancelar} >Cancelar</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity>}
                         <TouchableOpacity style={{padding: 5}}>
                           <MaterialIcons name="report-problem" size={29} color="red" />
                         </TouchableOpacity>
@@ -396,14 +454,14 @@ export default function TabTwoScreen() {
                         </TouchableOpacity>
                       </View>
                       <View style={styles.containerCancelar}>
-                        <TouchableOpacity style={styles.cancelar} onPress={() => setCancelModal(true)}>
+                        {block? null: <TouchableOpacity style={styles.cancelar} onPress={() => setCancelModal(true)}>
                           <Text style={styles.textCancelar} >Cancelar</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity>}
                         <TouchableOpacity style={{padding: 5}}>
                           <MaterialIcons name="report-problem" size={29} color="red" />
                         </TouchableOpacity>
                       </View>
-                    </> : (!data && !loading) ?
+                    </> : (!data && !loading && !finishLoading) ?
                     <>
                     <View style={{padding: 20}}>
                       <Text style={{color: theme.text, textAlign: 'center', fontSize: 16, lineHeight: 25}}>Querido usuario le recomendamos que busque un viaje que lo lleve a su destino a su destino...</Text>
@@ -451,18 +509,18 @@ export default function TabTwoScreen() {
         </Modal>
         <Modal
           transparent
-          visible={cancelModal}
+          visible={cancelModal || cancelUser}
           animationType="fade"
-          onRequestClose={() => setCancelModal(false)}
+          onRequestClose={() => {setCancelModal(false); setCancelModal(false)}} // Android back button
         >
           <View style={styles.modalBackground}>
             <View style={styles.modalBox}>
-              <Text style={styles.modalText}>¿Esta seguro que deseas cancelar el servicio?</Text>
+              <Text style={styles.modalText}>{cancelUser ? `Esta seguro que quiere eliminar a ${nameUser}`: '¿Esta seguro que deseas cancelar el servicio?'}</Text>
               <View style={styles.buttonRow}>
-                <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+                <TouchableOpacity style={styles.cancelButton} onPress={handleCancel }>
                   <Text style={styles.buttonText}>No</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
+                <TouchableOpacity style={styles.continueButton} onPress={cancelUser ? () => deleteUser(idUserDelete) : handleContinue}>
                   <Text style={styles.buttonText}>Si</Text>
                 </TouchableOpacity>
               </View>

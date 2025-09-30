@@ -18,7 +18,7 @@ export default function Layout() {
           
         />
         <Stack.Screen
-          name="rutaUser"
+          name="viajes"
           options={{headerShown: true, title: 'Viajes'}}
         />
         <Stack.Screen
