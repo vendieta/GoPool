@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/components/Themed/ContextTheme';
 import { getNowInGuayaquil } from "@/scripts/compareTime";
+import { ComvertDateZone, ComvertTimeZone, formatearFecha } from '@/scripts/time';
 
 const { height, width } = Dimensions.get('window');
 
@@ -92,18 +93,18 @@ const HistoryCard: React.FC<TripCardProps> = ({
             ]}
           >
             <View style={styles.header}>
-              <Text style={styles.user}>{user}</Text>
+              <Text style={styles.user}>{formatearFecha(date)}</Text>
               <Text style={styles.price}>${price.toFixed(2)}</Text>
             </View>
         
             <View style={styles.times}>
               <View style={styles.timeBlock}>
                 <Ionicons name="time-outline" size={16} color="#0984e3" />
-                <Text style={styles.timeText}>Salida: {departureTime.split('T')[1].substring(0, 5)}</Text>
+                <Text style={styles.timeText}>Salida: {ComvertTimeZone(departureTime)}</Text>
               </View>
               <View style={styles.timeBlock}>
                 <Ionicons name="time-outline" size={16} color="#00b894" />
-                <Text style={styles.timeText}>Llegada: {arrivalTime.split('T')[1].substring(0, 5)}</Text>
+                <Text style={styles.timeText}>Llegada: {ComvertTimeZone(arrivalTime)}</Text>
               </View>
             </View>
         

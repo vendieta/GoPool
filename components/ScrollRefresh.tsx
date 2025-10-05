@@ -8,6 +8,7 @@ import Input from './Input';
 import InputSeach from './InputSearch';
 import { useApi } from '@/hooks/useApi';
 import LoadingOverlay from './loading/LoadingOverlay';
+import { ComvertTimeZone } from '@/scripts/time';
 
 
 interface Item {
@@ -151,8 +152,9 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
         ).map(p => p.descripcion )|| []
       }
       // routePoints= {item.puntosruta.sort((a, b) => parseInt(a.orden) - parseInt(b.orden)).map(punto => punto.descripcion) || []} 
-      arrivalTime= {item.horaestimacionllegada.split('T')[1].substring(0, 5)}
-      departureTime= {item.horasalida.split('T')[1].substring(0, 5)}
+      arrivalTime= {ComvertTimeZone(item.horaestimacionllegada)}
+      departureTime= {ComvertTimeZone(item.horasalida)}
+      // departureTime= {item.horasalida.split('T')[1].substring(0, 5)}
       seats= {item.cuposdisponibles}
       date= {item.horasalida.split('T')[0].replace(/-/g, '/') }
       zoneInit= {item.ZonaInicial}

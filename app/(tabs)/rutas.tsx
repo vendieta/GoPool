@@ -11,7 +11,8 @@ import { useApi } from '@/hooks/useApi';
 import useStorage from '@/hooks/useStorage';
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
-import { compareServiceTime } from '@/scripts/compareTime';
+import { checkTime, getNowInGuayaquil } from '@/scripts/compareTime';
+import {ComvertDateZone, ComvertTimeZone} from '@/scripts/time';
 
 export interface User {
   id: string;
@@ -130,21 +131,44 @@ export default function TabTwoScreen() {
 
 
 
-
   useFocusEffect(
     useCallback(() => {
       console.log(`/api/user/me/viaje-actual/${userId}`)
       if (userId) {
         const a = async() => {
           await get(`/api/user/me/viaje-actual/${userId}`);
-          console.log('🤑🤑🤑🤑', compareServiceTime(data && "rutadriver" in data ? data.rutadriver.horasalida : data && !("rutadriver" in data) ? data.horasalida : ''));
-          if (compareServiceTime(data && "rutadriver" in data ? data.rutadriver.horasalida : data && !("rutadriver" in data) ? data.horasalida : '') === 'expired') {
+          // console.log('🤑🤑🤑🤑', compareServiceTime(data && "rutadriver" in data ? data.rutadriver.horasalida : data && !("rutadriver" in data) ? data.horasalida : ''));
+          // if (compareServiceTime(data && "rutadriver" in data ? data.rutadriver.horasalida : data && !("rutadriver" in data) ? data.horasalida : '') === 'expired') {
+          //   console.log('El viaje ya no busca mas usuarios');
+          //   setBlock(true);
+          // };
+          // console.log('🤑🤑🤑🤑', data ? "rutadriver" in data ? data.rutadriver.horaestimacionllegada : data.horaestimacionllegada : 'no hay data');
+          // if (data && checkTime(data && "rutadriver" in data ? new Date(data.rutadriver.horaestimacionllegada).toISOString() : data && !("rutadriver" in data) ? new Date(data.horaestimacionllegada).toISOString()  : '') === 'expired') {
+          //   console.log('El viaje ya finalizo hptaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+          //   setFinish(true);
+          // };
+        }
+      
+      a()
+      console.log('👾se actualizo la data')
+    }
+      // Si tu hook `useStorage` ya se encarga de leer el storage
+      // con solo llamarlo basta; si no, podrías agregarle un método refresh()
+    }, [userId, dataCancel, finishDAta]),
+
+  )
+
+  useFocusEffect(
+    useCallback(() => {
+      if (data) {
+        const a = async() => {
+          if (checkTime(data && "rutadriver" in data ? new Date(data.rutadriver.horasalida).toISOString() : data && !("rutadriver" in data) ? new Date(data.horasalida).toISOString() : '') === 'expired') {
             console.log('El viaje ya no busca mas usuarios');
             setBlock(true);
           };
-          console.log('🤑🤑🤑🤑', compareServiceTime(data && "rutadriver" in data ? data.rutadriver.horaestimacionllegada : data && !("rutadriver" in data) ? data.horaestimacionllegada : ''));
-          if (compareServiceTime(data && "rutadriver" in data ? data.rutadriver.horaestimacionllegada : data && !("rutadriver" in data) ? data.horaestimacionllegada : '') === 'expired') {
-            console.log('👾👾👾👾👾👾👾El viaje a terminado');
+          // console.log('🤑🤑🤑🤑', data ? "rutadriver" in data ? data.rutadriver.horaestimacionllegada : data.horaestimacionllegada : 'no hay data');
+          if (data && checkTime(data && "rutadriver" in data ? new Date(data.rutadriver.horaestimacionllegada).toISOString() : data && !("rutadriver" in data) ? new Date(data.horaestimacionllegada).toISOString()  : '') === 'expired') {
+            console.log('El viaje ya finalizo hptaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
             setFinish(true);
           };
         }
@@ -154,7 +178,8 @@ export default function TabTwoScreen() {
     }
       // Si tu hook `useStorage` ya se encarga de leer el storage
       // con solo llamarlo basta; si no, podrías agregarle un método refresh()
-    }, [userId, dataCancel, finishDAta])
+    }, [data]),
+
   )
 
   // 
@@ -163,9 +188,9 @@ export default function TabTwoScreen() {
   }, [role, userId,]);
 
   useEffect(() => {
-    console.log('🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶',data)
     if (data && finish){
       const x = async() => {
+        console.log('🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶',data)
         await post('/api/viajes/finalizar',{
           idViaje: ("rutadriver" in data) ? data.rutadriverid : data?.id
         });
@@ -233,7 +258,7 @@ console.log('👿👿👿👿👿',finishDAta)
 //   }
 // }
 
-console.log('hora actual en guayaquil', compareServiceTime('2025-09-28T19:27:00'))
+
 
 
   console.log(loading)
@@ -315,13 +340,16 @@ console.log('hora actual en guayaquil', compareServiceTime('2025-09-28T19:27:00'
                         </View>
                         <View style={styles.lateral}>
                           <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Fecha</Text>
-                          <Text style={[styles.lateralValue, { color: theme.text }]}>{data.horasalida.split('T')[0].replace(/-/g, '/')}</Text>
+                          <Text style={[styles.lateralValue, { color: theme.text }]}>{ComvertDateZone(data.horasalida)}</Text>
+                          {/* <Text style={[styles.lateralValue, { color: theme.text }]}>{data.horasalida.split('T')[0].replace(/-/g, '/')}</Text> */}
                         </View>
                       </View>
                       <View style={[styles.section, {flexDirection: 'row', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center', width: '100%'}]}>
-                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data.ZonaInicial}</Text><Text style={{color: theme.text}}>{data.horasalida.split('T')[1].substring(0, 5)}</Text></View>
+                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data.ZonaInicial}</Text><Text style={{color: theme.text}}>{ComvertTimeZone(data.horasalida )}</Text></View>
+                        {/* <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data.ZonaInicial}</Text><Text style={{color: theme.text}}>{data.horasalida.split('T')[1].substring(0, 5)}</Text></View> */}
                           <FontAwesome name="long-arrow-right" size={25} color={theme.text} />
-                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data.ZonaFinal}</Text><Text  style={{color: theme.text}}>{data.horaestimacionllegada.split('T')[1].substring(0, 5)}</Text></View>
+                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data.ZonaFinal}</Text><Text  style={{color: theme.text}}>{ComvertTimeZone(data.horaestimacionllegada)}</Text></View>
+                        {/* <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data.ZonaFinal}</Text><Text  style={{color: theme.text}}>{data.horaestimacionllegada.split('T')[1].substring(0, 5)}</Text></View> */}
                         {/* <View style={{alignItems: 'center'}}><Text style={{color: theme.text}}>{data.date}</Text></View>
                         <View style={{flexDirection: 'row', justifyContent: 'space-around'}}><Text style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.zoneEnd}</Text></View> */}
                       </View>
@@ -371,14 +399,14 @@ console.log('hora actual en guayaquil', compareServiceTime('2025-09-28T19:27:00'
                         </View>
                         <View style={styles.lateral}>
                           <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Fecha</Text>
-                          <Text style={[styles.lateralValue, { color: theme.text }]}>{data?.rutadriver.horasalida.split('T')[0].replace(/-/g, '/')}</Text>
+                          <Text style={[styles.lateralValue, { color: theme.text }]}>{ComvertDateZone(data?.rutadriver.horasalida)}</Text>
                         </View>
                       </View>
                       
                       <View style={[styles.section, {flexDirection: 'row', width: '100%', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center'}]}>
-                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaInicial}</Text><Text style={{color: theme.text}}>{data?.rutadriver.horasalida.split('T')[1].substring(0, 5)}</Text></View>
+                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaInicial}</Text><Text style={{color: theme.text}}>{ComvertTimeZone(data?.rutadriver.horasalida)}</Text></View>
                           <FontAwesome name="long-arrow-right" size={25} color={theme.text} />
-                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaFinal}</Text><Text  style={{color: theme.text}}>{data?.rutadriver.horaestimacionllegada.split('T')[1].substring(0, 5)}</Text></View>
+                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaFinal}</Text><Text  style={{color: theme.text}}>{ComvertTimeZone(data?.rutadriver.horaestimacionllegada)}</Text></View>
                         {/* <View style={{alignItems: 'center'}}><Text style={{color: theme.text}}>{data.date}</Text></View>
                         <View style={{flexDirection: 'row', justifyContent: 'space-around'}}><Text style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.zoneEnd}</Text></View> */}
                       </View>

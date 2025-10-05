@@ -154,19 +154,21 @@ export default function CreateRoutesDriver() {
       setWait(false);
       return;
     }
+    // console.log('👺👺👺👺👺👺', combinarFechaYHora(selectDate, (horaSalida)),combinarFechaYHora(selectDate, horaLlegada),);
     post('/api/viajes/crear', {
       id_driver: userId,
       zonaInicial: zonaInicial,
       zonaFinal: zonaFinal,
       precio: precio,
       asientos: asientos,
-      horaSalida: combinarFechaYHora(selectDate, horaSalida),
-      horaLlegada: combinarFechaYHora(selectDate, horaLlegada),
+      horaSalida: combinarFechaYHora(selectDate, new Date(horaSalida)),
+      horaLlegada: combinarFechaYHora(selectDate, new Date(horaLlegada)),
       Listapuntos: rutas,
       id_vehiculo: idCar
     })
     setWait(false); 
   };
+  console.log('🚗🚗🚗👺👺👺👺', selectDate && horaLlegada ? combinarFechaYHora(selectDate, new Date(horaLlegada)): '');
 
   const save =(idCar: string,img: string, model: string, placa: string) => {
     setImgCar(img);

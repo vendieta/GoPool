@@ -1,7 +1,7 @@
 import { useApi } from "@/hooks/useApi";
 import useStorage from "@/hooks/useStorage";
 import { useEffect } from "react";
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, RefreshControl, FlatList } from "react-native";
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, RefreshControl, FlatList, ActivityIndicator } from "react-native";
 import { useTheme } from '@/components/Themed/ContextTheme';
 import HistoryCard from "@/components/driver/HistoryCard";
 
@@ -71,13 +71,15 @@ export default function Viajes(){
         arrivalTime= {item.horaestimacionllegada}
         departureTime= {item.horasalida}
         seats= {item.cuposdisponibles}
-        date= {item.horasalida.split('T')[0].replace(/-/g, '/') }
+        date= {item.horasalida}
         zoneInit= {item.ZonaInicial}
         zoneEnd= {item.ZonaFinal}
         routePointsObj={item.puntosruta}
         />
         : null
     );
+
+    console.log('🚌🚌🚌🚌🚌🚌🚌Viajes:',  data);
 
 
     return(
@@ -86,7 +88,12 @@ export default function Viajes(){
                 {data?.viajes[0] ? 
                 <>
                 <FlatList
-                          data={data?.viajes || []}
+                          data={   (data?.viajes || []).sort((a, b) => {
+                            const fechaA = new Date(a.horaestimacionllegada).getTime();
+                            const fechaB = new Date(b.horaestimacionllegada).getTime();
+                            return fechaB - fechaA; // orden descendente (más reciente primero)
+                            })}
+                        //   data={data?.viajes || []}
                           keyExtractor={(item) => item.id}
                           renderItem={renderItem}
                           // numColumns={2}
@@ -94,29 +101,11 @@ export default function Viajes(){
                           contentContainerStyle={styles.listContent}
                           showsVerticalScrollIndicator= {false}
                           keyboardShouldPersistTaps="handled"
-                        //   refreshControl={
-                        //     <RefreshControl
-                        //       refreshing={refreshing}
-                        //       onRefresh={onRefresh}
-                        //       colors={[theme.primary]}
-                        //       tintColor={theme.primary}
-                        //     />
-                        //   }
-                          // ItemSeparatorComponent={() => (
-                          //   <View style={{ height: 0, backgroundColor: 'transparent' }} />
-                          // )}
                         />
-     
-                    <Text style={[styles.text, {color: theme.text}]}>hoy</Text>
-                    <View style={styles.subContainer}>
-                        
-                    </View>
-
-                </> :
+                </> : !loading ? 
                 <Text style={[styles.text, {color: theme.text}]}>
                     No hay viajes registrados por ahora...
-                </Text>
-                }
+                </Text> :  <ActivityIndicator size="large" color="#00ff00" ></ActivityIndicator> }
             </View>
         </SafeAreaView>
     )

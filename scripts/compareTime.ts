@@ -29,24 +29,45 @@ export function getNowInGuayaquil(): Date {
   )
 }
 
-export function compareServiceTime(
-  serviceTime: string,
+type Status = "ontime" | "expired";
+
+export function checkTime(
+  isoDate: string,
   toleranceMinutes: number = 0
-): CompareStatus {
-  const now = getNowInGuayaquil().getTime() // hora actual en Guayaquil
-  const serviceDate = new Date(serviceTime).getTime() // hora del servicio
+): Status {
+  const now = new Date().getTime();
+  const target = new Date(isoDate).getTime();
 
-  const toleranceMs = toleranceMinutes * 60 * 1000
-
-  // Si está dentro del rango de tolerancia (antes o después) → "ontime"
-  if (now >= serviceDate - toleranceMs && now <= serviceDate + toleranceMs) {
-    return "ontime"
+  const toleranceMs = toleranceMinutes * 60 * 1000;
+   console.log('🥺🥺🥺🥺🥺🥺🥺',now <= target + toleranceMs, now, target, new Date(), isoDate)
+  if (now <= target + toleranceMs) {
+    return "ontime";
   }
-
-  // En cualquier otro caso → "expired"
-  return "expired"
+  return "expired";
 }
 
+
+// export function compareServiceTime(
+//   serviceTime: string,
+//   toleranceMinutes: number = 0
+// ): CompareStatus {
+//   console.log('eeeeeeeeeeeeeeeeeeeeeeeeeS',serviceTime)
+//   // Hora actual en UTC
+//   const now = Date.now(); // Equivalente a new Date().getTime()
+  
+//   // Convertir serviceTime a timestamp UTC
+//   const serviceDate = new Date(serviceTime).getTime();
+
+//   const toleranceMs = toleranceMinutes * 60 * 1000;
+
+//   console.log('🥺🥺🥺🥺🥺🥺🥺',now >= serviceDate - toleranceMs && now <= serviceDate + toleranceMs, now >= serviceDate - toleranceMs, now <= serviceDate + toleranceMs, serviceTime, new Date, Date.now(), now, serviceDate )
+
+//   if (now >= serviceDate - toleranceMs && now <= serviceDate + toleranceMs) {
+//     return "ontime";
+//   }
+
+//   return "expired";
+// }
 
 export const formatearHora12 = (date: Date): string => {
     let hours = date.getHours();
@@ -71,6 +92,7 @@ export const obtenerDiaSemana = (date: Date): string => {
 };
 
 export function combinarFechaYHora(fecha: Date, hora: Date): Date {
+  console.log(fecha, hora)
   const nuevaFecha = new Date(fecha); // copiamos la fecha
   nuevaFecha.setHours(hora.getHours(), hora.getMinutes(), hora.getSeconds(), 0); // ajustamos la hora
   return nuevaFecha;

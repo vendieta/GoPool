@@ -98,6 +98,8 @@ const UserCard: React.FC<TripCardProps> = ({
           horizontal
           contentContainerStyle={styles.routeScroll}
           showsHorizontalScrollIndicator={false}
+          // 👇 Esto evita que se dispare el onPress al scrollear
+          onStartShouldSetResponder={() => true}
         >
           {routePoints.map((point, index) => (
             <View key={index} style={styles.routePointContainer}>
