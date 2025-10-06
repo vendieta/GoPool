@@ -9,6 +9,7 @@ import InputSeach from './InputSearch';
 import { useApi } from '@/hooks/useApi';
 import LoadingOverlay from './loading/LoadingOverlay';
 import { ComvertTimeZone } from '@/scripts/time';
+import { Header } from 'react-native/Libraries/NewAppScreen';
 
 
 interface Item {
@@ -75,7 +76,10 @@ const ScrollRefresh = () => {
 
   const fetchData = async () => {
     try {
-      get(`/api/rutas/`)
+      get(`/api/rutas/`, { 
+  headers: { Authorization: `Abduzcan ` }
+  // headers: { Authorization: `Bearer ${}` }
+})
       setRefreshing(false);
       console.log('datos actualizados')
     } catch (err) {
