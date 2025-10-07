@@ -4,12 +4,13 @@ import { useTheme } from '@/components/Themed/ContextTheme';
 import UserCard from './TEST/UserCard';
 import Box from './TEST/Box';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import Input from './Input';
 import InputSeach from './InputSearch';
 import { useApi } from '@/hooks/useApi';
 import LoadingOverlay from './loading/LoadingOverlay';
 import { ComvertTimeZone } from '@/scripts/time';
-import { Header } from 'react-native/Libraries/NewAppScreen';
+import useStorage from '@/hooks/useStorage';
+import { AppState } from 'react-native'
+
 
 
 interface Item {
@@ -71,15 +72,19 @@ const ScrollRefresh = () => {
   const [ action , setAction ] = useState<boolean>(true);
   const { data, loading, error, get } = useApi<data>();
   const [refreshing, setRefreshing] = useState(false);
+  const {
+    storedValue: access_token,
+    setItem: setAccess_token,
+  } = useStorage('access_token');
   // console.log('esta es la data',data?.data[4]);
   // console.log('esta es la data',data?.data[4].puntosruta.sort((a, b) => parseInt(a.orden) - parseInt(b.orden)).map(punto => punto.descripcion));
 
   const fetchData = async () => {
     try {
-      get(`/api/rutas/`, { 
-  headers: { Authorization: `Abduzcan ` }
-  // headers: { Authorization: `Bearer ${}` }
-})
+      await get(`/api/rutas/`,undefined,{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+        // headers: { Authorization: `Bearer ${}` }
+      })
       setRefreshing(false);
       console.log('datos actualizados')
     } catch (err) {
@@ -89,8 +94,11 @@ const ScrollRefresh = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (access_token) {
+      fetchData();
+    }
+  }, [access_token]);
+
 
   const onRefresh = () => {
     setRefreshing(true);

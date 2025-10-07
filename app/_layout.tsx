@@ -10,6 +10,10 @@ import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { MyContextLogin } from '@/hooks/useLoginContext';
 import { RoleProvider } from '@/hooks/useRoleContext';
+import { refreshTokens } from '@/scripts/Refresh';
+import useStorage from '@/hooks/useStorage';
+import { AppState } from 'react-native'
+
 
 // Evita que el splash screen se oculte automáticamente
 SplashScreen.preventAutoHideAsync();
@@ -19,6 +23,11 @@ export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
+  const {
+    storedValue: expiresAt,
+    setItem: setExpiresAt,
+  } = useStorage('expiresAt');
+
 
   useEffect(() => {
     if (fontsLoaded || fontError) {
@@ -32,7 +41,21 @@ export default function RootLayout() {
       <View style={{ flex: 1, backgroundColor: colorScheme === 'dark' ? DarkTheme.colors.background : DefaultTheme.colors.background }} />
     );
   }
-  
+
+
+
+useEffect(() => {
+  const subscription = AppState.addEventListener('change', async (state) => {
+    if (state === 'active') {
+      if (Date.now() >= Number(expiresAt)) {
+        await refreshTokens()
+      }
+    }
+  })
+
+  return () => subscription.remove()
+}, [])
+
   return (
     <MyContextLogin>
       <RoleProvider>

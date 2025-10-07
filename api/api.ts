@@ -36,20 +36,20 @@ api.interceptors.response.use(
 // };
 
 export const apiService = {
-get: async <T>(endpoint: string, params?: any): Promise<T> => {
-    const response = await api.get<T>(endpoint, { params });
+get: async <T>(endpoint: string, params?: any, config?: any): Promise<T> => {
+    const response = await api.get<T>(endpoint, { params, ...config });
     return response.data;
 },
-post: async <T>(endpoint: string, data: any): Promise<T> => {
-    const response = await api.post<T>(endpoint, data);
+post: async <T>(endpoint: string, data: any, config?: any): Promise<T> => {
+    const response = await api.post<T>(endpoint, data, config);
     return response.data;
 },
-put: async <T>(endpoint: string, data: any): Promise<T> => {
-    const response = await api.put<T>(endpoint, data);
+put: async <T>(endpoint: string, data: any, config?: any): Promise<T> => {
+    const response = await api.put<T>(endpoint, data, config);
     return response.data;
 },
-delete: async <T>(endpoint: string): Promise<T> => {
-    const response = await api.delete<T>(endpoint);
+delete: async <T>(endpoint: string, config?: any): Promise<T> => {
+    const response = await api.delete<T>(endpoint, config);
     return response.data;
 },
 };

@@ -75,7 +75,7 @@ export default function LoginScreen() {
   const createTrip = async (email: string, password: string) => {
     if ( email && password ) {
       console.log('credenciales: ',email, password)
-      post('/api/auth/login', {
+      await post('/api/auth/login', {
         email: email.trim(),
         password: password.trim()
       })
