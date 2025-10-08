@@ -86,6 +86,10 @@ export default function CreateRoutesDriver() {
   const [ controler, setControler ] = useState<boolean>();
   const [ refresh , setRefresh ] = useState(true);
   const [ wait, setWait ] = useState<boolean>(false);
+  const {
+    storedValue: access_token,
+    setItem: setAccess_token,
+  } = useStorage('access_token');
 
   const historyData: HistoryData  = typeof info === "string"
   ? JSON.parse(decodeURIComponent(info))
@@ -141,7 +145,7 @@ export default function CreateRoutesDriver() {
     console.log('el get de la lista vehiculo',data2)
   }
   
-  const send = () => {
+  const send = async () => {
     if (wait) return; // evita múltiples ejecuciones
     setWait(true);
     // logica para publicar ruta
@@ -155,7 +159,7 @@ export default function CreateRoutesDriver() {
       return;
     }
     // console.log('👺👺👺👺👺👺', combinarFechaYHora(selectDate, (horaSalida)),combinarFechaYHora(selectDate, horaLlegada),);
-    post('/api/viajes/crear', {
+    await post('/api/viajes/crear', {
       id_driver: userId,
       zonaInicial: zonaInicial,
       zonaFinal: zonaFinal,
@@ -165,7 +169,9 @@ export default function CreateRoutesDriver() {
       horaLlegada: combinarFechaYHora(selectDate, new Date(horaLlegada)),
       Listapuntos: rutas,
       id_vehiculo: idCar
-    })
+    },{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      })
     setWait(false); 
   };
   console.log('🚗🚗🚗👺👺👺👺', selectDate && horaLlegada ? combinarFechaYHora(selectDate, new Date(horaLlegada)): '');

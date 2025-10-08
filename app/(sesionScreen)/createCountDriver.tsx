@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import LoadingOverlay from '@/components/loading/LoadingOverlay';
 import * as FileSystem from "expo-file-system";
 import { numberCheck } from '@/scripts/numberCheck';
+import useStorage from '@/hooks/useStorage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -75,6 +76,10 @@ export default function CreateCountUser() {
   const [ wait, setWait ] = useState<boolean>(false);
   const [ localUri, setLocalUri ] = useState<string>();
   const [ localUri2, setLocalUri2 ] = useState<string>();
+  const {
+    storedValue: access_token,
+    setItem: setAccess_token,
+  } = useStorage('access_token');
 
   useEffect(() => {
     const save = (async() => {
@@ -95,11 +100,15 @@ export default function CreateCountUser() {
     const dataUrl = await postUrl('/api/s3/upload-url', {
       fileName: `MATRICULAS/${name}_${lastName}-${numMatricula}-${ftMatricula?.name}`,
       fileType: ftMatricula?.type 
-    });
+    },{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      });
     const dataUrl2 = await postUrl2('/api/s3/upload-url', {
       fileName: `LICENCIAS/${name}_${lastName}-${numLicencia}-${ftLicencia?.name}`,
       fileType: ftMatricula?.type
-    });
+    },{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      });
       console.log('URL 😶‍🌫️😶‍🌫️😶‍🌫️😶‍🌫️', dataUrl);
       console.log('URL 😶‍🌫️😶‍🌫️', dataUrl2);
       setModal(true);
@@ -175,7 +184,7 @@ export default function CreateCountUser() {
           });
         console.log('se envio el dato biene')
 
-        post('/api/auth/register-driverform', {
+        await post('/api/auth/register-driverform', {
           email: email.trim(),
           password: password.trim(),
           metadata: {

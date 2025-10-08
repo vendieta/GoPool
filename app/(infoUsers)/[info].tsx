@@ -42,6 +42,10 @@ export default function Info() {
   const {
     storedValue: userId,
   } = useStorage('userId');
+  const {
+    storedValue: access_token,
+    setItem: setAccess_token,
+  } = useStorage('access_token');
 
   const data: Producto = typeof info === "string"
     ? JSON.parse(decodeURIComponent(info))
@@ -98,6 +102,8 @@ export default function Info() {
         id_viaje : idViaje,
         userid: userId,
         cantidad_cupos: cupos 
+      },{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
       });
     } catch (error) {
       console.error(error2);

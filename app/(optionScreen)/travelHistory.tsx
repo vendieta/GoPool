@@ -24,6 +24,10 @@ interface historyTravel {
 
 export default function travelHistory () {
     const { data, loading, error, get } = useApi<viajes>();
+    const {
+        storedValue: access_token,
+        setItem: setAccess_token,
+    } = useStorage('access_token');
     
     const {
         storedValue: userId,
@@ -32,12 +36,14 @@ export default function travelHistory () {
     } = useStorage('userId');
 
     useEffect(() => {
-        if (userId) {
+        if (userId && access_token) {
             console.log(`/api/vehiculo/listar/${userId}`)
-            get(`/api/viajes/lista/${userId}`)
+            get(`/api/viajes/lista/${userId}`, undefined,{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      })
             console.log('el get de la lista viajes',data?.viajes.length)
         }
-    }, [userId])
+    }, [userId,access_token])
     console.log('el get de la lista viajes',data)
     console.log('el get de la lista viajes',data?.viajes.length)
 

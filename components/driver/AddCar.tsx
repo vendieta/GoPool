@@ -34,7 +34,11 @@ export default function AddCar ({setControler, refresh}: Prop) {
     const [ color, setColor] = useState<string>();
     const [ ftMatricula, setFtMatricula ] = useState<img>();
     const [ modal, setModal ] = useState(false);
-    const [ wait, setWait ] = useState<boolean>(false)  
+    const [ wait, setWait ] = useState<boolean>(false);
+    const {
+        storedValue: access_token,
+        setItem: setAccess_token,
+    } = useStorage('access_token'); 
 
     const {
         storedValue: userId,
@@ -62,7 +66,9 @@ export default function AddCar ({setControler, refresh}: Prop) {
             fileName: `VEHICULOS/${name}_${lastName}-${userId}-${ftMatricula?.name}`,
             // fileName: `/${userId}${ftMatricula?.name?.slice(ftMatricula?.name?.lastIndexOf('.'))}`,
             fileType: ftMatricula?.type
-        })
+        },{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      })
         console.log('URL 😶‍🌫️😶‍🌫️😶‍🌫️😶‍🌫️',dataUrl)
         setModal(true)
     }
@@ -104,7 +110,9 @@ export default function AddCar ({setControler, refresh}: Prop) {
             modelocar: modeloCar?.trim(),
             color: color?.trim(),
             marca: marca?.trim()
-            });
+            },{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      });
 
             setControler ? setControler(false) : null;
             refresh(false)

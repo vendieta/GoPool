@@ -83,7 +83,6 @@ const ScrollRefresh = () => {
     try {
       await get(`/api/rutas/`,undefined,{ 
         headers: { Authorization: `Abduzcan ${access_token}` }
-        // headers: { Authorization: `Bearer ${}` }
       })
       setRefreshing(false);
       console.log('datos actualizados')

@@ -19,6 +19,10 @@ export default function RegisterCar() {
     const [ capacidadMax, setCapacidadMax ] = useState<string>();
     const [ ftCar, setFtCar ] = useState<string | null | undefined>();
     const { data, loading, error, post } = useApi<response>();
+    const {
+        storedValue: access_token,
+        setItem: setAccess_token,
+    } = useStorage('access_token');
     
 
     console.log('pantalla del registro de carro 🤖')
@@ -44,7 +48,9 @@ export default function RegisterCar() {
             fotovehiculo: 'https://hola',
             modelocar: modeloCar.trim(),
             color: colorCar.trim()
-        })
+        },{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      })
         console.log(data)
     }
 

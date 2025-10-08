@@ -50,12 +50,18 @@ export default function Viajes(){
       storedValue: userId,
       setItem: setId,
     } = useStorage('userId');
+    const {
+        storedValue: access_token,
+        setItem: setAccess_token,
+    } = useStorage('access_token');
 
     useEffect(() => {
-        if (userId) {
-            get(`/api/viajes/lista/${userId}`);
+        if (userId && access_token) {
+            get(`/api/viajes/lista/${userId}`, undefined,{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      });
         }
-    },[userId]);
+    },[userId, access_token]);
 
     
     const renderItem = ({ item }: { item: Viaje }) => (

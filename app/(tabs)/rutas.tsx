@@ -128,25 +128,21 @@ export default function TabTwoScreen() {
       storedValue: userId,
       setItem: setId,
   } = useStorage('userId');
+  const {
+  storedValue: access_token,
+  setItem: setAccess_token,
+  } = useStorage('access_token');
 
 
 
   useFocusEffect(
     useCallback(() => {
       console.log(`/api/user/me/viaje-actual/${userId}`)
-      if (userId) {
+      if (userId && access_token) {
         const a = async() => {
-          await get(`/api/user/me/viaje-actual/${userId}`);
-          // console.log('🤑🤑🤑🤑', compareServiceTime(data && "rutadriver" in data ? data.rutadriver.horasalida : data && !("rutadriver" in data) ? data.horasalida : ''));
-          // if (compareServiceTime(data && "rutadriver" in data ? data.rutadriver.horasalida : data && !("rutadriver" in data) ? data.horasalida : '') === 'expired') {
-          //   console.log('El viaje ya no busca mas usuarios');
-          //   setBlock(true);
-          // };
-          // console.log('🤑🤑🤑🤑', data ? "rutadriver" in data ? data.rutadriver.horaestimacionllegada : data.horaestimacionllegada : 'no hay data');
-          // if (data && checkTime(data && "rutadriver" in data ? new Date(data.rutadriver.horaestimacionllegada).toISOString() : data && !("rutadriver" in data) ? new Date(data.horaestimacionllegada).toISOString()  : '') === 'expired') {
-          //   console.log('El viaje ya finalizo hptaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-          //   setFinish(true);
-          // };
+          await get(`/api/user/me/viaje-actual/${userId}`, undefined,{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      } );
         }
       
       a()
@@ -154,7 +150,7 @@ export default function TabTwoScreen() {
     }
       // Si tu hook `useStorage` ya se encarga de leer el storage
       // con solo llamarlo basta; si no, podrías agregarle un método refresh()
-    }, [userId, dataCancel, finishDAta]),
+    }, [userId, dataCancel, finishDAta, access_token]),
 
   )
 
@@ -188,18 +184,20 @@ export default function TabTwoScreen() {
   }, [role, userId,]);
 
   useEffect(() => {
-    if (data && finish){
+    if (data && finish && access_token){
       const x = async() => {
         console.log('🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶',data)
         await post('/api/viajes/finalizar',{
           idViaje: ("rutadriver" in data) ? data.rutadriverid : data?.id
-        });
+        },{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      });
       }
       x();
       setFinish(false);
     }
     
-  },[finish,data])
+  },[finish,data,access_token])
 
 console.log('👿👿👿👿👿',finishDAta)
 
@@ -213,7 +211,9 @@ console.log('👿👿👿👿👿',finishDAta)
   const handleContinue = async() => {
     if (data && !("rutadriver" in data)) {
       try {
-        await cancelViaje(`/api/viajes/eliminar/${data.id}`)
+        await cancelViaje(`/api/viajes/eliminar/${data.id}`,{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      })
         console.log('RUTA CANCELADA')
       } catch (error) {
         console.log(error);
@@ -223,7 +223,9 @@ console.log('👿👿👿👿👿',finishDAta)
     if (data && "rutadriver" in data) {
       console.log('🤷‍♀️user ')
       try {
-        await cancelViaje(`/api/viajes/salir/${data.rutadriverid}/${userId}`)
+        await cancelViaje(`/api/viajes/salir/${data.rutadriverid}/${userId}`,{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      })
       } catch {
         Alert.alert('No se pudo cancelar su viaje, intentalo de nuevo')
       }
@@ -236,7 +238,9 @@ console.log('👿👿👿👿👿',finishDAta)
   const deleteUser = async(idUser: string) => {
     if (data && !("rutadriver" in data)) {
       try {
-        await cancelViaje(`/api/viajes/salir/${data.id}/${idUser}`)
+        await cancelViaje(`/api/viajes/salir/${data.id}/${idUser}`,{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      })
         console.log('🤪🤪🤪🤪🤪🤪🤪usuario eliminado')
       } catch (error) {
         console.log(error);

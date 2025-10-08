@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import LoadingOverlay from '@/components/loading/LoadingOverlay';
 import * as FileSystem from "expo-file-system";
 import { numberCheck } from '@/scripts/numberCheck';
+import useStorage from '@/hooks/useStorage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -69,6 +70,10 @@ export default function CreateCountUser() {
   const [ wait, setWait ] = useState<boolean>(false);
   const [ modal, setModal ] = useState(false);
   const [ localUri, setLocalUri ] = useState<string>();
+  const {
+    storedValue: access_token,
+    setItem: setAccess_token,
+  } = useStorage('access_token');
 
     useEffect(() => {
       const save = (async() => {
@@ -91,7 +96,9 @@ export default function CreateCountUser() {
     const dataUrl = await postUrl('/api/s3/upload-url', {
       fileName: `MATRICULAS/${name}_${lastName}-${numMatricula}-${ftMatricula?.name}`,
       fileType: ftMatricula?.type
-    });
+    },{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      });
       console.log('URL 😶‍🌫️😶‍🌫️😶‍🌫️😶‍🌫️', dataUrl);
     setModal(true);
   };
