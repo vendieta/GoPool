@@ -18,21 +18,15 @@ export const useApi = <T>(): ApiResponse<T> => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-    const {
-    storedValue: refresh_token,
-    setItem: setRefresh_token,
-  } = useStorage('refresh_token');
-  const {
-    storedValue: access_token,
-    setItem: setAccess_token,
-  } = useStorage('access_token');
+
+  
   const {
     storedValue: expiresAt,
     setItem: setExpiresAt,
   } = useStorage('expiresAt');
-
 const checkTokenAndRefresh = async () => {
   if (Date.now() >= Number(expiresAt)) {
+    console.log('entra a la funcion de refresh')
     await refreshTokens()
   }
 }

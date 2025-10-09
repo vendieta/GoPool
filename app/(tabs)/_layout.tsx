@@ -12,6 +12,7 @@ import { useTheme } from '@/components/Themed/ContextTheme';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 
+
 SplashScreen.preventAutoHideAsync();
 
 export default function TabLayout() {
@@ -20,6 +21,7 @@ export default function TabLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
   });
+
 
   useEffect(() => {
     if (loaded) {

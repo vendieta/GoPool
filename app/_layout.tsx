@@ -27,6 +27,17 @@ export default function RootLayout() {
     storedValue: expiresAt,
     setItem: setExpiresAt,
   } = useStorage('expiresAt');
+  // Mantenemos todos los hooks arriba, sin returns condicionales
+useEffect(() => {
+  const subscription = AppState.addEventListener('change', async (state) => {
+    if (state === 'active' && expiresAt && Date.now() >= Number(expiresAt)) {
+      await refreshTokens();
+    }
+  });
+
+  return () => subscription.remove();
+}, [expiresAt]);
+
 
 
   useEffect(() => {
@@ -43,18 +54,6 @@ export default function RootLayout() {
   }
 
 
-
-useEffect(() => {
-  const subscription = AppState.addEventListener('change', async (state) => {
-    if (state === 'active') {
-      if (Date.now() >= Number(expiresAt)) {
-        await refreshTokens()
-      }
-    }
-  })
-
-  return () => subscription.remove()
-}, [])
 
   return (
     <MyContextLogin>
