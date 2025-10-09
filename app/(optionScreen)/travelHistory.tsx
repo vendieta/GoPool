@@ -37,7 +37,6 @@ export default function travelHistory () {
 
     useEffect(() => {
         if (userId && access_token) {
-            console.log(`/api/vehiculo/listar/${userId}`)
             get(`/api/viajes/lista/${userId}`, undefined,{ 
         headers: { Authorization: `Abduzcan ${access_token}` }
       })

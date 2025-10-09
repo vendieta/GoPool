@@ -120,7 +120,9 @@ export default function CreateRoutesDriver() {
 
   useEffect(() => {
     if(userId) {
-      get(`/api/vehiculo/listar/${userId}`)
+        get(`/api/vehiculo/listar/`, undefined,{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      })
       console.log('el get de la lista vehiculo',data2)
     }
   }, [refresh]);
@@ -140,7 +142,9 @@ export default function CreateRoutesDriver() {
     setVisible(true)
     console.log(`/api/vehiculo/listar/${userId}`)
     if (!data2) {
-      get(`/api/vehiculo/listar/${userId}`)
+         get(`/api/vehiculo/listar/`, undefined,{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      })
     }
     console.log('el get de la lista vehiculo',data2)
   }

@@ -12,7 +12,8 @@ import { MyContextLogin } from '@/hooks/useLoginContext';
 import { RoleProvider } from '@/hooks/useRoleContext';
 import { refreshTokens } from '@/scripts/Refresh';
 import useStorage from '@/hooks/useStorage';
-import { AppState } from 'react-native'
+import { AppState } from 'react-native';
+import useRefreshTokens from '@/hooks/useRefreshTokens';
 
 
 // Evita que el splash screen se oculte automáticamente
@@ -23,22 +24,7 @@ export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
-  const {
-    storedValue: expiresAt,
-    setItem: setExpiresAt,
-  } = useStorage('expiresAt');
-  // Mantenemos todos los hooks arriba, sin returns condicionales
-useEffect(() => {
-  const subscription = AppState.addEventListener('change', async (state) => {
-    if (state === 'active' && expiresAt && Date.now() >= Number(expiresAt)) {
-      await refreshTokens();
-    }
-  });
-
-  return () => subscription.remove();
-}, [expiresAt]);
-
-
+  useRefreshTokens();
 
   useEffect(() => {
     if (fontsLoaded || fontError) {

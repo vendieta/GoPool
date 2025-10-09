@@ -76,6 +76,10 @@ const ScrollRefresh = () => {
     storedValue: access_token,
     setItem: setAccess_token,
   } = useStorage('access_token');
+  const {
+    storedValue: expiresAt,
+    setItem: setExpiresAt,
+  } = useStorage('expiresAt');
   // console.log('esta es la data',data?.data[4]);
   // console.log('esta es la data',data?.data[4].puntosruta.sort((a, b) => parseInt(a.orden) - parseInt(b.orden)).map(punto => punto.descripcion));
 
@@ -129,7 +133,7 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
     
     // Filtro por Punto de Ruta
     if (filtros.puntoRuta) {
-      coincide &&= ruta.puntosruta.some(punto => 
+      coincide &&= ruta.puntosruta.some((punto: { descripcion: string; }) => 
         punto.descripcion.toLowerCase().includes(filtros.puntoRuta!.toLowerCase())
       );
     }
@@ -173,6 +177,9 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
     />
     : null
   );
+
+  console.log((Number(expiresAt)-Date.now())/60/1000);
+  console.log(Date.now() >= Number(expiresAt));
 
   return (
     <View style={[

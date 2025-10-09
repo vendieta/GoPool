@@ -28,6 +28,10 @@ export default function Vehiculo () {
     const [ controler, setControler ] = useState(false);
     const { data: data2, loading: loading2, error: error2, get } = useApi<req>();
     const [ refresh , setRefresh ] = useState(true);
+    const {
+        storedValue: access_token,
+        setItem: setAccess_token,
+    } = useStorage('access_token'); 
 
 
     const {
@@ -37,8 +41,10 @@ export default function Vehiculo () {
 
     useEffect(() => {
         if (userId) {
-            console.log(`/api/vehiculo/listar/${userId}`)
-            get(`/api/vehiculo/listar/${userId}`)
+            console.log(`token ${access_token}`)
+            get(`/api/vehiculo/listar/`, undefined,{ 
+        headers: { Authorization: `Abduzcan ${access_token}` }
+      })
             console.log('el get de la lista vehiculo',data2)
         }
     }, [userId, refresh])

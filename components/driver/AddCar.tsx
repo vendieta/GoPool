@@ -103,7 +103,7 @@ export default function AddCar ({setControler, refresh}: Prop) {
             });
 
             await post('/api/vehiculo/crear', {
-            id_driver: userId?.trim(),
+            // id_driver: userId?.trim(),
             placa: placa?.trim(),
             capacidadmax: capMax,
             fotovehiculo: dataUrl?.publicUrl,
