@@ -178,6 +178,9 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
     : null
   );
 
+  // console para eliminar
+  console.log(expiresAt);
+  console.log(Date.now());
   console.log((Number(expiresAt)-Date.now())/60/1000);
   console.log(Date.now() >= Number(expiresAt));
 

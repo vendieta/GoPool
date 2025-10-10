@@ -90,6 +90,7 @@ export default function CreateRoutesDriver() {
     storedValue: access_token,
     setItem: setAccess_token,
   } = useStorage('access_token');
+  console.log('access_token en createRoute', access_token);
 
   const historyData: HistoryData  = typeof info === "string"
   ? JSON.parse(decodeURIComponent(info))
@@ -162,9 +163,9 @@ export default function CreateRoutesDriver() {
       setWait(false);
       return;
     }
-    // console.log('👺👺👺👺👺👺', combinarFechaYHora(selectDate, (horaSalida)),combinarFechaYHora(selectDate, horaLlegada),);
+
     await post('/api/viajes/crear', {
-      id_driver: userId,
+      // id_driver: userId,
       zonaInicial: zonaInicial,
       zonaFinal: zonaFinal,
       precio: precio,

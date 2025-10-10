@@ -28,6 +28,17 @@ export default function useRefreshTokens() {
     setItem: setExpiresAt,
   } = useStorage('expiresAt');
 
+  useEffect(()=> {
+    const newExpiresAt = Date.now() + 3000 * 1000;
+    
+    if (data) {
+      console.log('🛅🛅🛅🛅datos del tokend', data?.accessToken, data?.refreshToken, newExpiresAt, data)
+      setAccessToken('access_token', data.accessToken);
+      setRefreshToken('refresh_token', data.refreshToken);
+      setExpiresAt('expiresAt', newExpiresAt.toString());
+    }
+  },[data])
+
   // --- Función que hace el refresh manual o automático ---
   const refreshTokens = useCallback(async () => {
     if (!refresh_token) return false;
@@ -39,18 +50,9 @@ export default function useRefreshTokens() {
 
       if (error) return false;
 
-      const newExpiresAt = Date.now() + 3000 * 1000;
-
-      console.log('🛅🛅🛅🛅datos del tokend', data?.accessToken, data?.refreshToken, newExpiresAt, data)
-
-      if (data) {
-        setAccessToken('access_token', data.accessToken);
-        setRefreshToken('refresh_token', data.refreshToken);
-        setExpiresAt('expiresAt', newExpiresAt.toString());
-      }
-
       return true;
     } catch {
+      console.error('error en acctualizar el token')
       return false;
     }
   }, [refresh_token, data, error, post, setAccessToken, setRefreshToken, setExpiresAt]);
