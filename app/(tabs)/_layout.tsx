@@ -10,12 +10,19 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { useTheme } from '@/components/Themed/ContextTheme';
 import AntDesign from '@expo/vector-icons/AntDesign';
-
+import useRefreshTokens from '@/hooks/useRefreshTokens';
+import useStorage from '@/hooks/useStorage';
 
 
 SplashScreen.preventAutoHideAsync();
 
 export default function TabLayout() {
+  const {refreshTokens } = useRefreshTokens();
+  const {
+    storedValue: expiresAt,
+    setItem: setExpiresAt,
+  } = useStorage('expiresAt');
+
 
   const { theme } = useTheme();
   const [loaded] = useFonts({
@@ -28,6 +35,14 @@ export default function TabLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  useEffect(() => {
+    if (expiresAt && Date.now() >= Number(expiresAt)) {
+      console.log('🤠Token expirado, refrescando...');
+      refreshTokens()
+    }
+  }, [expiresAt]);
+
 
   if (!loaded) {
     return null;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Platform, ViewStyle, Dimensions, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 
 const { height, width } = Dimensions.get('window');
 
@@ -35,43 +35,39 @@ const UserCard: React.FC<TripCardProps> = ({
   const router = useRouter();
   const [disabled, setDisabled] = useState(false);
 
-  const isValid =
-    user &&
-    departureTime &&
-    arrivalTime &&
-    typeof seats === 'number' &&
-    typeof price === 'number' &&
-    Array.isArray(routePoints);
 
-  if (!isValid) return null;
 
-  const jsonData = encodeURIComponent(
-    JSON.stringify({
-      user,
-      departureTime,
-      arrivalTime,
-      seats,
-      price,
-      routePoints,
-      date,
-      zoneEnd,
-      zoneInit,
-      id,
-    })
-  );
-
-  const handlePress = () => {
-    if (disabled) return; // Evita doble click
-    setDisabled(true);
-
-    router.push({ pathname: '../[info]', params: { info: jsonData } });
-
-    // Reactiva después de un tiempo (ej: 1s)
-    setTimeout(() => setDisabled(false), 1000);
-  };
 
   return (
-    <Pressable onPress={handlePress} disabled={disabled}>
+    <Link
+  href={{
+    pathname: "../[info]",
+    params: {
+      info: encodeURIComponent(
+        JSON.stringify({
+          user,
+          departureTime,
+          arrivalTime,
+          seats,
+          price,
+          routePoints,
+          date,
+          zoneEnd,
+          zoneInit,
+          id,
+        })
+      ),
+    },
+  }}
+  onPress={(e) => {
+    if (disabled) {
+      e.preventDefault();
+      return;
+    }
+    setDisabled(true);
+    setTimeout(() => setDisabled(false), 1000);
+  }}
+  >
       <View
         style={[
           styles.card,
@@ -126,7 +122,7 @@ const UserCard: React.FC<TripCardProps> = ({
           </View>
         </View>
       </View>
-    </Pressable>
+    </Link>
   );
 };
 
