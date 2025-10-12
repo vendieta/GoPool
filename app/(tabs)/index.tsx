@@ -24,6 +24,10 @@ export default function HomeScreen() {
     storedValue: role,
     setItem: setRole,
   } = useStorage('role');
+  const {
+    storedValue: expiresAt,
+    setItem: setExpiresAt,
+  } = useStorage('expiresAt');
   console.log('rol inicial',isDriver)
   console.log('storage del rol: ', role, !role)
   // console.log('este es el storage que se ve si se guarda en web:    ', refresh_token)
@@ -57,7 +61,7 @@ export default function HomeScreen() {
   // Cargar splash y fuentes
   useEffect(() => {
     const initialize = async () => {
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simular carga
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simular carga evita que aparezca una pantalla antes de la otra
       setIsLoading(false);
       if (fontsLoaded) {
         await SplashScreen.hideAsync();
@@ -68,7 +72,7 @@ export default function HomeScreen() {
 
   // Navegación: configura el tabBar según sesión
   useEffect(() => {
-    if (!state) {
+    if (!state || (expiresAt && Date.now() > Number(expiresAt))) {
       navigation.setOptions({
         tabBarStyle: { display: "none" },
         headerShown: false
@@ -79,13 +83,13 @@ export default function HomeScreen() {
         tabBarStyle: { display: "flex" },
       });
     };
-  }, [navigation, state]);
+  }, [navigation, state, expiresAt]);
 
   // Mostrar pantalla de carga si no se ha terminado de cargar
-  if (!fontsLoaded || isLoading) {
+  if ((!fontsLoaded || isLoading) || ((expiresAt && Date.now() > Number(expiresAt)) && state)) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color={'green'}/>
       </View>
     );
   }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, RefreshControl, FlatList, TouchableOpacity } from 'react-native';
 import { useTheme } from '@/components/Themed/ContextTheme';
 import UserCard from './TEST/UserCard';
@@ -72,6 +72,8 @@ const ScrollRefresh = () => {
   const [ action , setAction ] = useState<boolean>(true);
   const { data, loading, error, get } = useApi<data>();
   const [refreshing, setRefreshing] = useState(false);
+  const lastFetchTime = useRef<number>(0);
+  const FETCH_COOLDOWN = 7000; // ⏱️ 7 segundos (ajústalo como necesites)
   const {
     storedValue: access_token,
     setItem: setAccess_token,
@@ -84,7 +86,17 @@ const ScrollRefresh = () => {
   // console.log('esta es la data',data?.data[4].puntosruta.sort((a, b) => parseInt(a.orden) - parseInt(b.orden)).map(punto => punto.descripcion));
 
   const fetchData = async () => {
-    console.log('🔄 Actualizando datos...');
+  const now = Date.now();
+
+  // 🔒 Si la última petición fue hace menos de 10 segundos, no hacer nada
+  if (now - lastFetchTime.current < FETCH_COOLDOWN) {
+    console.log('⏸️ Esperando antes de hacer otra petición...');
+    setRefreshing(false);
+    return;
+  }
+
+  console.log('🔄 Actualizando datos...');
+  lastFetchTime.current = now; // ⏱️ Guarda el momento actual como última petición
     try {
       await get(`/api/rutas/`,undefined,{ 
         headers: { Authorization: `Abduzcan ${access_token}` }
@@ -103,7 +115,7 @@ const ScrollRefresh = () => {
       console.log((Number(expiresAt)-Date.now())/60/1000);
       fetchData();
     }
-  }, [access_token]);
+  }, [access_token, expiresAt]);
 
 
   const onRefresh = () => {
@@ -236,6 +248,20 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
               tintColor={theme.primary}
             />
           }
+          ListEmptyComponent={
+      <View style={styles.emptyContainer}>
+        <Text style={[styles.emptyText, { color: theme.text }]}>
+          🚗 No hay rutas disponibles por el momento
+        </Text>
+        <TouchableOpacity
+          style={[styles.reloadButton, { backgroundColor: theme.primary }]}
+          onPress={onRefresh}
+        >
+          <AntDesign name="reload1" size={20} color="#fff" />
+          <Text style={styles.reloadText}>Actualizar</Text>
+        </TouchableOpacity>
+      </View>
+    }
           // ItemSeparatorComponent={() => (
           //   <View style={{ height: 0, backgroundColor: 'transparent' }} />
           // )}
@@ -273,7 +299,42 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingTop: 5,
     paddingHorizontal: 15,
-  }
+  },
+  //   containerBox: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   justifyContent: 'space-around',
+  //   padding: 10,
+  //   marginVertical: 5,
+  //   borderRadius: 10,
+  // },
+  // listContent: {
+  //   paddingBottom: 20,
+  // },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 50,
+  },
+  emptyText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  reloadButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  reloadText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
+  },
 
 });
 

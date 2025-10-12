@@ -10,9 +10,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { useTheme } from '@/components/Themed/ContextTheme';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import useRefreshTokens from '@/hooks/useRefreshTokens';
-import useStorage from '@/hooks/useStorage';
-
 
 SplashScreen.preventAutoHideAsync();
 
