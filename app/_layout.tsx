@@ -20,27 +20,46 @@ import useRefreshTokens from '@/hooks/useRefreshTokens';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  console.log('🌟 Renderizando RootLayout');
   const colorScheme = useColorScheme();
   const [fontsLoaded, fontError] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
-  useRefreshTokens();
+  const {refreshTokens } = useRefreshTokens();
+  const {
+    storedValue: expiresAt,
+    setItem: setExpiresAt,
+  } = useStorage('expiresAt');
   
   useEffect(() => {
-    if (fontsLoaded || fontError) {
+    console.log('⏳ Comprobando estado de la sesión...');
+    if ((fontsLoaded || fontError) && (!expiresAt || Date.now() < Number(expiresAt))) {
+      console.log('✅ Sesión válida, cargando aplicación...');  
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError]);
+  }, [fontsLoaded, fontError, expiresAt]);
 
+  
+  useEffect(() => {
+    const refresh = async () => {
+      if (expiresAt && Date.now() >= Number(expiresAt)) {
+        console.log('🤠Token expirado, refrescando...');
+        await refreshTokens()
+      }
+    }
+    
+    refresh();
+  }, [expiresAt]);
+  
   // Pantalla de carga mientras se cargan las fuentes
   if (!fontsLoaded) {
     return (
-      <View style={{ flex: 1, backgroundColor: colorScheme === 'dark' ? DarkTheme.colors.background : DefaultTheme.colors.background }} />
+      // <View style={{ flex: 1, backgroundColor: colorScheme === 'dark' ? DarkTheme.colors.background : DefaultTheme.colors.background }} />
+      <View style={{ flex: 1, backgroundColor: 'oranje' }}></View> 
     );
   }
-
-
-
+  
+  
   return (
     <MyContextLogin>
       <RoleProvider>

@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Platform, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
@@ -17,11 +17,10 @@ import useStorage from '@/hooks/useStorage';
 SplashScreen.preventAutoHideAsync();
 
 export default function TabLayout() {
-  const {refreshTokens } = useRefreshTokens();
-  const {
-    storedValue: expiresAt,
-    setItem: setExpiresAt,
-  } = useStorage('expiresAt');
+  console.log('🚀 Renderizando TabLayout');
+
+
+
 
 
   const { theme } = useTheme();
@@ -31,21 +30,18 @@ export default function TabLayout() {
 
 
   useEffect(() => {
-    if (loaded) {
+
+    if (loaded ) {
+
       SplashScreen.hideAsync();
     }
   }, [loaded]);
 
-  useEffect(() => {
-    if (expiresAt && Date.now() >= Number(expiresAt)) {
-      console.log('🤠Token expirado, refrescando...');
-      refreshTokens()
-    }
-  }, [expiresAt]);
+
 
 
   if (!loaded) {
-    return null;
+    return <View style={{ flex: 1, backgroundColor: 'oranje' }}></View> ;
   }
 
   const backgroundColor = theme.name === 'light' ? '#fff' : '#333';

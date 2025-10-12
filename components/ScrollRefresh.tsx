@@ -84,6 +84,7 @@ const ScrollRefresh = () => {
   // console.log('esta es la data',data?.data[4].puntosruta.sort((a, b) => parseInt(a.orden) - parseInt(b.orden)).map(punto => punto.descripcion));
 
   const fetchData = async () => {
+    console.log('🔄 Actualizando datos...');
     try {
       await get(`/api/rutas/`,undefined,{ 
         headers: { Authorization: `Abduzcan ${access_token}` }
@@ -97,7 +98,9 @@ const ScrollRefresh = () => {
   };
 
   useEffect(() => {
-    if (access_token) {
+    if (access_token && (!expiresAt || Date.now() < Number(expiresAt))) {
+      console.log('🔑 Token válido, obteniendo datos...');
+      console.log((Number(expiresAt)-Date.now())/60/1000);
       fetchData();
     }
   }, [access_token]);
@@ -237,6 +240,7 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
           //   <View style={{ height: 0, backgroundColor: 'transparent' }} />
           // )}
         /> : 
+        // debo poner que tambien salga para cuando no hay token actualizado
         <LoadingOverlay visible={loading}/>}
       </View>
   );

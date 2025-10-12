@@ -146,7 +146,6 @@ export default function TabTwoScreen() {
         }
       
       a()
-      console.log('👾se actualizo la data')
     }
       // Si tu hook `useStorage` ya se encarga de leer el storage
       // con solo llamarlo basta; si no, podrías agregarle un método refresh()
@@ -170,7 +169,6 @@ export default function TabTwoScreen() {
         }
       
       a()
-      console.log('👾se actualizo la data')
     }
       // Si tu hook `useStorage` ya se encarga de leer el storage
       // con solo llamarlo basta; si no, podrías agregarle un método refresh()
