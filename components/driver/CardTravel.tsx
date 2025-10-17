@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { View, Text, StyleSheet, ScrollView, Platform, ViewStyle } from "react-native";
-
+import {ComvertTimeZone} from "@/scripts/time";
 
 
 interface Props {
@@ -40,11 +40,11 @@ export default function CardTravel ({
                 <View style={styles.times}>
                     <View style={styles.timeBlock}>
                     <Ionicons name="time-outline" size={16} color="#0984e3" />
-                    <Text style={styles.timeText}>Salida: {departureTime}</Text>
+                    <Text style={styles.timeText}>Salida: {ComvertTimeZone(departureTime)}</Text>
                     </View>
                     <View style={styles.timeBlock}>
                     <Ionicons name="time-outline" size={16} color="#00b894" />
-                    <Text style={styles.timeText}>Llegada: {arrivalTime}</Text>
+                    <Text style={styles.timeText}>Llegada: {ComvertTimeZone(arrivalTime)}</Text>
                     </View>
                 </View>
                 <View style={styles.containerPrice}>

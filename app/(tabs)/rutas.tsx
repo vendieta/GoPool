@@ -150,8 +150,9 @@ export default function TabTwoScreen() {
       // Si tu hook `useStorage` ya se encarga de leer el storage
       // con solo llamarlo basta; si no, podrías agregarle un método refresh()
     }, [userId, dataCancel, finishDAta, access_token]),
-
   )
+  console.log('🙏este es la daata',data, userId)
+
 
   useFocusEffect(
     useCallback(() => {
@@ -204,7 +205,6 @@ console.log('👿👿👿👿👿',finishDAta)
     setCancelUser(false);
     console.log("El usuario sigue con el servicio");
   };
-  console.log('🙏🙏🙏🙏🙏este es la daata',data)
   
   const handleContinue = async() => {
     if (data && !("rutadriver" in data)) {

@@ -190,7 +190,18 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
       zoneInit= {item.ZonaInicial}
       zoneEnd= {item.ZonaFinal}
     />
-    : null
+    :  <View style={styles.emptyContainer}>
+        <Text style={[styles.emptyText, { color: theme.text }]}>
+          🚗 No hay rutas con asientos disponibles por el momento
+        </Text>
+        <TouchableOpacity
+          style={[styles.reloadButton, { backgroundColor: theme.primary }]}
+          onPress={onRefresh}
+        >
+          <AntDesign name="reload1" size={20} color="#fff" />
+          <Text style={styles.reloadText}>Actualizar</Text>
+        </TouchableOpacity>
+      </View>
   );
 
   // console para eliminar

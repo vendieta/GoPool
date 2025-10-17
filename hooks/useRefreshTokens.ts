@@ -29,8 +29,7 @@ export default function useRefreshTokens() {
   } = useStorage('expiresAt');
 
   useEffect(()=> {
-    const newExpiresAt = Date.now() + 2 * 60 * 1000;
-    // const newExpiresAt = Date.now() + 3000 * 1000;
+    const newExpiresAt = Date.now() + 3000 * 1000;
     
     if (data) {
       console.log('🛅🛅🛅🛅datos del tokend', data?.accessToken, data?.refreshToken, newExpiresAt, data)

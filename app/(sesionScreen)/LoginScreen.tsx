@@ -101,8 +101,7 @@ export default function LoginScreen() {
         await setRole('role', data.isDriver.toString());
         await setNombre('name', data.user.nombre)
         await setLastName('lastName', data.user.apellido)
-        await setExpiresAt('expiresAt', (Date.now() + 2 * 60 * 1000).toString()); // 2 minutos desde ahora
-        // await setExpiresAt('expiresAt', (Date.now() + 55 * 60 * 1000).toString()); // 55 minutos desde ahora
+        await setExpiresAt('expiresAt', (Date.now() + 50 * 60 * 1000).toString()); // 55 minutos desde ahora
         if (data.isDriver){toggleRole()}
         console.log('este es el state del login:  ', state)
         console.log('este es el state del login:  ', state);
