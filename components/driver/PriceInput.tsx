@@ -1,3 +1,4 @@
+import { useTheme } from '@/hooks/useContextTheme';
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -14,27 +15,31 @@ interface Props {
 }
 
 export default function PriceInput({ save, initialValue }: Props) {
-  const [price, setPrice] = useState(0);
+  const { theme } = useTheme();
+  const [price, setPrice] = useState(
+    initialValue !== undefined ? Math.max(0, parseFloat(initialValue.toFixed(2))) : 0
+  );
 
-  const updatePrice = (delta: number) => {
-    setPrice((prev) => {
-      const newPrice = Math.max(0, parseFloat((prev + delta).toFixed(2)));
-      save(newPrice);
-      return newPrice;
-    });
-  };
+  // 🔹 cuando el valor cambia, notifica al padre
+  useEffect(() => {
+    save(price);
+  }, [price]);
 
+  // 🔹 sincroniza si el padre cambia initialValue
   useEffect(() => {
     if (initialValue !== undefined) {
       const init = Math.max(0, parseFloat(initialValue.toFixed(2)));
       setPrice(init);
-      save(init); // <- ahora también lo guarda
     }
   }, [initialValue]);
 
+  const updatePrice = (delta: number) => {
+    setPrice((prev) => Math.max(0, parseFloat((prev + delta).toFixed(2))));
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Precio del servicio</Text>
+      <Text style={[styles.label, { color: theme.text }]}>Precio del servicio</Text>
       <View style={styles.priceBox}>
         <Text style={styles.priceText}>${price.toFixed(2)}</Text>
       </View>
@@ -58,6 +63,7 @@ export default function PriceInput({ save, initialValue }: Props) {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
 container: {

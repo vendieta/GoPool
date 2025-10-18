@@ -23,7 +23,7 @@ const OptionCard = ({
   isLightTheme,
   actionText
 }: OptionCardProps) => (
-  <View style={[styles.optionWrapper, { backgroundColor: isLightTheme ? '#fff' : '#2a2a2a' }]}>
+  <View style={[styles.optionWrapper, { backgroundColor: isLightTheme ? '#fafafaff' : '#2a2a2a' }]}>
     <Link href={link} asChild>
       <TouchableOpacity style={{ ...styles.optionCard}}>
         <View style={{

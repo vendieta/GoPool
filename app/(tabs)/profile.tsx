@@ -63,6 +63,11 @@ export default function Perfil() {
     removeItem: removeLastName,
     loadingStorage: loadingLastName,
   } = useStorage('lastName');
+  const {
+    storedValue: expiresAt,
+    setItem: setExpiresAt,
+    removeItem: removeExpiresAt,
+  } = useStorage('expiresAt');
   // const {
   //   storedValue: cars,
   //   setItem: setCars,
@@ -95,19 +100,20 @@ export default function Perfil() {
   // }
   
   const outSession = async () => {
-      console.log(access_token,refresh_token,userEmail,userId,role)
-      await removeRefresh_token('refresh_token')
-      await removeAccess_token('access_token')
-      await removeUserEmail('userEmail')
-      await removeId('userId')
-      await removeRole('role')
-      await removeName('name')
-      await removeLastName('lastName')
+      console.log(access_token,refresh_token,userEmail,userId,role);
+      await removeRefresh_token('refresh_token');
+      await removeAccess_token('access_token');
+      await removeUserEmail('userEmail');
+      await removeId('userId');
+      await removeRole('role');
+      await removeName('name');
+      await removeLastName('lastName');
+      await removeExpiresAt('expiresAt');
       // await removeCars('cars')
-      toggleState()
-      if (isDriver){toggleRole()}
-      console.log(access_token,refresh_token,userEmail,userId,role)
-    router.replace('/')
+      toggleState();
+      if (isDriver){toggleRole()};
+      console.log(access_token,refresh_token,userEmail,userId,role);
+    router.replace('/');
   };
 
   
@@ -118,7 +124,7 @@ export default function Perfil() {
       items: [
         { icon: 'settings', Component: Feather, title: 'Ajustes', link: '/(optionScreen)/config' },
         { icon: 'user-check', Component: Feather, title: 'Cuenta', link: '/(optionScreen)/accountStatement' },
-        { icon: 'user', Component: FontAwesome5, title: 'Temas', link: '/(optionScreen)/themes' },
+        // { icon: 'user', Component: FontAwesome5, title: 'Temas', link: '/(optionScreen)/themes' },
         { icon: 'car', Component: FontAwesome5, title: 'Vehiculo', link: '/(optionScreen)/vehiculo' },
       ]
     }: {

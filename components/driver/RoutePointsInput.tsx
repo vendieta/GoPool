@@ -142,7 +142,7 @@ export default function RoutePointsInput({ save, initialValue }: Props) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Ruta del Servicio</Text>
+      {/* <Text style={styles.title}>Ruta del Servicio</Text> */}
       {renderInputs()}
 
       {Object.keys(routeData).length < 20 && (
@@ -164,7 +164,7 @@ container: {
 title: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#2d3436',
+    color: 'white',
     marginBottom: 12,
     textAlign: 'center',
 },

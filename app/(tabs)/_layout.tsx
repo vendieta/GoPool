@@ -41,11 +41,10 @@ export default function TabLayout() {
     return <View style={{ flex: 1, backgroundColor: 'oranje' }}></View> ;
   }
 
-  const backgroundColor = theme.name === 'light' ? '#fff' : '#333';
+  
   const activeTintColor = theme.name === 'light' ? Colors.light.primary : Colors.dark.primary;
 
   return (
-    <View style={[styles.container, { backgroundColor }]}>
       <Tabs
         screenOptions={{
           animation: 'none',
@@ -93,7 +92,6 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
-    </View>
   );
 }
 

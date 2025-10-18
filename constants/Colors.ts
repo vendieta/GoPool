@@ -19,9 +19,10 @@ export const Colors = {
   },
   dark: {
     text: '#F5F5F5',
-    background: '#121212',
+    background: '#ff0000ff',
     cardBackground: '#1E1E1E',
-    primary: '#0A84FF',
+    // primary: '#0A84FF',
+    primary: '#25D366',
     border: '#383838',
     error: '#FF453A',
     success: '#30D158',
