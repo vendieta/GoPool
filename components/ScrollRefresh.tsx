@@ -175,7 +175,7 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
   const renderItem = ({ item }: { item: obj }) => (
     (item.cuposdisponibles != 0) ? <UserCard 
       id = {item.id}
-      user= {item?.driver?.users?.nombre}
+      user= {`${item?.driver?.users?.nombre} ${item?.driver?.users?.lastname}`}
       price= {item.precio}
       routePoints= {item.puntosruta.sort((a, b) => 
         (+a.orden || (a.orden === 'inicio' ? 0 : 999)) - (+b.orden || (b.orden === 'inicio' ? 0 : 999))

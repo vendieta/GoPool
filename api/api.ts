@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 
 const api = axios.create({
     baseURL: 'https://qb2dfea1va.execute-api.us-east-2.amazonaws.com/v1',
-    timeout: 7000,
+    timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
     },

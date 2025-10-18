@@ -114,12 +114,11 @@ export default function CreateCountUser() {
       return Alert.alert("Error", "Por favor complete todos los campos.");
     }
     // Validar dominio del correo
-    // if (!email.endsWith("@espol.edu.ec")) {
-    //   setWait(false);
-    // setModal(false);
-    //   return Alert.alert("Correo inválido", "El correo debe pertenecer al dominio @espol.edu.ec");
-    // };
-
+    if (!email.endsWith("@espol.edu.ec")) {
+      setWait(false);
+    setModal(false);
+      return Alert.alert("Correo inválido", "El correo debe pertenecer al dominio @espol.edu.ec");
+    };
     if (!numberCheck(number)) {
       setWait(false);
       setModal(false);
