@@ -3,6 +3,7 @@ import { useEffect, useCallback } from 'react';
 import { useApi } from '@/hooks/useApi';
 import useStorage from '@/hooks/useStorage';
 import { AppState } from 'react-native';
+import { useLoginContext } from './useLoginContext';
 
 interface TokensResponse {
   accessToken: string;
@@ -16,6 +17,7 @@ export default function useRefreshTokens() {
   const {
     storedValue: refresh_token,
     setItem: setRefreshToken,
+    removeItem: removeRefreshToken,
   } = useStorage('refresh_token');
 
   const {
@@ -48,7 +50,10 @@ export default function useRefreshTokens() {
         refreshToken: refresh_token,
       });
 
-      if (error) return false;
+      if (error){
+        await removeRefreshToken('refresh_token');
+        return false;
+      } 
 
       return true;
     } catch {
@@ -76,11 +81,9 @@ export default function useRefreshTokens() {
   useEffect(() => {
     const interval = setInterval(async () => {
       console.log('🎉🎉🎉🎉 el intervalo de tiempo esta funcionando')
-
-      if (Date.now() >= Number(expiresAt)) {
+      if (Date.now() >= Number(expiresAt) && refresh_token) {
         await refreshTokens();
-        console.log('📣📣📣📣📣 se actulizo el tokend de forma atomaticamente')
-
+        console.log('📣📣📣📣📣 se actulizo el tokend de forma atomaticamente');
       }
     }, 60 * 1000); // cada minuto
 

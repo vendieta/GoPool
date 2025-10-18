@@ -1,5 +1,5 @@
 import ScrollRefresh from '@/components/ScrollRefresh';
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { View, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
@@ -18,15 +18,51 @@ export default function HomeScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const {state, toggleState} = useLoginContext();
   const {
-    storedValue: refresh_token
+    storedValue: access_token,
+    setItem: setAccess_token,
+    removeItem: removeAccess_token,
+    loadingStorage: loadingAccess_token
+  } = useStorage('access_token');
+  const {
+    storedValue: refresh_token,
+    setItem: setRefresh_token,
+    removeItem: removeRefresh_token,
+    loadingStorage: loadingRefresh_token
   } = useStorage('refresh_token');
+  const {
+    storedValue: userId,
+    setItem: setId,
+    removeItem: removeId,
+    loadingStorage: loadingId
+  } = useStorage('userId');
+  const {
+    storedValue: userEmail,
+    setItem: setUserEmail,
+    removeItem: removeUserEmail,
+    loadingStorage: loadingUserEmail
+  } = useStorage('userEmail');
   const {
     storedValue: role,
     setItem: setRole,
+    removeItem: removeRole,
+    loadingStorage: loadingRole
   } = useStorage('role');
+  const {
+    storedValue: name,
+    setItem: setName,
+    removeItem: removeName,
+    loadingStorage: loadingName
+  } = useStorage('name');
+  const {
+    storedValue: lastName,
+    setItem: setLastName,
+    removeItem: removeLastName,
+    loadingStorage: loadingLastName,
+  } = useStorage('lastName');
   const {
     storedValue: expiresAt,
     setItem: setExpiresAt,
+    removeItem: removeExpiresAt,
   } = useStorage('expiresAt');
   console.log('rol inicial',isDriver)
   console.log('storage del rol: ', role, !role)
@@ -84,6 +120,32 @@ export default function HomeScreen() {
       });
     };
   }, [navigation, state, expiresAt]);
+
+
+  useEffect(() => {
+    // pendieta poner un alert de error de sesion expirada
+    const outSession = async () => {
+      console.log(access_token,refresh_token,userEmail,userId,role);
+      await removeRefresh_token('refresh_token');
+      await removeAccess_token('access_token');
+      await removeUserEmail('userEmail');
+      await removeId('userId');
+      await removeRole('role');
+      await removeName('name');
+      await removeLastName('lastName');
+      await removeExpiresAt('expiresAt');
+      // await removeCars('cars')
+      toggleState();
+      if (isDriver){toggleRole()};
+      console.log(access_token,refresh_token,userEmail,userId,role);
+    router.replace('/');
+  };
+
+  if ( !refresh_token && state ) {
+    outSession();
+  }
+
+  }, [refresh_token]);
 
   // Mostrar pantalla de carga si no se ha terminado de cargar
   if ((!fontsLoaded || isLoading) || ((expiresAt && Date.now() > Number(expiresAt)) && state)) {
