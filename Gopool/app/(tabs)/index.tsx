@@ -1,98 +1,161 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import ScrollRefresh from '@/components/ScrollRefresh';
+import { router, useNavigation } from "expo-router";
+import { View, ActivityIndicator } from 'react-native';
+import { useEffect, useState } from 'react';
+import * as SplashScreen from 'expo-splash-screen';
+import { useFonts } from 'expo-font';
+import LoginScreen from '../(sesionScreen)/LoginScreen';
+import { useLoginContext } from '@/hooks/useLoginContext';
+import useStorage from '@/hooks/useStorage';
+import { useRoleContext } from '@/hooks/useRoleContext';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+// Evitar que el splash se oculte automáticamente
+SplashScreen.preventAutoHideAsync();
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const { isDriver, toggleRole } = useRoleContext();
+  const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(true);
+  const {state, toggleState} = useLoginContext();
+  const {
+    storedValue: access_token,
+    setItem: setAccess_token,
+    removeItem: removeAccess_token,
+    loadingStorage: loadingAccess_token
+  } = useStorage('access_token');
+  const {
+    storedValue: refresh_token,
+    setItem: setRefresh_token,
+    removeItem: removeRefresh_token,
+    loadingStorage: loadingRefresh_token
+  } = useStorage('refresh_token');
+  const {
+    storedValue: userId,
+    setItem: setId,
+    removeItem: removeId,
+    loadingStorage: loadingId
+  } = useStorage('userId');
+  const {
+    storedValue: userEmail,
+    setItem: setUserEmail,
+    removeItem: removeUserEmail,
+    loadingStorage: loadingUserEmail
+  } = useStorage('userEmail');
+  const {
+    storedValue: role,
+    setItem: setRole,
+    removeItem: removeRole,
+    loadingStorage: loadingRole
+  } = useStorage('role');
+  const {
+    storedValue: name,
+    setItem: setName,
+    removeItem: removeName,
+    loadingStorage: loadingName
+  } = useStorage('name');
+  const {
+    storedValue: lastName,
+    setItem: setLastName,
+    removeItem: removeLastName,
+    loadingStorage: loadingLastName,
+  } = useStorage('lastName');
+  const {
+    storedValue: expiresAt,
+    setItem: setExpiresAt,
+    removeItem: removeExpiresAt,
+  } = useStorage('expiresAt');
+  console.log('rol inicial',isDriver)
+  console.log('storage del rol: ', role, !role)
+  // console.log('este es el storage que se ve si se guarda en web:    ', refresh_token)
+  // console.log('este es el state:    ',state)
+  // useEffect(() => {
+  //   if (refresh_token) {
+  //     if (!state) {
+  //       toggleState()
+  //     }
+  //   }
+  // }, [])
+  console.log('esto es el tipo que se muestra: ', role)
+  console.log('esto es el tipo que se muestra: ', role)
+  useEffect(() => {
+    if (refresh_token && !state) {
+      toggleState()
+    }
+  }, [refresh_token])
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+  useEffect(() => {
+    if ( !isDriver && role) {
+      toggleRole()
+    }
+  }, [role])
+
+
+  const [fontsLoaded] = useFonts({
+    SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
+  });
+
+  // Cargar splash y fuentes
+  useEffect(() => {
+    const initialize = async () => {
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simular carga evita que aparezca una pantalla antes de la otra
+      setIsLoading(false);
+      if (fontsLoaded) {
+        await SplashScreen.hideAsync();
+      }
+    };
+    initialize();
+  }, [fontsLoaded]);
+
+  // Navegación: configura el tabBar según sesión
+  useEffect(() => {
+    if (!state || (expiresAt && Date.now() > Number(expiresAt))) {
+      navigation.setOptions({
+        tabBarStyle: { display: "none" },
+        headerShown: false
+      });
+    } else {
+      navigation.setOptions({
+        headerShown: true,
+        tabBarStyle: { display: "flex" },
+      });
+    };
+  }, [navigation, state, expiresAt]);
+
+
+  useEffect(() => {
+    // pendieta poner un alert de error de sesion expirada
+    const outSession = async () => {
+      console.log(access_token,refresh_token,userEmail,userId,role);
+      await removeRefresh_token('refresh_token');
+      await removeAccess_token('access_token');
+      await removeUserEmail('userEmail');
+      await removeId('userId');
+      await removeRole('role');
+      await removeName('name');
+      await removeLastName('lastName');
+      await removeExpiresAt('expiresAt');
+      // await removeCars('cars')
+      toggleState();
+      if (isDriver){toggleRole()};
+      console.log(access_token,refresh_token,userEmail,userId,role);
+    router.replace('/');
+  };
+
+  if ( !refresh_token && state ) {
+    outSession();
+  }
+
+  }, [refresh_token]);
+
+  // Mostrar pantalla de carga si no se ha terminado de cargar
+  if ((!fontsLoaded || isLoading) || ((expiresAt && Date.now() > Number(expiresAt)) && state)) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={'green'}/>
+      </View>
+    );
+  }
+
+  // Mostrar contenido según autenticación
+  return state ? <ScrollRefresh /> : <LoginScreen />;
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
