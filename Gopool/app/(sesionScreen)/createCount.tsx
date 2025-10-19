@@ -86,7 +86,8 @@ export default function CreateCount() {
         {/* Pie de página */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>¿Ya tienes una cuenta? </Text>
-          <Link href="/homeLogin" asChild>
+          {/* <Link href="/homeLogin" asChild> */}
+          <Link href="/" asChild>
             <Text style={styles.loginLink}>INICIA SESIÓN</Text>
           </Link>
         </View>

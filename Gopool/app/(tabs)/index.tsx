@@ -3,7 +3,6 @@ import { router, useNavigation } from "expo-router";
 import { View, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
-import { useFonts } from 'expo-font';
 import LoginScreen from '../(sesionScreen)/LoginScreen';
 import { useLoginContext } from '@/hooks/useLoginContext';
 import useStorage from '@/hooks/useStorage';
@@ -66,6 +65,8 @@ export default function HomeScreen() {
   } = useStorage('expiresAt');
   console.log('rol inicial',isDriver)
   console.log('storage del rol: ', role, !role)
+  console.log(expiresAt,lastName,name,role,userEmail,userId,refresh_token,access_token);
+  console.log(loadingAccess_token,loadingRefresh_token,loadingId,loadingUserEmail,loadingRole,loadingName,loadingLastName );
   // console.log('este es el storage que se ve si se guarda en web:    ', refresh_token)
   // console.log('este es el state:    ',state)
   // useEffect(() => {
@@ -89,22 +90,17 @@ export default function HomeScreen() {
     }
   }, [role])
 
-
-  const [fontsLoaded] = useFonts({
-    SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
   // Cargar splash y fuentes
   useEffect(() => {
     const initialize = async () => {
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simular carga evita que aparezca una pantalla antes de la otra
       setIsLoading(false);
-      if (fontsLoaded) {
+      if (!loadingAccess_token && !loadingRefresh_token && !loadingId && !loadingUserEmail && !loadingRole && !loadingName && !loadingLastName) {
         await SplashScreen.hideAsync();
       }
     };
     initialize();
-  }, [fontsLoaded]);
+  }, [loadingAccess_token, loadingRefresh_token, loadingId, loadingUserEmail, loadingRole, loadingName, loadingLastName]);
 
   // Navegación: configura el tabBar según sesión
   useEffect(() => {
@@ -148,7 +144,7 @@ export default function HomeScreen() {
   }, [refresh_token]);
 
   // Mostrar pantalla de carga si no se ha terminado de cargar
-  if ((!fontsLoaded || isLoading) || ((expiresAt && Date.now() > Number(expiresAt)) && state)) {
+  if (isLoading || ((expiresAt && Date.now() > Number(expiresAt)) && state)) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color={'green'}/>
