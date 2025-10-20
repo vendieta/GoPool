@@ -1,9 +1,10 @@
+import CardTravel from "@/components/driver/CardTravel";
+import { ThemedView } from "@/components/themed-view";
 import { useApi } from "@/hooks/useApi";
 import useStorage from "@/hooks/useStorage";
 import { useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import CardTravel from "@/components/driver/CardTravel";
-
+import { ScrollView, StyleSheet, Text, useColorScheme } from "react-native";
+import { Colors } from '@/constants/theme';
 
 interface viajes {
     viajes: historyTravel[]
@@ -23,6 +24,7 @@ interface historyTravel {
 
 
 export default function travelHistory () {
+    const theme = useColorScheme();
     const { data, loading, error, get } = useApi<viajes>();
     const {
         storedValue: access_token,
@@ -46,33 +48,44 @@ export default function travelHistory () {
     console.log('el get de la lista viajes',data)
     console.log('el get de la lista viajes',data?.viajes.length)
 
-    return(
-        <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
-            <View style={styles.container}>
-                <Text style={styles.header}>Historial de viajes</Text>
-                {data && data.viajes && data?.viajes?.length > 0 ? (
-                data.viajes.map((viaje) => (
-                    <CardTravel key={viaje.id} user={viaje.driver} departureTime={viaje.horasalida} arrivalTime={viaje.horaestimacionllegada}
-                        seats={viaje.cuposdisponibles}
-                        price={viaje.precio}
-                        zoneEnd={viaje.ZonaFinal}
-                        zoneInit={viaje.ZonaInicial}/>
-                ))) : null}
-            
-            </View>
-        </ScrollView>
-    )
+
+    if (loading) return <Text>Cargando...</Text>;
+    if (error) return <Text>Error al cargar los viajes.</Text>;
+
+   return (
+    <ScrollView style={{ flex: 1 }}>
+      <ThemedView style={styles.container}>
+        <Text style={[styles.header, { color: theme === 'light' ? Colors.light.text : Colors.dark.text }]}>
+          Historial de viajes
+        </Text>
+
+        {data?.viajes?.length ? (
+          data.viajes.map(viaje => (
+            <CardTravel
+              key={viaje.id}
+              user={viaje.driver}
+              departureTime={viaje.horasalida}
+              arrivalTime={viaje.horaestimacionllegada}
+              seats={viaje.cuposdisponibles}
+              price={viaje.precio}
+              zoneEnd={viaje.ZonaFinal}
+              zoneInit={viaje.ZonaInicial}
+            />
+          ))
+        ) : (
+          <Text>No tienes viajes registrados.</Text>
+        )}
+      </ThemedView>
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-
-    },
-    header: {
-        fontSize: 22,
-        textAlign: 'center',
-        paddingVertical: 10,
-        fontWeight: 800
-    }
-})
+  container: { flex: 1 },
+  header: {
+    fontSize: 22,
+    textAlign: 'center',
+    paddingVertical: 10,
+    fontWeight: '800',
+  },
+});

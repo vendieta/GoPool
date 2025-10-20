@@ -263,7 +263,7 @@ console.log('👿👿👿👿👿',finishDAta)
 
 
 
-  console.log(loading)
+  console.log('tokend en rutas: ',access_token)
   return (
     <View style={{flex: 1}}>
       <ScrollView style={[{ flex: 1 }]}>

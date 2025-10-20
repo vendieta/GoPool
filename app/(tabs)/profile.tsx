@@ -157,7 +157,7 @@ const outSession = async () => {
       title: "Viajes",
       items: [
         { icon: 'history', Component: MaterialIcons, title: 'Historial', link: '/(optionScreen)/travelHistory' },
-        { icon: 'schedule', Component: MaterialIcons, title: 'Programados', link: '/(optionScreen)/scheduledTrips' }
+        // { icon: 'schedule', Component: MaterialIcons, title: 'Programados', link: '/(optionScreen)/scheduledTrips' }
       ]
     },
     // tipo ? {
@@ -171,7 +171,7 @@ const outSession = async () => {
       title: "Ayuda",
       items: [
         { icon: 'support-agent', Component: MaterialIcons, title: 'Soporte', link: 'https://api.whatsapp.com/send/?phone=593963102238&text=Hola%2C+quiero+contactarme+con+acessor&type=phone_number&app_absent=0' },
-        { icon: 'help-outline', Component: MaterialIcons, title: 'FAQ', link: '/(optionScreen)/faq' },
+        // { icon: 'help-outline', Component: MaterialIcons, title: 'FAQ', link: '/(optionScreen)/faq' },
         { icon: 'donate', Component: FontAwesome5, title: 'Donaciones', link: 'https://api.whatsapp.com/send/?phone=593963102238&text=Hola%2C+Me+gustaria+apoyar+en+el+proyecto&type=phone_number&app_absent=0' }
       ]
     },

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Platform, ViewStyle, Dimensions, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { Dimensions, Platform, ScrollView, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 const { height, width } = Dimensions.get('window');
 

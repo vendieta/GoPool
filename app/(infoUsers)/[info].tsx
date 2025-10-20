@@ -1,15 +1,14 @@
-import { useLocalSearchParams, useNavigation } from "expo-router";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from "react-native";
-import { useEffect, useState } from "react";
-import { useTheme } from "@/components/Themed/ContextTheme";
-import { MaterialIcons } from "@expo/vector-icons";
 import SeatsInput from "@/components/driver/SeatsInput";
+import LoadingOverlay from "@/components/loading/LoadingOverlay";
+import { useTheme } from "@/components/Themed/ContextTheme";
 import RoutesPannel from "@/components/user/RoutesPannel";
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useApi } from "@/hooks/useApi";
 import useStorage from "@/hooks/useStorage";
-import LoadingOverlay from "@/components/loading/LoadingOverlay";
-import { useRouter } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface Producto {
   user: string;
