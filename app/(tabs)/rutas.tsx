@@ -14,6 +14,15 @@ import { useCallback } from "react";
 import { checkTime, getNowInGuayaquil } from '@/scripts/compareTime';
 import {ComvertDateZone, ComvertTimeZone} from '@/scripts/time';
 
+const { height, width } = Dimensions.get('window');
+
+// Breakpoints responsivos
+const isSmallScreen = width < 350;
+const isMediumScreen = width >= 350 && width < 768;
+const isLargeScreen = width >= 768;
+
+console.log('Screen dimensions:', { isSmallScreen, isMediumScreen, isLargeScreen });
+
 export interface User {
   id: string;
   nombre: string;
@@ -38,8 +47,8 @@ export interface Vehiculo {
 export interface RutaDriverBase {
   ZonaFinal: string;
   ZonaInicial: string;
-  horasalida: string; // ISO string
-  horaestimacionllegada: string; // ISO string
+  horasalida: string;
+  horaestimacionllegada: string;
   id_vehiculo: string;
   finalizado: boolean;
   cuposdisponibles: number;
@@ -55,7 +64,6 @@ interface Usuarios {
   numeroTelefono: string;
 }
 
-// Interface para el objeto principal
 interface ViajeUsuario {
   user: Usuarios;
   userid: string;
@@ -63,9 +71,6 @@ interface ViajeUsuario {
   cantidad_cupos: number;
 }
 
-// ----------------------
-// PRIMERA RESPUESTA
-// ----------------------
 export interface RutaDriverResponseA {
   rutadriverid: string;
   saldo: number;
@@ -75,13 +80,10 @@ export interface RutaDriverResponseA {
   };
 }
 
-// ----------------------
-// SEGUNDA RESPUESTA
-// ----------------------
 export interface RutaDriverResponseB extends RutaDriverBase {
   id: string;
   driver: Driver;
-  pasajeros: ViajeUsuario[]; // puedes tipar mejor si sabes la forma de cada pasajero
+  pasajeros: ViajeUsuario[];
 }
 
 function getTimeInGuayaquil() {
@@ -95,21 +97,15 @@ function getTimeInGuayaquil() {
   }).format(now)
 }
 
-
-
-
 export default function TabTwoScreen() {
   const [ isDriver, setIsDriver ] = useState<string | null>()
   const {
-  storedValue: role,
-  setItem: setRole,
-} = useStorage('role');
-  // const isDriver  = false;
-  // const data  = true;
+    storedValue: role,
+    setItem: setRole,
+  } = useStorage('role');
   const { theme } = useTheme();
   const isLightTheme = theme.name === 'light';
   const [modalVisible, setModalVisible] = useState(false);
-  // Colores basados en el tema
   const backgroundColor = isLightTheme ? '#f5f5f5' : '#121212';
   const textColor = isLightTheme ? '#333' : '#fff';
   const cardBackground = isLightTheme ? '#fff' : '#1e1e1e';
@@ -129,11 +125,9 @@ export default function TabTwoScreen() {
       setItem: setId,
   } = useStorage('userId');
   const {
-  storedValue: access_token,
-  setItem: setAccess_token,
+    storedValue: access_token,
+    setItem: setAccess_token,
   } = useStorage('access_token');
-
-
 
   useFocusEffect(
     useCallback(() => {
@@ -141,18 +135,13 @@ export default function TabTwoScreen() {
       if (userId && access_token) {
         const a = async() => {
           await get(`/api/user/me/viaje-actual/${userId}`, undefined,{ 
-        headers: { Authorization: `Abduzcan ${access_token}` }
-      } );
+            headers: { Authorization: `Abduzcan ${access_token}` }
+          });
         }
-      
-      a()
-    }
-      // Si tu hook `useStorage` ya se encarga de leer el storage
-      // con solo llamarlo basta; si no, podrías agregarle un método refresh()
+        a()
+      }
     }, [userId, dataCancel, finishDAta, access_token]),
   )
-  console.log('🙏este es la daata',data, userId)
-
 
   useFocusEffect(
     useCallback(() => {
@@ -162,22 +151,16 @@ export default function TabTwoScreen() {
             console.log('El viaje ya no busca mas usuarios');
             setBlock(true);
           };
-          // console.log('🤑🤑🤑🤑', data ? "rutadriver" in data ? data.rutadriver.horaestimacionllegada : data.horaestimacionllegada : 'no hay data');
           if (data && checkTime(data && "rutadriver" in data ? new Date(data.rutadriver.horaestimacionllegada).toISOString() : data && !("rutadriver" in data) ? new Date(data.horaestimacionllegada).toISOString()  : '') === 'expired') {
-            console.log('El viaje ya finalizo hptaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+            console.log('El viaje ya finalizo');
             setFinish(true);
           };
         }
-      
-      a()
-    }
-      // Si tu hook `useStorage` ya se encarga de leer el storage
-      // con solo llamarlo basta; si no, podrías agregarle un método refresh()
+        a()
+      }
     }, [data]),
-
   )
 
-  // 
   useEffect(() => {
     setIsDriver(role);
   }, [role, userId,]);
@@ -185,20 +168,16 @@ export default function TabTwoScreen() {
   useEffect(() => {
     if (data && finish && access_token){
       const x = async() => {
-        console.log('🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶',data)
         await post('/api/viajes/finalizar',{
           idViaje: ("rutadriver" in data) ? data.rutadriverid : data?.id
         },{ 
-        headers: { Authorization: `Abduzcan ${access_token}` }
-      });
+          headers: { Authorization: `Abduzcan ${access_token}` }
+        });
       }
       x();
       setFinish(false);
     }
-    
   },[finish,data,access_token])
-
-console.log('👿👿👿👿👿',finishDAta)
 
   const handleCancel = () => {
     setCancelModal(false);
@@ -210,8 +189,8 @@ console.log('👿👿👿👿👿',finishDAta)
     if (data && !("rutadriver" in data)) {
       try {
         await cancelViaje(`/api/viajes/eliminar/${data.id}`,{ 
-        headers: { Authorization: `Abduzcan ${access_token}` }
-      })
+          headers: { Authorization: `Abduzcan ${access_token}` }
+        })
         console.log('RUTA CANCELADA')
       } catch (error) {
         console.log(error);
@@ -219,15 +198,13 @@ console.log('👿👿👿👿👿',finishDAta)
       }
     }
     if (data && "rutadriver" in data) {
-      console.log('🤷‍♀️user ')
       try {
         await cancelViaje(`/api/viajes/salir/${data.rutadriverid}/${userId}`,{ 
-        headers: { Authorization: `Abduzcan ${access_token}` }
-      })
+          headers: { Authorization: `Abduzcan ${access_token}` }
+        })
       } catch {
         Alert.alert('No se pudo cancelar su viaje, intentalo de nuevo')
       }
-      
     }
     setCancelModal(false);
     console.log("Servicio cancelado");
@@ -237,9 +214,9 @@ console.log('👿👿👿👿👿',finishDAta)
     if (data && !("rutadriver" in data)) {
       try {
         await cancelViaje(`/api/viajes/salir/${data.id}/${idUser}`,{ 
-        headers: { Authorization: `Abduzcan ${access_token}` }
-      })
-        console.log('🤪🤪🤪🤪🤪🤪🤪usuario eliminado')
+          headers: { Authorization: `Abduzcan ${access_token}` }
+        })
+        console.log('usuario eliminado')
       } catch (error) {
         console.log(error);
         Alert.alert('Algo salio mal intentalo de nuevo')
@@ -250,20 +227,6 @@ console.log('👿👿👿👿👿',finishDAta)
     console.log("Servicio cancelado");
   };
 
-//   if (data) {
-//   if ("rutadriver" in data) {
-//     // Aquí TS ya sabe que es RutaDriverResponseA
-//     console.log("Driver A:", data.rutadriver.driver.users.nombre);
-//   } else {
-//     // Aquí TS ya sabe que es RutaDriverResponseB
-//     console.log("Driver B:", data.driver.users.nombre);
-//   }
-// }
-
-
-
-
-  console.log('tokend en rutas: ',access_token)
   return (
     <View style={{flex: 1}}>
       <ScrollView style={[{ flex: 1 }]}>
@@ -293,20 +256,8 @@ console.log('👿👿👿👿👿',finishDAta)
             {isDriver === 'true' ? 
             <>
               <Text style={[styles.sectionTitle, { color: textColor }]}>
-                <MaterialIcons name="directions" size={20} color={accentColor} /> { isDriver ? 'Opciones de Ruta' : 'Rutas por tomar' }
+                <MaterialIcons name="directions" size={isSmallScreen ? 18 : 20} color={accentColor} /> { isDriver ? 'Opciones de Ruta' : 'Rutas por tomar' }
               </Text>
-              {/* {isDriver? 
-                <Text style={[styles.sectionTitle, { color: textColor }]}>Selecciona una opción:</Text>
-                : 
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                  <TouchableOpacity>
-                    <AntDesign name="questioncircleo" size={25} color="white" />
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <MaterialIcons name="report-problem" size={29} color="red" />
-                  </TouchableOpacity>
-                </View>
-              } */}
               <View style={styles.optionsContainer}>
                 {(!data && !loading && !finishLoading) ? 
                   <Opcion
@@ -333,57 +284,60 @@ console.log('👿👿👿👿👿',finishDAta)
                           <Text style={[styles.lateralValue, { color: theme.text }]}>$ {data?.precio}</Text>
                         </View>
                         <View style={styles.profileHeader}>
-                          <Image borderRadius={30} width={60} height={60} source={{uri: data.vehiculo.fotovehiculo}}/>
-                          <Text style={[styles.userName, { color: theme.text }]}>{data.driver.users.nombre} {data.driver.users.lastname}</Text>
-                          {/* <Text style={[styles.userName, { color: theme.text }]}>Max Atahualpa taguantisuyo Paquisha goku</Text> */}
+                          <Image borderRadius={isSmallScreen ? 25 : 30} width={isSmallScreen ? 50 : 60} height={isSmallScreen ? 50 : 60} source={{uri: data.vehiculo.fotovehiculo}}/>
+                          <Text style={[styles.userName, { color: theme.text }]} numberOfLines={2}>
+                            {data.driver.users.nombre} {data.driver.users.lastname}
+                          </Text>
                           <Text style={[styles.userStatus, { color: theme.labelText }]}>
                             {data.cuposdisponibles} Cupos disponibles
                           </Text>
                         </View>
                         <View style={styles.lateral}>
                           <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Fecha</Text>
-                          <Text style={[styles.lateralValue, { color: theme.text }]}>{ComvertDateZone(data.horasalida)}</Text>
-                          {/* <Text style={[styles.lateralValue, { color: theme.text }]}>{data.horasalida.split('T')[0].replace(/-/g, '/')}</Text> */}
+                          <Text style={[styles.lateralValue, { color: theme.text }]} numberOfLines={1}>
+                            {ComvertDateZone(data.horasalida)}
+                          </Text>
                         </View>
                       </View>
-                      <View style={[styles.section, {flexDirection: 'row', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center', width: '100%'}]}>
-                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data.ZonaInicial}</Text><Text style={{color: theme.text}}>{ComvertTimeZone(data.horasalida )}</Text></View>
-                        {/* <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data.ZonaInicial}</Text><Text style={{color: theme.text}}>{data.horasalida.split('T')[1].substring(0, 5)}</Text></View> */}
-                          <FontAwesome name="long-arrow-right" size={25} color={theme.text} />
-                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data.ZonaFinal}</Text><Text  style={{color: theme.text}}>{ComvertTimeZone(data.horaestimacionllegada)}</Text></View>
-                        {/* <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data.ZonaFinal}</Text><Text  style={{color: theme.text}}>{data.horaestimacionllegada.split('T')[1].substring(0, 5)}</Text></View> */}
-                        {/* <View style={{alignItems: 'center'}}><Text style={{color: theme.text}}>{data.date}</Text></View>
-                        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}><Text style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.zoneEnd}</Text></View> */}
+                      <View style={[styles.section, {flexDirection: isSmallScreen ? 'column' : 'row', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: isSmallScreen ? 8 : 5, alignItems: 'center', width: '100%', gap: isSmallScreen ? 8 : 0}]}>
+                        <View style={{flexDirection: 'column', gap: 5, alignItems: isSmallScreen ? 'flex-start' : 'center'}}>
+                          <Text style={{color: theme.text, fontSize: isSmallScreen ? 13 : 15}} numberOfLines={1}>{data.ZonaInicial}</Text>
+                          <Text style={{color: theme.text, fontSize: isSmallScreen ? 13 : 15}}>{ComvertTimeZone(data.horasalida)}</Text>
+                        </View>
+                        <FontAwesome name={isSmallScreen ? "long-arrow-down" : "long-arrow-right"} size={isSmallScreen ? 20 : 25} color={theme.text} />
+                        <View style={{flexDirection: 'column', gap: 5, alignItems: isSmallScreen ? 'flex-start' : 'center'}}>
+                          <Text style={{color: theme.text, fontSize: isSmallScreen ? 13 : 15}} numberOfLines={1}>{data.ZonaFinal}</Text>
+                          <Text style={{color: theme.text, fontSize: isSmallScreen ? 13 : 15}}>{ComvertTimeZone(data.horaestimacionllegada)}</Text>
+                        </View>
                       </View>
-                      <View style={{ width: '100%', paddingVertical: 15, alignItems: 'center'}}>
-                        <TouchableOpacity style={{width: '50%', alignItems: 'center'}} onPress={() => setModalVisible(true)}>
-                          <FontAwesome5 name="car-side" size={30} color="yellow" />
+                      <View style={{ width: '100%', paddingVertical: isSmallScreen ? 10 : 15, alignItems: 'center'}}>
+                        <TouchableOpacity style={{width: isSmallScreen ? '70%' : '50%', alignItems: 'center'}} onPress={() => setModalVisible(true)}>
+                          <FontAwesome5 name="car-side" size={isSmallScreen ? 25 : 30} color="yellow" />
                           <Text style={[styles.text, {color: theme.text}]}>Foto Vehiculo</Text>
                           <Text style={[styles.text, {color: theme.text}]}>Informacion del carro</Text>
                         </TouchableOpacity>
                       </View>
-                      <Text style={{color: theme.text}}>Pasajeros</Text>
+                      <Text style={{color: theme.text, fontSize: isSmallScreen ? 15 : 16, fontWeight: '600', marginBottom: 5}}>Pasajeros</Text>
                       {data.pasajeros.map((user, index) => (
-                        <View key={index} style={[styles.section, {flexDirection: 'row', justifyContent: 'space-between', backgroundColor: theme.cardBackground, paddingHorizontal: 15, paddingVertical: 5, alignItems: 'center', width: '90%', marginVertical: 15, borderColor: theme.text, borderWidth: 1}]}>
-                        <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${user.user.numeroTelefono}`)} style={{alignItems: 'center'}}>
-                          <FontAwesome5 name="whatsapp" size={40} color="green" />
-                          {/* <Text style={{color: theme.text, fontSize: 15}} >whatssap</Text> */}
-                        </TouchableOpacity>
-                          <Text style={{color: theme.text}}>{user.user.nombre} {user.user.lastname}</Text>
-                          <Text style={{color: theme.text}}>cupos: {user.cantidad_cupos}</Text>
-                          <TouchableOpacity onPress={()=> {setCancelUser(true); setNameUser(`${user.user.nombre} ${user.user.lastname}`); setIdUserDelete(user.userid)}} >
-                            <MaterialIcons name="cancel" size={30} color={theme.text} />
+                        <View key={index} style={[styles.pasajeroCard, {backgroundColor: theme.cardBackground, borderColor: theme.text}]}>
+                          <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${user.user.numeroTelefono}`)} style={{alignItems: 'center'}}>
+                            <FontAwesome5 name="whatsapp" size={isSmallScreen ? 30 : 40} color="green" />
+                          </TouchableOpacity>
+                          <View style={{flex: 1, paddingHorizontal: 8}}>
+                            <Text style={{color: theme.text, fontSize: isSmallScreen ? 13 : 15}} numberOfLines={1}>
+                              {user.user.nombre} {user.user.lastname}
+                            </Text>
+                            <Text style={{color: theme.text, fontSize: isSmallScreen ? 12 : 14}}>cupos: {user.cantidad_cupos}</Text>
+                          </View>
+                          <TouchableOpacity onPress={()=> {setCancelUser(true); setNameUser(`${user.user.nombre} ${user.user.lastname}`); setIdUserDelete(user.userid)}}>
+                            <MaterialIcons name="cancel" size={isSmallScreen ? 25 : 30} color={theme.text} />
                           </TouchableOpacity>
                         </View>
-                      ))
-                      }
+                      ))}
                       <View style={styles.containerCancelar}>
                         <TouchableOpacity style={styles.cancelar} onPress={() => setCancelModal(true)}>
-                          <Text style={styles.textCancelar} >Cancelar</Text>
+                          <Text style={styles.textCancelar}>Cancelar</Text>
                         </TouchableOpacity>
-                        {/* <TouchableOpacity style={{padding: 5}}>
-                          <MaterialIcons name="report-problem" size={29} color="red" />
-                        </TouchableOpacity> */}
                       </View>
                   </> : (data && "rutadriver" in data && !finishLoading) ? <>
                       <View style={[styles.containerHeader, { backgroundColor: theme.cardBackground, width: '100%' }]}>
@@ -392,47 +346,54 @@ console.log('👿👿👿👿👿',finishDAta)
                           <Text style={[styles.lateralValue, { color: theme.text }]}>$ {data?.rutadriver.precio}</Text>
                         </View>
                         <View style={styles.profileHeader}>
-                          <Image borderRadius={30} width={60} height={60} source={{uri:'https://gopool-img-2025.s3.us-east-2.amazonaws.com/3bc859a6-5c4f-42a3-b06d-0cd30b8325e6-21385a45-bf15-49b9-a2ad-ac7dfde3adb9.jpeg'}}/>
-                          <Text style={[styles.userName, { color: theme.text }]}>{data?.rutadriver.driver.users.nombre} {data?.rutadriver.driver.users.lastname}</Text>
-                          {/* <Text style={[styles.userName, { color: theme.text }]}>Max Atahualpa taguantisuyo Paquisha goku</Text> */}
+                          <Image borderRadius={isSmallScreen ? 25 : 30} width={isSmallScreen ? 50 : 60} height={isSmallScreen ? 50 : 60} source={{uri:'https://gopool-img-2025.s3.us-east-2.amazonaws.com/3bc859a6-5c4f-42a3-b06d-0cd30b8325e6-21385a45-bf15-49b9-a2ad-ac7dfde3adb9.jpeg'}}/>
+                          <Text style={[styles.userName, { color: theme.text }]} numberOfLines={2}>
+                            {data?.rutadriver.driver.users.nombre} {data?.rutadriver.driver.users.lastname}
+                          </Text>
                           <Text style={[styles.userStatus, { color: theme.labelText }]}>
                             {data?.cantidad_cupos} comprados
                           </Text>
                         </View>
                         <View style={styles.lateral}>
                           <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Fecha</Text>
-                          <Text style={[styles.lateralValue, { color: theme.text }]}>{ComvertDateZone(data?.rutadriver.horasalida)}</Text>
+                          <Text style={[styles.lateralValue, { color: theme.text }]} numberOfLines={1}>
+                            {ComvertDateZone(data?.rutadriver.horasalida)}
+                          </Text>
                         </View>
                       </View>
                       
-                      <View style={[styles.section, {flexDirection: 'row', width: '100%', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center'}]}>
-                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaInicial}</Text><Text style={{color: theme.text}}>{ComvertTimeZone(data?.rutadriver.horasalida)}</Text></View>
-                          <FontAwesome name="long-arrow-right" size={25} color={theme.text} />
-                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaFinal}</Text><Text  style={{color: theme.text}}>{ComvertTimeZone(data?.rutadriver.horaestimacionllegada)}</Text></View>
-                        {/* <View style={{alignItems: 'center'}}><Text style={{color: theme.text}}>{data.date}</Text></View>
-                        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}><Text style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.zoneEnd}</Text></View> */}
+                      <View style={[styles.section, {flexDirection: isSmallScreen ? 'column' : 'row', width: '100%', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: isSmallScreen ? 8 : 5, alignItems: 'center', gap: isSmallScreen ? 8 : 0}]}>
+                        <View style={{flexDirection: 'column', gap: 5, alignItems: isSmallScreen ? 'flex-start' : 'center'}}>
+                          <Text style={{color: theme.text, fontSize: isSmallScreen ? 13 : 15}} numberOfLines={1}>{data?.rutadriver.ZonaInicial}</Text>
+                          <Text style={{color: theme.text, fontSize: isSmallScreen ? 13 : 15}}>{ComvertTimeZone(data?.rutadriver.horasalida)}</Text>
+                        </View>
+                        <FontAwesome name={isSmallScreen ? "long-arrow-down" : "long-arrow-right"} size={isSmallScreen ? 20 : 25} color={theme.text} />
+                        <View style={{flexDirection: 'column', gap: 5, alignItems: isSmallScreen ? 'flex-start' : 'center'}}>
+                          <Text style={{color: theme.text, fontSize: isSmallScreen ? 13 : 15}} numberOfLines={1}>{data?.rutadriver.ZonaFinal}</Text>
+                          <Text style={{color: theme.text, fontSize: isSmallScreen ? 13 : 15}}>{ComvertTimeZone(data?.rutadriver.horaestimacionllegada)}</Text>
+                        </View>
                       </View>
                       <View style={[styles.placa,{ backgroundColor: theme.cardBackground, width: '100%' }]}>
                         <Text style={[styles.textPlaca, {color: theme.text}]}>Placa: {data?.rutadriver.vehiculo.placa}</Text>
                       </View>
-                      <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingVertical: 15, alignItems: 'center'}}>
-                        <TouchableOpacity style={{width: '50%', alignItems: 'center'}} onPress={() => setModalVisible(true)}>
-                          <FontAwesome5 name="car-side" size={30} color="yellow" />
+                      <View style={styles.actionButtons}>
+                        <TouchableOpacity style={styles.actionButton} onPress={() => setModalVisible(true)}>
+                          <FontAwesome5 name="car-side" size={isSmallScreen ? 25 : 30} color="yellow" />
                           <Text style={[styles.text, {color: theme.text}]}>Foto Vehiculo</Text>
-                          <Text style={[styles.text, {color: theme.text}]}>Informacion del carro</Text>
+                          <Text style={[styles.text, {color: theme.text, fontSize: isSmallScreen ? 11 : 13}]}>Informacion del carro</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${data?.rutadriver.driver.users.numeroTelefono}`)} style={{width: '50%', alignItems: 'center'}}>
-                          <FontAwesome5 name="whatsapp" size={30} color="green" />
-                          <Text style={[styles.text, {color: theme.text}]} >whatssap</Text>
-                          <Text style={[styles.text, {color: theme.text}]} >Contacta al conductor</Text>
+                        <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${data?.rutadriver.driver.users.numeroTelefono}`)} style={styles.actionButton}>
+                          <FontAwesome5 name="whatsapp" size={isSmallScreen ? 25 : 30} color="green" />
+                          <Text style={[styles.text, {color: theme.text}]}>whatssap</Text>
+                          <Text style={[styles.text, {color: theme.text, fontSize: isSmallScreen ? 11 : 13}]}>Contacta al conductor</Text>
                         </TouchableOpacity>
                       </View>
                       <View style={styles.containerCancelar}>
                           {block? null: <TouchableOpacity style={styles.cancelar} onPress={() => setCancelModal(true)}>
-                          <Text style={styles.textCancelar} >Cancelar</Text>
+                          <Text style={styles.textCancelar}>Cancelar</Text>
                         </TouchableOpacity>}
                         <TouchableOpacity style={{padding: 5}}>
-                          <MaterialIcons name="report-problem" size={29} color="red" />
+                          <MaterialIcons name="report-problem" size={isSmallScreen ? 24 : 29} color="red" />
                         </TouchableOpacity>
                       </View>
                     </> :  <ActivityIndicator size="large" color="#00ff00" ></ActivityIndicator> }
@@ -448,81 +409,76 @@ console.log('👿👿👿👿👿',finishDAta)
                           <Text style={[styles.lateralValue, { color: theme.text }]}>$ {data?.rutadriver.precio}</Text>
                         </View>
                         <View style={styles.profileHeader}>
-                          <Image borderRadius={30} width={60} height={60} source={{uri:'https://gopool-img-2025.s3.us-east-2.amazonaws.com/3bc859a6-5c4f-42a3-b06d-0cd30b8325e6-21385a45-bf15-49b9-a2ad-ac7dfde3adb9.jpeg'}}/>
-                          <Text style={[styles.userName, { color: theme.text }]}>{data?.rutadriver.driver.users.nombre} {data?.rutadriver.driver.users.lastname}</Text>
-                          {/* <Text style={[styles.userName, { color: theme.text }]}>Max Atahualpa taguantisuyo Paquisha goku</Text> */}
+                          <Image borderRadius={isSmallScreen ? 25 : 30} width={isSmallScreen ? 50 : 60} height={isSmallScreen ? 50 : 60} source={{uri:'https://gopool-img-2025.s3.us-east-2.amazonaws.com/3bc859a6-5c4f-42a3-b06d-0cd30b8325e6-21385a45-bf15-49b9-a2ad-ac7dfde3adb9.jpeg'}}/>
+                          <Text style={[styles.userName, { color: theme.text }]} numberOfLines={2}>
+                            {data?.rutadriver.driver.users.nombre} {data?.rutadriver.driver.users.lastname}
+                          </Text>
                           <Text style={[styles.userStatus, { color: theme.labelText }]}>
                             {data?.cantidad_cupos} comprados
                           </Text>
                         </View>
                         <View style={styles.lateral}>
                           <Text style={[styles.lateralTitle, { color: theme.labelText }]}>Fecha</Text>
-                          <Text style={[styles.lateralValue, { color: theme.text }]}>{data?.rutadriver.horasalida.split('T')[0].replace(/-/g, '/')}</Text>
+                          <Text style={[styles.lateralValue, { color: theme.text }]} numberOfLines={1}>
+                            {data?.rutadriver.horasalida.split('T')[0].replace(/-/g, '/')}
+                          </Text>
                         </View>
                       </View>
                       
-                      <View style={[styles.section, {flexDirection: 'row', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: 5, alignItems: 'center'}]}>
-                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaInicial}</Text><Text style={{color: theme.text}}>{data?.rutadriver.horasalida.split('T')[1].substring(0, 5)}</Text></View>
-                          <FontAwesome name="long-arrow-right" size={25} color={theme.text} />
-                        <View style={{flexDirection: 'column', gap: 5}}><Text  style={{color: theme.text}}>{data?.rutadriver.ZonaFinal}</Text><Text  style={{color: theme.text}}>{data?.rutadriver.horaestimacionllegada.split('T')[1].substring(0, 5)}</Text></View>
-                        {/* <View style={{alignItems: 'center'}}><Text style={{color: theme.text}}>{data.date}</Text></View>
-                        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}><Text style={{color: theme.text}}>{data.zoneInit}</Text><Text style={{color: theme.text}}>{data.zoneEnd}</Text></View> */}
+                      <View style={[styles.section, {flexDirection: isSmallScreen ? 'column' : 'row', justifyContent: 'space-around', backgroundColor: theme.cardBackground, padding: isSmallScreen ? 8 : 5, alignItems: 'center', gap: isSmallScreen ? 8 : 0}]}>
+                        <View style={{flexDirection: 'column', gap: 5, alignItems: isSmallScreen ? 'flex-start' : 'center'}}>
+                          <Text style={{color: theme.text, fontSize: isSmallScreen ? 13 : 15}} numberOfLines={1}>{data?.rutadriver.ZonaInicial}</Text>
+                          <Text style={{color: theme.text, fontSize: isSmallScreen ? 13 : 15}}>{data?.rutadriver.horasalida.split('T')[1].substring(0, 5)}</Text>
+                        </View>
+                        <FontAwesome name={isSmallScreen ? "long-arrow-down" : "long-arrow-right"} size={isSmallScreen ? 20 : 25} color={theme.text} />
+                        <View style={{flexDirection: 'column', gap: 5, alignItems: isSmallScreen ? 'flex-start' : 'center'}}>
+                          <Text style={{color: theme.text, fontSize: isSmallScreen ? 13 : 15}} numberOfLines={1}>{data?.rutadriver.ZonaFinal}</Text>
+                          <Text style={{color: theme.text, fontSize: isSmallScreen ? 13 : 15}}>{data?.rutadriver.horaestimacionllegada.split('T')[1].substring(0, 5)}</Text>
+                        </View>
                       </View>
                       <View style={[styles.placa,{ backgroundColor: theme.cardBackground }]}>
                         <Text style={[styles.textPlaca, {color: theme.text}]}>Placa: {data?.rutadriver.vehiculo.placa}</Text>
                       </View>
-                      <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingVertical: 15, alignItems: 'center'}}>
-                        <TouchableOpacity style={{width: '50%', alignItems: 'center'}} onPress={() => setModalVisible(true)}>
-                          <FontAwesome5 name="car-side" size={30} color="yellow" />
+                      <View style={styles.actionButtons}>
+                        <TouchableOpacity style={styles.actionButton} onPress={() => setModalVisible(true)}>
+                          <FontAwesome5 name="car-side" size={isSmallScreen ? 25 : 30} color="yellow" />
                           <Text style={[styles.text, {color: theme.text}]}>Foto Vehiculo</Text>
-                          <Text style={[styles.text, {color: theme.text}]}>Informacion del carro</Text>
+                          <Text style={[styles.text, {color: theme.text, fontSize: isSmallScreen ? 11 : 13}]}>Informacion del carro</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${data?.rutadriver.driver.users.numeroTelefono}`)} style={{width: '50%', alignItems: 'center'}}>
-                          <FontAwesome5 name="whatsapp" size={30} color="green" />
-                          <Text style={[styles.text, {color: theme.text}]} >whatssap</Text>
-                          <Text style={[styles.text, {color: theme.text}]} >Contacta al conductor</Text>
+                        <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${data?.rutadriver.driver.users.numeroTelefono}`)} style={styles.actionButton}>
+                          <FontAwesome5 name="whatsapp" size={isSmallScreen ? 25 : 30} color="green" />
+                          <Text style={[styles.text, {color: theme.text}]}>whatssap</Text>
+                          <Text style={[styles.text, {color: theme.text, fontSize: isSmallScreen ? 11 : 13}]}>Contacta al conductor</Text>
                         </TouchableOpacity>
                       </View>
                       <View style={styles.containerCancelar}>
                         {block? null: <TouchableOpacity style={styles.cancelar} onPress={() => setCancelModal(true)}>
-                          <Text style={styles.textCancelar} >Cancelar</Text>
+                          <Text style={styles.textCancelar}>Cancelar</Text>
                         </TouchableOpacity>}
                         <TouchableOpacity style={{padding: 5}}>
-                          <MaterialIcons name="report-problem" size={29} color="red" />
+                          <MaterialIcons name="report-problem" size={isSmallScreen ? 24 : 29} color="red" />
                         </TouchableOpacity>
                       </View>
                     </> : (!data && !loading && !finishLoading) ?
                     <>
-                    <View style={{padding: 20}}>
-                      <Text style={{color: theme.text, textAlign: 'center', fontSize: 16, lineHeight: 25}}>Querido usuario le recomendamos que busque un viaje que lo lleve a su destino a su destino...</Text>
+                    <View style={{padding: isSmallScreen ? 15 : 20}}>
+                      <Text style={{color: theme.text, textAlign: 'center', fontSize: isSmallScreen ? 14 : 16, lineHeight: isSmallScreen ? 22 : 25}}>
+                        Querido usuario le recomendamos que busque un viaje que lo lleve a su destino a su destino...
+                      </Text>
                     </View>
                     </> : <ActivityIndicator size="large" color="#00ff00" ></ActivityIndicator>}
                   </View> :
                     <ActivityIndicator size="large" color="#00ff00" ></ActivityIndicator>
             }
           </View>
-      
-          {/* Sección adicional (puedes agregar más contenido aquí) */}
-          {/* {isDriver ? 
-            null :
-            <View style={[styles.infoCard, { backgroundColor: cardBackground }]}>
-              <Text style={[styles.infoTitle, { color: textColor }]}>
-                <MaterialIcons name="info" size={18} color={accentColor} /> ¿Cómo funciona?
-              </Text>
-              <Text style={[styles.infoText, { color: isLightTheme ? '#666' : '#aaa' }]}>
-                Selecciona si deseas buscar un viaje como pasajero u ofrecer tus cupos disponibles como conductor.
-              </Text>
-            </View>
-          } */}
         </View>
       
         <Modal
           transparent={true}
           visible={modalVisible}
           animationType="fade"
-          onRequestClose={() => setModalVisible(false)} // Android back button
+          onRequestClose={() => setModalVisible(false)}
         >
-          {/* Fondo semi-transparente clickeable */}
           <TouchableOpacity 
             style={styles.modalBackground} 
             activeOpacity={1} 
@@ -541,13 +497,15 @@ console.log('👿👿👿👿👿',finishDAta)
           transparent
           visible={cancelModal || cancelUser}
           animationType="fade"
-          onRequestClose={() => {setCancelModal(false); setCancelModal(false)}} // Android back button
+          onRequestClose={() => {setCancelModal(false); setCancelUser(false)}}
         >
           <View style={styles.modalBackground}>
             <View style={styles.modalBox}>
-              <Text style={styles.modalText}>{cancelUser ? `Esta seguro que quiere eliminar a ${nameUser}`: '¿Esta seguro que deseas cancelar el servicio?'}</Text>
+              <Text style={styles.modalText}>
+                {cancelUser ? `Esta seguro que quiere eliminar a ${nameUser}`: '¿Esta seguro que deseas cancelar el servicio?'}
+              </Text>
               <View style={styles.buttonRow}>
-                <TouchableOpacity style={styles.cancelButton} onPress={handleCancel }>
+                <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
                   <Text style={styles.buttonText}>No</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.continueButton} onPress={cancelUser ? () => deleteUser(idUserDelete) : handleContinue}>
@@ -568,39 +526,39 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     width: '100%',
-    height: 220,
-    paddingTop: 20,
-    paddingHorizontal: 20,
+    height: isSmallScreen ? 180 : isMediumScreen ? 220 : 280,
+    paddingTop: isSmallScreen ? 15 : 20,
+    paddingHorizontal: isSmallScreen ? 15 : 20,
     overflow: 'hidden',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   headerImage: {
-    width: 150,
-    height: 150,
+    width: isSmallScreen ? 120 : isMediumScreen ? 180 : 250,
+    height: isSmallScreen ? 120 : isMediumScreen ? 180 : 250,
     opacity: 0.75,
   },
   headerTextContainer: {
     flex: 1,
-    paddingLeft: 20,
+    paddingLeft: isSmallScreen ? 10 : 20,
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: isSmallScreen ? 24 : isMediumScreen ? 27 : 29,
     fontWeight: 'bold',
     marginBottom: 5,
   },
   headerSubtitle: {
-    fontSize: 16,
+    fontSize: isSmallScreen ? 14 : isMediumScreen ? 17 : 20,
   },
   contentContainer: {
     flex: 1,
-    padding: 10,
+    padding: isSmallScreen ? 8 : isMediumScreen ? 12 : 16,
   },
   optionsCard: {
-    borderRadius: 15,
-    padding: 15,
-    marginBottom: 20,
+    borderRadius: isSmallScreen ? 12 : isMediumScreen ? 14 : 15,
+    padding: isSmallScreen ? 10 : isMediumScreen ? 13 : 15,
+    marginBottom: isSmallScreen ? 15 : 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -609,9 +567,9 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: isSmallScreen ? 16 : isMediumScreen ? 17 : 18,
     fontWeight: '600',
-    marginBottom: 15,
+    marginBottom: isSmallScreen ? 12 : 15,
     flexDirection: 'row',
     alignItems: 'center',
     color: 'white'
@@ -622,8 +580,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   infoCard: {
-    borderRadius: 15,
-    padding: 20,
+    borderRadius: isSmallScreen ? 12 : 15,
+    padding: isSmallScreen ? 15 : 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -631,132 +589,159 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   infoTitle: {
-    fontSize: 16,
+    fontSize: isSmallScreen ? 14 : 16,
     fontWeight: '600',
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
   },
   infoText: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: isSmallScreen ? 13 : 14,
+    lineHeight: isSmallScreen ? 18 : 20,
   },
   extraInfo:{
     backgroundColor: '#F5F5F5',
-    borderRadius: 20,
-    padding: 10
+    borderRadius: isSmallScreen ? 15 : 20,
+    padding: isSmallScreen ? 8 : 10,
   },
   containerHeader: {
-    padding: 16,
-
-    flexDirection: 'row',
-    justifyContent: 'space-around'
+    padding: isSmallScreen ? 10 : isMediumScreen ? 14 : 16,
+    flexDirection: isSmallScreen ? 'column' : 'row',
+    justifyContent: 'space-around',
+    gap: isSmallScreen ? 10 : isMediumScreen ? 8 : 0,
   },
   lateral: {
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignItems: isSmallScreen ? 'flex-start' : 'center',
   },
   lateralTitle: {
-    fontSize: 16,
+    fontSize: isSmallScreen ? 13 : isMediumScreen ? 15 : 16,
     textAlign: 'center',
-    marginBottom: 10
+    marginBottom: isSmallScreen ? 5 : 10,
   },
   lateralValue: {
-    fontSize: 16,
-    textAlign: 'center'
+    fontSize: isSmallScreen ? 14 : isMediumScreen ? 15 : 16,
+    textAlign: 'center',
+    fontWeight: '600',
   },
   profileHeader: {
     alignItems: 'center',
-    width: '60%'
+    width: isSmallScreen ? '100%' : '60%',
+    paddingVertical: isSmallScreen ? 8 : 0,
   },
   avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: isSmallScreen ? 50 : isMediumScreen ? 55 : 60,
+    height: isSmallScreen ? 50 : isMediumScreen ? 55 : 60,
+    borderRadius: isSmallScreen ? 25 : isMediumScreen ? 27.5 : 30,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
   },
   avatarText: {
-    fontSize: 28,
+    fontSize: isSmallScreen ? 20 : isMediumScreen ? 24 : 28,
     color: '#fff',
     fontWeight: 'bold',
   },
   userName: {
-    fontSize: 18,
+    fontSize: isSmallScreen ? 14 : isMediumScreen ? 16 : 18,
     fontWeight: '600',
-    textAlign: 'center'
+    textAlign: 'center',
+    paddingHorizontal: 5,
+    marginTop: 4,
   },
   userStatus: {
-    fontSize: 14,
+    fontSize: isSmallScreen ? 11 : isMediumScreen ? 13 : 14,
+    marginTop: 2,
   },
   section: {
-    borderRadius: 10,
+    borderRadius: isSmallScreen ? 8 : 10,
   },
   containerScroll: {
     flexDirection: 'column',
     width: '100%',
-    gap: 10
+    gap: isSmallScreen ? 8 : 10,
   },
   text: {
-    fontSize: 14,
+    fontSize: isSmallScreen ? 11 : isMediumScreen ? 13 : 14,
     color: 'white',
+    textAlign: 'center',
   },
   textPlaca: {
     color: 'white',
-    fontSize: 17
+    fontSize: isSmallScreen ? 14 : isMediumScreen ? 16 : 17,
+    fontWeight: '600',
   },
   placa: {
-    padding: 10,
-    borderRadius: 10,
-    alignItems: 'center'
+    padding: isSmallScreen ? 8 : isMediumScreen ? 9 : 10,
+    borderRadius: isSmallScreen ? 8 : 10,
+    alignItems: 'center',
+  },
+  pasajeroCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: isSmallScreen ? 8 : isMediumScreen ? 12 : 15,
+    paddingVertical: isSmallScreen ? 8 : isMediumScreen ? 10 : 12,
+    alignItems: 'center',
+    width: '100%',
+    marginVertical: isSmallScreen ? 6 : isMediumScreen ? 10 : 15,
+    borderWidth: 1,
+    borderRadius: isSmallScreen ? 8 : 10,
+  },
+  actionButtons: {
+    flexDirection: isSmallScreen ? 'column' : 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingVertical: isSmallScreen ? 8 : isMediumScreen ? 12 : 15,
+    alignItems: 'center',
+    gap: isSmallScreen ? 12 : isMediumScreen ? 10 : 0,
+  },
+  actionButton: {
+    width: isSmallScreen ? '100%' : '50%',
+    alignItems: 'center',
+    paddingVertical: isSmallScreen ? 8 : 0,
   },
   containerCancelar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    marginTop: 15,
-    gap: 20,
-
+    marginTop: isSmallScreen ? 10 : isMediumScreen ? 12 : 15,
+    gap: isSmallScreen ? 8 : isMediumScreen ? 12 : 20,
   },
   cancelar: {
     backgroundColor: 'green',
-    padding: 10,
-    borderRadius: 20,
+    padding: isSmallScreen ? 8 : isMediumScreen ? 10 : 12,
+    borderRadius: isSmallScreen ? 15 : 20,
     alignItems: 'center',
-    width: '80%'
+    width: '80%',
   },
   textCancelar: {
-    fontSize: 20,
-    color: 'white'
+    fontSize: isSmallScreen ? 15 : isMediumScreen ? 18 : 20,
+    color: 'white',
+    fontWeight: '600',
   },
-    modalBackground: {
+  modalBackground: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.8)',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   modalContent: {
-    width: '90%',
-    height: '70%',
-    borderRadius: 10,
+    width: isSmallScreen ? '95%' : isMediumScreen ? '92%' : '90%',
+    height: isSmallScreen ? '55%' : isMediumScreen ? '65%' : '70%',
+    borderRadius: isSmallScreen ? 8 : 10,
     overflow: 'hidden',
-    backgroundColor: '#000'
+    backgroundColor: '#000',
   },
   modalImage: {
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
-  // modalBackground: {
-  //   flex: 1,
-  //   backgroundColor: "rgba(0,0,0,0.5)",
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  // },
   modalBox: {
     backgroundColor: "#fff",
-    borderRadius: 20,
-    padding: 20,
-    width: "80%",
+    borderRadius: isSmallScreen ? 15 : isMediumScreen ? 18 : 20,
+    padding: isSmallScreen ? 15 : isMediumScreen ? 18 : 20,
+    width: isSmallScreen ? "92%" : isMediumScreen ? "85%" : "80%",
+    maxWidth: 500,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -764,29 +749,35 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   modalText: {
-    fontSize: 18,
+    fontSize: isSmallScreen ? 15 : isMediumScreen ? 17 : 18,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: isSmallScreen ? 15 : isMediumScreen ? 18 : 20,
+    lineHeight: isSmallScreen ? 21 : isMediumScreen ? 23 : 24,
   },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-around",
+    gap: isSmallScreen ? 8 : isMediumScreen ? 10 : 12,
   },
   cancelButton: {
-    backgroundColor: "#dc2626", // rojo
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 12,
+    backgroundColor: "#dc2626",
+    paddingVertical: isSmallScreen ? 8 : isMediumScreen ? 10 : 12,
+    paddingHorizontal: isSmallScreen ? 16 : isMediumScreen ? 20 : 24,
+    borderRadius: isSmallScreen ? 10 : 12,
+    minWidth: isSmallScreen ? 80 : 100,
   },
   continueButton: {
-    backgroundColor: "#16a34a", // verde
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 12,
+    backgroundColor: "#16a34a",
+    paddingVertical: isSmallScreen ? 8 : isMediumScreen ? 10 : 12,
+    paddingHorizontal: isSmallScreen ? 16 : isMediumScreen ? 20 : 24,
+    borderRadius: isSmallScreen ? 10 : 12,
+    minWidth: isSmallScreen ? 80 : 100,
   },
   buttonText: {
     color: "#fff",
     fontWeight: "600",
+    fontSize: isSmallScreen ? 14 : isMediumScreen ? 15 : 16,
+    textAlign: 'center',
   },
 });
