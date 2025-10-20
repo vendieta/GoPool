@@ -11,6 +11,7 @@ import { useLoginContext } from "@/hooks/useLoginContext";
 import { useRoleContext } from "@/hooks/useRoleContext";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const { width, height } = Dimensions.get('window');
@@ -19,7 +20,7 @@ export default function Perfil() {
   const { isDriver, toggleRole } = useRoleContext();
   const router = useRouter();
   const { theme } = useTheme();
-  const { toggleState } = useLoginContext();
+  const { state, toggleState } = useLoginContext();
   const [ready, setReady] = useState<boolean>();
   const {
     storedValue: access_token,
@@ -99,22 +100,39 @@ export default function Perfil() {
   //   return <ActivityIndicator size="large" color="#0000ff" />;
   // }
   
-  const outSession = async () => {
-      console.log(access_token,refresh_token,userEmail,userId,role);
-      await removeRefresh_token('refresh_token');
-      await removeAccess_token('access_token');
-      await removeUserEmail('userEmail');
-      await removeId('userId');
-      await removeRole('role');
-      await removeName('name');
-      await removeLastName('lastName');
-      await removeExpiresAt('expiresAt');
-      // await removeCars('cars')
-      toggleState();
-      if (isDriver){toggleRole()};
-      console.log(access_token,refresh_token,userEmail,userId,role);
-    router.replace('/');
-  };
+const outSession = async () => {
+  console.log('Storage antes de borrarlos:', access_token, refresh_token, userEmail, userId, role);
+
+  if (!state) return;
+   
+  await Promise.all([
+    removeRole('role'),
+    removeRefresh_token('refresh_token'),
+    removeAccess_token('access_token'),
+    removeExpiresAt('expiresAt'),
+    removeUserEmail('userEmail'),
+    removeId('userId'),
+    removeName('name'),
+    removeLastName('lastName'),
+  ]);
+
+  if (state) toggleState();
+  if (isDriver) toggleRole();
+
+  // Verificar realmente si se eliminaron
+  const tokens = await AsyncStorage.multiGet([
+    'access_token',
+    'refresh_token',
+    'expiresAt',
+    'userEmail',
+    'userId',
+    'role',
+  ]);
+
+  console.log('Storage después de borrarlos:', tokens); // debería mostrar [["access_token", null], ...]
+
+  router.replace('/');
+};
 
   
 

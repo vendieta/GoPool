@@ -1,17 +1,18 @@
 import ScrollRefresh from '@/components/ScrollRefresh';
-import { router, useNavigation } from "expo-router";
-import { View, ActivityIndicator } from 'react-native';
-import { useEffect, useState } from 'react';
-import * as SplashScreen from 'expo-splash-screen';
-import LoginScreen from '../(sesionScreen)/LoginScreen';
 import { useLoginContext } from '@/hooks/useLoginContext';
-import useStorage from '@/hooks/useStorage';
 import { useRoleContext } from '@/hooks/useRoleContext';
+import useStorage from '@/hooks/useStorage';
+import { router, useNavigation } from "expo-router";
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, View } from 'react-native';
+import LoginScreen from '../(sesionScreen)/LoginScreen';
 
 // Evitar que el splash se oculte automáticamente
 SplashScreen.preventAutoHideAsync();
 
 export default function HomeScreen() {
+  console.log('🚀🚀🚀🚀🚀🚀🚀🚀 Renderizando HomeScreen');
   const { isDriver, toggleRole } = useRoleContext();
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
@@ -65,8 +66,8 @@ export default function HomeScreen() {
   } = useStorage('expiresAt');
   console.log('rol inicial',isDriver)
   console.log('storage del rol: ', role, !role)
-  console.log(expiresAt,lastName,name,role,userEmail,userId,refresh_token,access_token);
-  console.log(loadingAccess_token,loadingRefresh_token,loadingId,loadingUserEmail,loadingRole,loadingName,loadingLastName );
+  console.log('Los storage:   ',expiresAt,lastName,name,role,userEmail,userId,refresh_token,access_token);
+  console.log('loadings de los storage:   ',loadingAccess_token,loadingRefresh_token,loadingId,loadingUserEmail,loadingRole,loadingName,loadingLastName );
   // console.log('este es el storage que se ve si se guarda en web:    ', refresh_token)
   // console.log('este es el state:    ',state)
   // useEffect(() => {
@@ -80,6 +81,7 @@ export default function HomeScreen() {
   console.log('esto es el tipo que se muestra: ', role)
   useEffect(() => {
     if (refresh_token && !state) {
+      console.log('se esta cambiando la sesion📉📉📉📉📉📉📉📉📉📉📉')
       toggleState()
     }
   }, [refresh_token])
@@ -121,7 +123,7 @@ export default function HomeScreen() {
   useEffect(() => {
     // pendieta poner un alert de error de sesion expirada
     const outSession = async () => {
-      console.log(access_token,refresh_token,userEmail,userId,role);
+      console.log('borrar sesion:  ',access_token,refresh_token,userEmail,userId,role);
       await removeRefresh_token('refresh_token');
       await removeAccess_token('access_token');
       await removeUserEmail('userEmail');
@@ -131,17 +133,20 @@ export default function HomeScreen() {
       await removeLastName('lastName');
       await removeExpiresAt('expiresAt');
       // await removeCars('cars')
-      toggleState();
+      if (state) {
+        toggleState();
+      }
       if (isDriver){toggleRole()};
-      console.log(access_token,refresh_token,userEmail,userId,role);
+      console.log('borrar el torage en el index:   ',access_token,refresh_token,userEmail,userId,role);
     router.replace('/');
   };
-
-  if ( !refresh_token && state ) {
+  
+  console.log('condicion para cerrar sesion en index',(!refresh_token && state) && (!expiresAt && state) && (access_token || refresh_token || userEmail || userId || role) && !loadingAccess_token && !loadingRefresh_token && !loadingId && !loadingUserEmail && !loadingRole && !loadingName && !loadingLastName);
+  if ((!refresh_token && state) && (!expiresAt && state) && (access_token || refresh_token || userEmail || userId || role) && !loadingAccess_token && !loadingRefresh_token && !loadingId && !loadingUserEmail && !loadingRole && !loadingName && !loadingLastName) {
     outSession();
   }
 
-  }, [refresh_token]);
+  }, [refresh_token, expiresAt, loadingAccess_token, loadingRefresh_token, loadingId, loadingUserEmail, loadingRole, loadingName, loadingLastName]);
 
   // Mostrar pantalla de carga si no se ha terminado de cargar
   if (isLoading || ((expiresAt && Date.now() > Number(expiresAt)) && state)) {
@@ -151,7 +156,8 @@ export default function HomeScreen() {
       </View>
     );
   }
-
+ 
+  console.log('👺📉📉📉📉📉📉📉📉', state)
   // Mostrar contenido según autenticación
   return state ? <ScrollRefresh /> : <LoginScreen />;
 }

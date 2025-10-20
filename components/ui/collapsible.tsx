@@ -12,11 +12,12 @@ export function Collapsible({ children, title }: PropsWithChildren & { title: st
   const theme = useColorScheme() ?? 'light';
 
   return (
-    <ThemedView>
+    <ThemedView style={{ borderRadius: 12}}>
       <TouchableOpacity
         style={styles.heading}
         onPress={() => setIsOpen((value) => !value)}
-        activeOpacity={0.8}>
+        activeOpacity={0.7}
+        >
         <IconSymbol
           name="chevron.right"
           size={18}
@@ -37,6 +38,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
+    // backgroundColor: 'transparent',
+    padding: 10,
+    height: 60,
   },
   content: {
     marginTop: 6,

@@ -60,10 +60,10 @@ export default function RootLayout() {
             >
               {/* Grupos de rutas principales */}
               <Stack.Screen name="(tabs)" />
-              <Stack.Screen name="(sesionScreen)" options={{ headerShown: false }} />
+              <Stack.Screen name="(sesionScreen)" />
               <Stack.Screen name="(serviceScreen)" />
             </Stack>
-            <StatusBar style="auto" />
+            <StatusBar/>
           </ThemeProvider2>
         </ThemeProvider>
       </RoleProvider>

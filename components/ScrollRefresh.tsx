@@ -205,11 +205,12 @@ const filtrarRutas = (rutas: any[], filtros: FiltroRutas) => {
   );
 
   // console para eliminar
+  console.log('Timezone expiracion: ');
   console.log(expiresAt);
   console.log(Date.now());
   console.log((Number(expiresAt)-Date.now())/60/1000);
   console.log(Date.now() >= Number(expiresAt));
-
+  console.log('-----------------------------------');
   return (
     <View style={[
       styles.container, 
