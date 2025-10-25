@@ -142,7 +142,7 @@ export default function HomeScreen() {
   };
   
   console.log('condicion para cerrar sesion en index',(!refresh_token && state) && (!expiresAt && state) && (access_token || refresh_token || userEmail || userId || role) && !loadingAccess_token && !loadingRefresh_token && !loadingId && !loadingUserEmail && !loadingRole && !loadingName && !loadingLastName);
-  if ((!refresh_token && state) && (!expiresAt && state) && (access_token || refresh_token || userEmail || userId || role) && !loadingAccess_token && !loadingRefresh_token && !loadingId && !loadingUserEmail && !loadingRole && !loadingName && !loadingLastName) {
+  if (!isLoading && (!refresh_token && state) && (!expiresAt && state) && !loadingAccess_token && !loadingRefresh_token && !loadingId && !loadingUserEmail && !loadingRole && !loadingName && !loadingLastName) {
     outSession();
   }
 
