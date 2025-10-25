@@ -142,19 +142,20 @@ export default function TabTwoScreen() {
       }
     }, [userId, dataCancel, finishDAta, access_token]),
   )
-
-  useFocusEffect(
-    useCallback(() => {
-      if (data) {
-        const a = async() => {
-          if (checkTime(data && "rutadriver" in data ? new Date(data.rutadriver.horasalida).toISOString() : data && !("rutadriver" in data) ? new Date(data.horasalida).toISOString() : '') === 'expired') {
-            console.log('El viaje ya no busca mas usuarios');
-            setBlock(true);
-          };
-          if (data && checkTime(data && "rutadriver" in data ? new Date(data.rutadriver.horaestimacionllegada).toISOString() : data && !("rutadriver" in data) ? new Date(data.horaestimacionllegada).toISOString()  : '') === 'expired') {
-            console.log('El viaje ya finalizo');
-            setFinish(true);
-          };
+// !("rutadriver" in data) significa que es conductor con un viaje activo
+useFocusEffect(
+  useCallback(() => {
+    if (data) {
+      const a = async() => {
+        if (checkTime(data && "rutadriver" in data ? new Date(data.rutadriver.horasalida).toISOString() : data && !("rutadriver" in data) ? new Date(data.horasalida).toISOString() : '') === 'expired') {
+          console.log('El viaje ya no busca mas usuarios');
+          setBlock(true);
+        };
+        // esto se deberia quitar ya que el backend hace esto pero bueno si da problemas es un pociacazo de seguridad extra
+        if (data && checkTime(data && !("rutadriver" in data) ? new Date(data.horaestimacionllegada).toISOString()  : '') === 'expired') {
+          console.log('El viaje ya finalizo');
+          setFinish(true);
+        };
         }
         a()
       }
@@ -276,7 +277,9 @@ export default function TabTwoScreen() {
                       color: '#2196F3'
                     }}
                   /> 
-                  : (data && !("rutadriver" in data) && !finishLoading) ?
+                  : 
+                  // conductor con viaje activo como driver
+                  (data && !("rutadriver" in data) && !finishLoading) ?
                   <>
                   <View style={[styles.containerHeader, { backgroundColor: theme.cardBackground, width: '100%'}]}>
                         <View style={styles.lateral}>
@@ -336,10 +339,12 @@ export default function TabTwoScreen() {
                       ))}
                       <View style={styles.containerCancelar}>
                         <TouchableOpacity style={styles.cancelar} onPress={() => setCancelModal(true)}>
-                          <Text style={styles.textCancelar}>Cancelar</Text>
+                          <Text style={styles.textCancelar}>Cancelar Viaje</Text>
                         </TouchableOpacity>
                       </View>
-                  </> : (data && "rutadriver" in data && !finishLoading) ? <>
+                  </> : 
+                  // Conductor con viaje activo como pasajero
+                  (data && "rutadriver" in data && !finishLoading) ? <>
                       <View style={[styles.containerHeader, { backgroundColor: theme.cardBackground, width: '100%' }]}>
                         <View style={styles.lateral}>
                           <Text style={[styles.lateralTitle, { color: theme.labelText }]}>precio</Text>
